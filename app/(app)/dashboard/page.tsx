@@ -1,0 +1,222 @@
+import { redirect } from 'next/navigation'
+import Link from 'next/link'
+import { crearClienteServidor } from '@/lib/supabase/server'
+import Topbar from '@/components/app/Topbar'
+import IconoGestion from '@/components/app/IconoGestion'
+import BadgeEstado from '@/components/app/BadgeEstado'
+import Icono from '@/components/app/Icono'
+import BuscadorHero from './BuscadorHero'
+import type { SesionUsuario, Rol, EstadoProceso } from '@/types'
+
+function obtenerIniciales(nombre: string) {
+  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
+}
+
+export default async function PaginaDashboard() {
+  const supabase = await crearClienteServidor()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+
+  const { data: perfil } = await supabase
+    .from('usuarios')
+    .select('id, nombre, correo, rol, gestion_id')
+    .eq('id', user.id)
+    .single()
+  if (!perfil) redirect('/login')
+
+  const sesion: SesionUsuario = {
+    id: perfil.id,
+    nombre: perfil.nombre,
+    correo: perfil.correo,
+    rol: perfil.rol as Rol,
+    gestion_id: perfil.gestion_id,
+    iniciales: obtenerIniciales(perfil.nombre),
+  }
+
+  const esAdmin = sesion.rol === 'admin'
+
+  // Gestiones con contador de procesos activos
+  const { data: gestiones } = await supabase
+    .from('gestiones')
+    .select(`
+      id, nombre, descripcion, icono, color_soft, color_primary, lider_id, activa,
+      lider:usuarios!gestiones_lider_id_fkey(id, nombre),
+      procesos_activos:procesos(count)
+    `)
+    .eq('activa', true)
+    .eq('procesos.estado', 'activo')
+    .order('nombre')
+
+  // Procesos actualizados recientemente
+  const { data: recientes } = await supabase
+    .from('procesos')
+    .select(`
+      id, nombre, version, fecha_actualizacion, estado,
+      gestion:gestiones(id, nombre, icono, color_soft, color_primary),
+      pasos(cargo_responsable)
+    `)
+    .eq('estado', 'activo')
+    .order('fecha_actualizacion', { ascending: false })
+    .limit(5)
+
+  // Stats para admin
+  let aprobacionesPendientes = 0
+  let totalUsuarios = 0
+  let procesosDesactualizados = 0
+  let totalProcesos = 0
+
+  if (esAdmin) {
+    const [{ count: ap }, { count: tu }, { count: pd }, { count: tp }] = await Promise.all([
+      supabase.from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision'),
+      supabase.from('usuarios').select('id', { count: 'exact', head: true }).eq('activo', true),
+      supabase.from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'desactualizado'),
+      supabase.from('procesos').select('id', { count: 'exact', head: true }),
+    ])
+    aprobacionesPendientes = ap ?? 0
+    totalUsuarios = tu ?? 0
+    procesosDesactualizados = pd ?? 0
+    totalProcesos = tp ?? 0
+  }
+
+  const saludo = sesion.nombre.split(' ')[0]
+  const fechaHoy = new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
+
+  return (
+    <>
+      <Topbar usuario={sesion} mostrarBuscar={false} />
+      <main className="page fade-up">
+
+        {/* Hero con buscador */}
+        <div style={{ marginBottom: 36 }}>
+          <div className="page__eyebrow">{fechaHoy}</div>
+          <h1 className="page__title" style={{ fontSize: 34 }}>Hola, {saludo}.</h1>
+          <p className="page__subtitle" style={{ fontSize: 16 }}>¿Qué proceso necesitas consultar hoy?</p>
+          <BuscadorHero />
+        </div>
+
+        {/* Accesos rápidos Admin */}
+        {esAdmin && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 36 }}>
+            {[
+              { titulo: 'Aprobaciones pendientes', cuenta: aprobacionesPendientes, icono: 'inbox', tono: 'warning', href: '/admin/aprobaciones' },
+              { titulo: 'Procesos desactualizados', cuenta: procesosDesactualizados, icono: 'history', tono: 'danger', href: '/gestiones' },
+              { titulo: 'Usuarios activos', cuenta: totalUsuarios, icono: 'users', tono: 'primary', href: '/admin/usuarios' },
+              { titulo: 'Total de procesos', cuenta: totalProcesos, icono: 'grid', tono: 'neutral', href: '/gestiones' },
+            ].map((a) => (
+              <Link key={a.titulo} href={a.href} className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 14, padding: 18 }}>
+                <div className={`badge badge--${a.tono} badge--no-dot`} style={{ alignSelf: 'flex-start', padding: '5px 8px' }}>
+                  <Icono nombre={a.icono} className="icon icon--sm" />
+                </div>
+                <div>
+                  <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{a.cuenta}</div>
+                  <div style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 4 }}>{a.titulo}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Todas las Gestiones */}
+        <section style={{ marginBottom: 40 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Todas las Gestiones</h2>
+            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{gestiones?.length ?? 0} gestiones</span>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
+            {(gestiones ?? []).map((g) => {
+              const liderRaw = g.lider as unknown as { id: string; nombre: string }[] | { id: string; nombre: string } | null
+              const lider = Array.isArray(liderRaw) ? (liderRaw[0] ?? null) : liderRaw
+              const activos = (g.procesos_activos as { count: number }[])?.[0]?.count ?? 0
+              return (
+                <Link
+                  key={g.id}
+                  href={`/gestiones/${g.id}`}
+                  className="card"
+                  style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 14, padding: 20, transition: 'transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <IconoGestion gestion={g} size={42} rounded={12} />
+                    <Icono nombre="arrowRight" className="icon icon--sm" style={{ color: 'var(--text-muted)' }} />
+                  </div>
+                  <div>
+                    <div className="card__title" style={{ marginBottom: 4 }}>{g.nombre}</div>
+                    <div style={{ fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.45 }}>{g.descripcion}</div>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 12, borderTop: '1px solid var(--divider)', fontSize: 12, color: 'var(--text-3)' }}>
+                    <span style={{ fontWeight: 600, color: 'var(--text-2)', fontVariantNumeric: 'tabular-nums' }}>{activos}</span> procesos activos
+                    <span style={{ flex: 1 }} />
+                    {lider && (
+                      <div className="avatar avatar--sm" title={`Líder: ${lider.nombre}`}>
+                        {lider.nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+
+        {/* Actualizados recientemente */}
+        <section>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Actualizados recientemente</h2>
+          </div>
+          <div className="card card--table">
+            <div className="table-scroll">
+              <table className="table table--in-card">
+                <thead>
+                  <tr>
+                    <th>Proceso</th>
+                    <th>Gestión</th>
+                    <th>Cargo principal</th>
+                    <th>Actualizado</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(recientes ?? []).map((p) => {
+                    const gRaw = p.gestion as unknown as { id: string; nombre: string; icono: string; color_soft: string; color_primary: string }[] | { id: string; nombre: string; icono: string; color_soft: string; color_primary: string } | null
+                    const g = Array.isArray(gRaw) ? (gRaw[0] ?? null) : gRaw
+                    const cargoPrincipal = (p.pasos as { cargo_responsable: string }[])?.[0]?.cargo_responsable ?? '—'
+                    return (
+                      <tr key={p.id} style={{ cursor: 'pointer' }}>
+                        <td>
+                          <Link href={`/procesos/${p.id}`} style={{ display: 'block' }}>
+                            <div className="row-title">{p.nombre}</div>
+                            <div className="row-sub">v{p.version}</div>
+                          </Link>
+                        </td>
+                        <td>
+                          {g && (
+                            <Link href={`/gestiones/${g.id}`} className="hstack" style={{ gap: 8 }}>
+                              <IconoGestion gestion={g} size={22} rounded={6} />
+                              <span style={{ fontSize: 13 }}>{g.nombre}</span>
+                            </Link>
+                          )}
+                        </td>
+                        <td style={{ fontSize: 13, color: 'var(--text-2)' }}>{cargoPrincipal}</td>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-3)' }}>
+                          {new Date(p.fecha_actualizacion).toLocaleDateString('es-CO')}
+                        </td>
+                        <td><BadgeEstado estado={p.estado as EstadoProceso} /></td>
+                      </tr>
+                    )
+                  })}
+                  {(recientes ?? []).length === 0 && (
+                    <tr>
+                      <td colSpan={5} style={{ textAlign: 'center', padding: 40, color: 'var(--text-3)' }}>
+                        Aún no hay procesos publicados.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
+  )
+}
