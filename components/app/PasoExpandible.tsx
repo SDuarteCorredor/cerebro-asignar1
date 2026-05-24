@@ -63,14 +63,17 @@ export default function PasoExpandible({ paso, index, total }: { paso: PasoDetal
         </div>
 
         {/* Título + metadata */}
-        <div>
+        <div style={{ minWidth: 0 }}>
           <p style={{ margin: 0, fontSize: 14.5, fontWeight: 600, lineHeight: 1.4, color: 'var(--text)' }}>
             {paso.nombre || paso.descripcion}
           </p>
           <div style={{ marginTop: 6, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-            <span className="badge badge--neutral badge--no-dot" style={{ fontSize: 12 }}>
-              <Icono nombre="users" className="icon icon--sm" /> {paso.cargo_responsable}
-            </span>
+            {paso.cargo_responsable && (
+              <span className="badge badge--neutral badge--no-dot badge--wrap" style={{ fontSize: 12 }}>
+                <Icono nombre="users" className="icon icon--sm" style={{ flexShrink: 0, marginTop: 1 }} />
+                <span>{paso.cargo_responsable}</span>
+              </span>
+            )}
             {paso.periodicidad && (
               <span className="badge badge--neutral badge--no-dot" style={{ fontSize: 12, background: 'var(--surface-2)' }}>
                 <Icono nombre="history" className="icon icon--sm" /> {paso.periodicidad}

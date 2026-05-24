@@ -9,8 +9,26 @@ import BadgeEstado from '@/components/app/BadgeEstado'
 import { crearClienteNavegador } from '@/lib/supabase/client'
 import type { Rol, EstadoProceso } from '@/types'
 
-interface Paso { id?: string; numero_orden: number; descripcion: string; cargo_responsable: string }
+interface Paso {
+  id?: string
+  numero_orden: number
+  nombre: string
+  descripcion: string
+  cargo_responsable: string
+  entradas: string
+  periodicidad: string
+  salidas: string
+  acuerdo_servicio: string
+  tiempos: string
+}
 interface Documento { id?: string; nombre: string; tipo_archivo: string; url_descarga: string; tamano_bytes: number | null; archivo?: File }
+interface Contacto { nombre: string; telefono: string; correo: string }
+
+const pasoVacio = (orden: number): Paso => ({
+  numero_orden: orden, nombre: '', descripcion: '', cargo_responsable: '',
+  entradas: '', periodicidad: '', salidas: '', acuerdo_servicio: '', tiempos: '',
+})
+const contactoVacio = (): Contacto => ({ nombre: '', telefono: '', correo: '' })
 
 interface Props {
   gestiones: { id: string; nombre: string }[]
@@ -25,13 +43,19 @@ interface Props {
     gestion_id: string
     pasos: Paso[]
     documentos: Documento[]
+    es_proceso_cliente?: boolean
+    cliente_nombre?: string | null
+    cliente_contactos?: Contacto[]
+    acuerdo_tarifa?: string | null
+    acuerdo_tipo_servicio?: string | null
+    acuerdo_uniforme?: string | null
+    acuerdo_detalles?: string | null
   }
 }
 
-const cargosFrecuentes = [
-  'Analista de Selección', 'Coordinador de Selección', 'Líder de Talento Humano',
-  'Auxiliar de Contratación', 'Analista de Nómina', 'Coordinador de Operaciones',
-  'Líder de Tesorería', 'Supervisor de Operaciones', 'Asesor Comercial', 'Analista Jurídico',
+const periodicidades = [
+  'Diaria', 'Recurrente / Cotidiana', 'Semanal', 'Quincenal', 'Mensual',
+  'Bimestral', 'Trimestral', 'Semestral', 'Anual', 'Ocasional', 'Por demanda',
 ]
 
 export default function FormularioProceso({ gestiones, gestionIdInicial, rol, procesoExistente }: Props) {
@@ -46,9 +70,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
   const [version, setVersion] = useState(procesoExistente?.version ?? '1.0')
   const [estado, setEstado] = useState<EstadoProceso>((procesoExistente?.estado as EstadoProceso) ?? 'borrador')
   const [pasos, setPasos] = useState<Paso[]>(
-    procesoExistente?.pasos?.length
-      ? procesoExistente.pasos
-      : [{ numero_orden: 1, descripcion: '', cargo_responsable: '' }]
+    procesoExistente?.pasos?.length ? procesoExistente.pasos : [pasoVacio(1)]
   )
   const [documentos, setDocumentos] = useState<Documento[]>(procesoExistente?.documentos ?? [])
   const [guardando, setGuardando] = useState(false)
@@ -56,8 +78,32 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
   const [draggingIdx, setDraggingIdx] = useState<number | null>(null)
   const [overIdx, setOverIdx] = useState<number | null>(null)
 
+  // Proceso por cliente (solo Servicio y Programación)
+  const [esCliente, setEsCliente] = useState(procesoExistente?.es_proceso_cliente ?? false)
+  const [clienteNombre, setClienteNombre] = useState(procesoExistente?.cliente_nombre ?? '')
+  const [contactos, setContactos] = useState<Contacto[]>(
+    procesoExistente?.cliente_contactos?.length ? procesoExistente.cliente_contactos : [contactoVacio()]
+  )
+  const [acuerdoTarifa, setAcuerdoTarifa] = useState(procesoExistente?.acuerdo_tarifa ?? '')
+  const [acuerdoTipoServicio, setAcuerdoTipoServicio] = useState(procesoExistente?.acuerdo_tipo_servicio ?? '')
+  const [acuerdoUniforme, setAcuerdoUniforme] = useState(procesoExistente?.acuerdo_uniforme ?? '')
+  const [acuerdoDetalles, setAcuerdoDetalles] = useState(procesoExistente?.acuerdo_detalles ?? '')
+
+  const gestionActual = gestiones.find(g => g.id === gestionId)
+  const esServicioYProgramacion = gestionActual?.nombre === 'Servicio y Programación'
+  // Si cambia a una gestión que no es Servicio y Programación, el modo cliente se apaga
+  const modoCliente = esServicioYProgramacion && esCliente
+
+  function agregarContacto() { setContactos([...contactos, contactoVacio()]) }
+  function actualizarContacto(i: number, campo: keyof Contacto, valor: string) {
+    setContactos(contactos.map((c, j) => j === i ? { ...c, [campo]: valor } : c))
+  }
+  function eliminarContacto(i: number) {
+    setContactos(contactos.length === 1 ? [contactoVacio()] : contactos.filter((_, j) => j !== i))
+  }
+
   function agregarPaso() {
-    setPasos([...pasos, { numero_orden: pasos.length + 1, descripcion: '', cargo_responsable: '' }])
+    setPasos([...pasos, pasoVacio(pasos.length + 1)])
   }
 
   function actualizarPaso(i: number, campo: keyof Paso, valor: string) {
@@ -111,6 +157,15 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
         estado: estadoFinal,
         fecha_actualizacion: new Date().toISOString().split('T')[0],
         creado_por: esNuevo ? user.id : undefined,
+        es_proceso_cliente: modoCliente,
+        cliente_nombre: modoCliente ? clienteNombre.trim() : null,
+        cliente_contactos: modoCliente
+          ? contactos.filter(c => c.nombre.trim() || c.telefono.trim() || c.correo.trim())
+          : [],
+        acuerdo_tarifa: modoCliente ? acuerdoTarifa.trim() : null,
+        acuerdo_tipo_servicio: modoCliente ? acuerdoTipoServicio.trim() : null,
+        acuerdo_uniforme: modoCliente ? acuerdoUniforme.trim() : null,
+        acuerdo_detalles: modoCliente ? acuerdoDetalles.trim() : null,
       }
 
       let procesoId: string
@@ -127,13 +182,19 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
         await supabase.from('pasos').delete().eq('proceso_id', procesoId)
       }
 
-      // Insertar pasos
-      if (pasos.length > 0) {
+      // Insertar pasos (los procesos de cliente no llevan pasos)
+      if (!modoCliente && pasos.length > 0) {
         const pasosData = pasos.map((p, i) => ({
           proceso_id: procesoId,
           numero_orden: i + 1,
+          nombre: p.nombre,
           descripcion: p.descripcion,
           cargo_responsable: p.cargo_responsable,
+          entradas: p.entradas,
+          periodicidad: p.periodicidad,
+          salidas: p.salidas,
+          acuerdo_servicio: p.acuerdo_servicio,
+          tiempos: p.tiempos,
         }))
         const { error: errPasos } = await supabase.from('pasos').insert(pasosData)
         if (errPasos) throw errPasos
@@ -234,7 +295,105 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
           </div>
         </section>
 
+        {/* Selector de tipo — solo Servicio y Programación */}
+        {esServicioYProgramacion && (
+          <section className="card" style={{ padding: 26 }}>
+            <h3 style={{ margin: '0 0 4px', fontSize: 15, fontWeight: 700 }}>Tipo de proceso</h3>
+            <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-3)' }}>
+              En Servicio y Programación puedes documentar el proceso general o un proceso específico por cliente.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <button type="button" onClick={() => setEsCliente(false)}
+                className={`tipo-opcion${!esCliente ? ' is-active' : ''}`}>
+                <span className="tipo-opcion__radio" />
+                <span className="tipo-opcion__body">
+                  <strong><Icono nombre="workflow" className="icon icon--sm" /> Proceso general</strong>
+                  <span>Procedimiento con pasos y actividades.</span>
+                </span>
+              </button>
+              <button type="button" onClick={() => setEsCliente(true)}
+                className={`tipo-opcion${esCliente ? ' is-active' : ''}`}>
+                <span className="tipo-opcion__radio" />
+                <span className="tipo-opcion__body">
+                  <strong><Icono nombre="handshake" className="icon icon--sm" /> Proceso por cliente</strong>
+                  <span>Ficha del cliente y acuerdo de servicio.</span>
+                </span>
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Datos del cliente + acuerdo (modo cliente) */}
+        {modoCliente && (
+          <>
+            <section className="card" style={{ padding: 26 }}>
+              <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Datos del cliente</h3>
+              <div className="vstack" style={{ gap: 14 }}>
+                <div className="field">
+                  <label className="field__label">Nombre del cliente / empresa</label>
+                  <input className="ca-input" value={clienteNombre} onChange={e => setClienteNombre(e.target.value)} placeholder="Ej: Industrias XYZ S.A.S." />
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <label className="field__label">Contactos</label>
+                    <span style={{ fontSize: 12, color: 'var(--text-3)' }}>{contactos.length} contacto(s)</span>
+                  </div>
+                  <div className="vstack" style={{ gap: 10 }}>
+                    {contactos.map((c, i) => (
+                      <div key={i} className="paso-card">
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 10, alignItems: 'flex-end' }}>
+                          <div className="field">
+                            <label className="field__label">Nombre</label>
+                            <input className="ca-input ca-input--sm" value={c.nombre} onChange={e => actualizarContacto(i, 'nombre', e.target.value)} placeholder="Nombre del contacto" />
+                          </div>
+                          <div className="field">
+                            <label className="field__label">Teléfono</label>
+                            <input className="ca-input ca-input--sm" value={c.telefono} onChange={e => actualizarContacto(i, 'telefono', e.target.value)} placeholder="Ej: 300 123 4567" />
+                          </div>
+                          <div className="field">
+                            <label className="field__label">Correo</label>
+                            <input className="ca-input ca-input--sm" value={c.correo} onChange={e => actualizarContacto(i, 'correo', e.target.value)} placeholder="correo@cliente.com" />
+                          </div>
+                          <button type="button" className="btn btn--ghost btn--sm" onClick={() => eliminarContacto(i)}>
+                            <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <button type="button" className="btn btn--secondary" onClick={agregarContacto} style={{ alignSelf: 'flex-start' }}>
+                      <Icono nombre="plus" className="icon icon--sm" /> Agregar contacto
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section className="card" style={{ padding: 26 }}>
+              <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Acuerdo de servicio con el cliente</h3>
+              <div className="paso-grid">
+                <div className="field">
+                  <label className="field__label">Tarifa</label>
+                  <input className="ca-input ca-input--sm" value={acuerdoTarifa} onChange={e => setAcuerdoTarifa(e.target.value)} placeholder="Ej: $2.500.000 / mes por puesto" />
+                </div>
+                <div className="field">
+                  <label className="field__label">Tipo de servicio</label>
+                  <input className="ca-input ca-input--sm" value={acuerdoTipoServicio} onChange={e => setAcuerdoTipoServicio(e.target.value)} placeholder="Ej: Vigilancia, aseo, operarios…" />
+                </div>
+                <div className="field paso-grid--full">
+                  <label className="field__label">Acuerdo de uniforme</label>
+                  <input className="ca-input ca-input--sm" value={acuerdoUniforme} onChange={e => setAcuerdoUniforme(e.target.value)} placeholder="Ej: Uniforme dotado por Asignar, cambio cada 6 meses" />
+                </div>
+                <div className="field paso-grid--full">
+                  <label className="field__label">Detalles adicionales</label>
+                  <textarea className="ca-textarea" value={acuerdoDetalles} onChange={e => setAcuerdoDetalles(e.target.value)} placeholder="Horarios, condiciones especiales, cláusulas del acuerdo, etc." />
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+
         {/* Pasos */}
+        {!modoCliente && (
         <section className="card" style={{ padding: 26 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
             <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Pasos del procedimiento</h3>
@@ -244,40 +403,72 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             {pasos.map((paso, i) => (
               <div
                 key={i}
-                draggable
-                onDragStart={() => setDraggingIdx(i)}
                 onDragOver={e => { e.preventDefault(); setOverIdx(i) }}
                 onDragEnd={() => {
                   if (draggingIdx !== null && overIdx !== null) moverPaso(draggingIdx, overIdx)
                   setDraggingIdx(null); setOverIdx(null)
                 }}
-                style={{
-                  display: 'grid', gridTemplateColumns: 'auto 36px 1fr 200px auto', gap: 10, alignItems: 'flex-start',
-                  padding: 12, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)',
-                  outline: overIdx === i && draggingIdx !== null ? '2px solid var(--primary)' : 'none',
-                  opacity: draggingIdx === i ? 0.4 : 1,
-                }}
+                className={`paso-card${draggingIdx === i ? ' is-dragging' : ''}${overIdx === i && draggingIdx !== null ? ' is-over' : ''}`}
               >
-                <button className="btn btn--ghost btn--sm" style={{ cursor: 'grab', padding: 4 }}>
-                  <Icono nombre="drag" className="icon icon--sm" />
-                </button>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--primary-soft)', color: 'var(--primary-ink)', display: 'grid', placeItems: 'center', fontWeight: 700, fontFamily: 'var(--font-mono)', fontSize: 13 }}>
-                  {String(i + 1).padStart(2, '0')}
+                <div className="paso-card__head">
+                  <span className="paso-drag" draggable onDragStart={() => setDraggingIdx(i)}>
+                    <Icono nombre="drag" className="icon icon--sm" />
+                  </span>
+                  <div className="paso-num">{String(i + 1).padStart(2, '0')}</div>
+                  <input
+                    className="ca-input"
+                    placeholder="Nombre de la actividad…"
+                    value={paso.nombre}
+                    onChange={e => actualizarPaso(i, 'nombre', e.target.value)}
+                  />
+                  <button className="btn btn--ghost btn--sm" onClick={() => eliminarPaso(i)}>
+                    <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
+                  </button>
                 </div>
-                <textarea
-                  className="ca-textarea"
-                  style={{ minHeight: 60 }}
-                  placeholder="Descripción de la acción…"
-                  value={paso.descripcion}
-                  onChange={e => actualizarPaso(i, 'descripcion', e.target.value)}
-                />
-                <select className="ca-select" value={paso.cargo_responsable} onChange={e => actualizarPaso(i, 'cargo_responsable', e.target.value)}>
-                  <option value="">Cargo responsable…</option>
-                  {cargosFrecuentes.map(c => <option key={c}>{c}</option>)}
-                </select>
-                <button className="btn btn--ghost btn--sm" onClick={() => eliminarPaso(i)}>
-                  <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
-                </button>
+
+                <div className="paso-grid">
+                  <div className="field paso-grid--full">
+                    <label className="field__label">Procedimiento</label>
+                    <textarea
+                      className="ca-textarea" style={{ minHeight: 60 }}
+                      placeholder="Describe cómo se realiza esta actividad…"
+                      value={paso.descripcion}
+                      onChange={e => actualizarPaso(i, 'descripcion', e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Cargo responsable</label>
+                    <input className="ca-input ca-input--sm" placeholder="Ej: Analista de Selección"
+                      value={paso.cargo_responsable} onChange={e => actualizarPaso(i, 'cargo_responsable', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Periodicidad</label>
+                    <select className="ca-select ca-select--sm" value={paso.periodicidad} onChange={e => actualizarPaso(i, 'periodicidad', e.target.value)}>
+                      <option value="">Seleccionar…</option>
+                      {periodicidades.map(p => <option key={p}>{p}</option>)}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Entradas</label>
+                    <input className="ca-input ca-input--sm" placeholder="Qué necesita para empezar"
+                      value={paso.entradas} onChange={e => actualizarPaso(i, 'entradas', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Salidas</label>
+                    <input className="ca-input ca-input--sm" placeholder="Qué produce esta actividad"
+                      value={paso.salidas} onChange={e => actualizarPaso(i, 'salidas', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Tiempos</label>
+                    <input className="ca-input ca-input--sm" placeholder="Ej: 2 días hábiles"
+                      value={paso.tiempos} onChange={e => actualizarPaso(i, 'tiempos', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Acuerdo de servicio</label>
+                    <input className="ca-input ca-input--sm" placeholder="SLA o compromiso"
+                      value={paso.acuerdo_servicio} onChange={e => actualizarPaso(i, 'acuerdo_servicio', e.target.value)} />
+                  </div>
+                </div>
               </div>
             ))}
             <button className="btn btn--secondary" onClick={agregarPaso} style={{ alignSelf: 'flex-start' }}>
@@ -285,6 +476,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             </button>
           </div>
         </section>
+        )}
 
         {/* Documentos */}
         <section className="card" style={{ padding: 26 }}>

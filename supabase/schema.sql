@@ -54,6 +54,15 @@ create table public.procesos (
   creado_por          uuid references public.usuarios(id) on delete set null,
   aprobado_por        uuid references public.usuarios(id) on delete set null,
   comentario_rechazo  text,
+  macroproceso        text,
+  -- Proceso por cliente (exclusivo de Servicio y Programación)
+  es_proceso_cliente    boolean not null default false,
+  cliente_nombre        text,
+  cliente_contactos     jsonb not null default '[]'::jsonb, -- [{nombre, telefono, correo}]
+  acuerdo_tarifa        text,
+  acuerdo_tipo_servicio text,
+  acuerdo_uniforme      text,
+  acuerdo_detalles      text,
   created_at          timestamptz not null default now()
 );
 
@@ -64,8 +73,14 @@ create table public.pasos (
   id                uuid primary key default uuid_generate_v4(),
   proceso_id        uuid not null references public.procesos(id) on delete cascade,
   numero_orden      integer not null,
+  nombre            text,
   descripcion       text not null default '',
   cargo_responsable text not null default '',
+  entradas          text,
+  periodicidad      text,
+  salidas           text,
+  acuerdo_servicio  text,
+  tiempos           text,
   unique (proceso_id, numero_orden)
 );
 

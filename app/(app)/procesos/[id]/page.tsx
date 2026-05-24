@@ -71,6 +71,9 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
   const liderRaw = g?.lider
   const lider = Array.isArray(liderRaw) ? (liderRaw[0] ?? null) : liderRaw
 
+  const esCliente = proceso.es_proceso_cliente === true
+  const contactos = (proceso.cliente_contactos as { nombre: string; telefono: string; correo: string }[]) ?? []
+
   return (
     <>
       <Topbar
@@ -131,7 +134,68 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
               <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55, color: 'var(--text)' }}>{proceso.objetivo}</p>
             </section>
 
+            {/* Cliente (proceso por cliente) */}
+            {esCliente && (
+              <>
+                <section className="card" style={{ padding: 26 }}>
+                  <div className="page__eyebrow" style={{ marginBottom: 4 }}>Cliente</div>
+                  <h2 style={{ margin: '0 0 16px', fontSize: 18, fontWeight: 700, letterSpacing: '-0.01em' }}>
+                    {proceso.cliente_nombre || 'Sin nombre de cliente'}
+                  </h2>
+                  {contactos.length > 0 ? (
+                    <div className="vstack" style={{ gap: 10 }}>
+                      {contactos.map((c, i) => (
+                        <div key={i} style={{ display: 'flex', flexWrap: 'wrap', gap: 16, alignItems: 'center', padding: 12, border: '1px solid var(--border)', borderRadius: 10 }}>
+                          <div className="hstack" style={{ gap: 8 }}>
+                            <div className="avatar avatar--sm">{obtenerIniciales(c.nombre || '?')}</div>
+                            <strong style={{ fontSize: 14 }}>{c.nombre || '—'}</strong>
+                          </div>
+                          {c.telefono && (
+                            <span className="hstack" style={{ gap: 6, fontSize: 13, color: 'var(--text-2)' }}>
+                              <Icono nombre="users" className="icon icon--sm" /> {c.telefono}
+                            </span>
+                          )}
+                          {c.correo && (
+                            <a href={`mailto:${c.correo}`} className="hstack" style={{ gap: 6, fontSize: 13, color: 'var(--primary)' }}>
+                              <Icono nombre="info" className="icon icon--sm" /> {c.correo}
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ padding: 24, textAlign: 'center', color: 'var(--text-3)', border: '1px dashed var(--border-strong)', borderRadius: 10 }}>
+                      Sin contactos registrados.
+                    </div>
+                  )}
+                </section>
+
+                <section className="card" style={{ padding: 26 }}>
+                  <div className="page__eyebrow" style={{ marginBottom: 4 }}>Acuerdo de servicio</div>
+                  <h2 style={{ margin: '0 0 16px', fontSize: 18, fontWeight: 700, letterSpacing: '-0.01em' }}>Acuerdo con el cliente</h2>
+                  <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px 24px' }}>
+                    {proceso.acuerdo_tarifa && (
+                      <div><dt style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tarifa</dt><dd style={{ margin: '4px 0 0', fontSize: 14.5 }}>{proceso.acuerdo_tarifa}</dd></div>
+                    )}
+                    {proceso.acuerdo_tipo_servicio && (
+                      <div><dt style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Tipo de servicio</dt><dd style={{ margin: '4px 0 0', fontSize: 14.5 }}>{proceso.acuerdo_tipo_servicio}</dd></div>
+                    )}
+                    {proceso.acuerdo_uniforme && (
+                      <div style={{ gridColumn: '1 / -1' }}><dt style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Acuerdo de uniforme</dt><dd style={{ margin: '4px 0 0', fontSize: 14.5 }}>{proceso.acuerdo_uniforme}</dd></div>
+                    )}
+                    {proceso.acuerdo_detalles && (
+                      <div style={{ gridColumn: '1 / -1' }}><dt style={{ fontSize: 12, color: 'var(--text-3)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Detalles adicionales</dt><dd style={{ margin: '4px 0 0', fontSize: 14.5, lineHeight: 1.55, whiteSpace: 'pre-wrap' }}>{proceso.acuerdo_detalles}</dd></div>
+                    )}
+                    {!proceso.acuerdo_tarifa && !proceso.acuerdo_tipo_servicio && !proceso.acuerdo_uniforme && !proceso.acuerdo_detalles && (
+                      <div style={{ gridColumn: '1 / -1', color: 'var(--text-3)' }}>Aún no se ha registrado el acuerdo de servicio.</div>
+                    )}
+                  </dl>
+                </section>
+              </>
+            )}
+
             {/* Pasos */}
+            {!esCliente && (
             <section className="card" style={{ padding: 26 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
                 <div>
@@ -152,6 +216,7 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
                 </div>
               )}
             </section>
+            )}
 
             {/* Documentos */}
             <section className="card" style={{ padding: 26 }}>
