@@ -9,8 +9,24 @@ import BadgeEstado from '@/components/app/BadgeEstado'
 import { crearClienteNavegador } from '@/lib/supabase/client'
 import type { Rol, EstadoProceso } from '@/types'
 
-interface Paso { id?: string; numero_orden: number; descripcion: string; cargo_responsable: string }
+interface Paso {
+  id?: string
+  numero_orden: number
+  nombre: string
+  descripcion: string
+  cargo_responsable: string
+  entradas: string
+  periodicidad: string
+  salidas: string
+  acuerdo_servicio: string
+  tiempos: string
+}
 interface Documento { id?: string; nombre: string; tipo_archivo: string; url_descarga: string; tamano_bytes: number | null; archivo?: File }
+
+const pasoVacio = (orden: number): Paso => ({
+  numero_orden: orden, nombre: '', descripcion: '', cargo_responsable: '',
+  entradas: '', periodicidad: '', salidas: '', acuerdo_servicio: '', tiempos: '',
+})
 
 interface Props {
   gestiones: { id: string; nombre: string }[]
@@ -28,10 +44,9 @@ interface Props {
   }
 }
 
-const cargosFrecuentes = [
-  'Analista de Selección', 'Coordinador de Selección', 'Líder de Talento Humano',
-  'Auxiliar de Contratación', 'Analista de Nómina', 'Coordinador de Operaciones',
-  'Líder de Tesorería', 'Supervisor de Operaciones', 'Asesor Comercial', 'Analista Jurídico',
+const periodicidades = [
+  'Diaria', 'Recurrente / Cotidiana', 'Semanal', 'Quincenal', 'Mensual',
+  'Bimestral', 'Trimestral', 'Semestral', 'Anual', 'Ocasional', 'Por demanda',
 ]
 
 export default function FormularioProceso({ gestiones, gestionIdInicial, rol, procesoExistente }: Props) {
@@ -46,9 +61,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
   const [version, setVersion] = useState(procesoExistente?.version ?? '1.0')
   const [estado, setEstado] = useState<EstadoProceso>((procesoExistente?.estado as EstadoProceso) ?? 'borrador')
   const [pasos, setPasos] = useState<Paso[]>(
-    procesoExistente?.pasos?.length
-      ? procesoExistente.pasos
-      : [{ numero_orden: 1, descripcion: '', cargo_responsable: '' }]
+    procesoExistente?.pasos?.length ? procesoExistente.pasos : [pasoVacio(1)]
   )
   const [documentos, setDocumentos] = useState<Documento[]>(procesoExistente?.documentos ?? [])
   const [guardando, setGuardando] = useState(false)
@@ -57,7 +70,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
   const [overIdx, setOverIdx] = useState<number | null>(null)
 
   function agregarPaso() {
-    setPasos([...pasos, { numero_orden: pasos.length + 1, descripcion: '', cargo_responsable: '' }])
+    setPasos([...pasos, pasoVacio(pasos.length + 1)])
   }
 
   function actualizarPaso(i: number, campo: keyof Paso, valor: string) {
@@ -132,8 +145,14 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
         const pasosData = pasos.map((p, i) => ({
           proceso_id: procesoId,
           numero_orden: i + 1,
+          nombre: p.nombre,
           descripcion: p.descripcion,
           cargo_responsable: p.cargo_responsable,
+          entradas: p.entradas,
+          periodicidad: p.periodicidad,
+          salidas: p.salidas,
+          acuerdo_servicio: p.acuerdo_servicio,
+          tiempos: p.tiempos,
         }))
         const { error: errPasos } = await supabase.from('pasos').insert(pasosData)
         if (errPasos) throw errPasos
@@ -244,40 +263,72 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             {pasos.map((paso, i) => (
               <div
                 key={i}
-                draggable
-                onDragStart={() => setDraggingIdx(i)}
                 onDragOver={e => { e.preventDefault(); setOverIdx(i) }}
                 onDragEnd={() => {
                   if (draggingIdx !== null && overIdx !== null) moverPaso(draggingIdx, overIdx)
                   setDraggingIdx(null); setOverIdx(null)
                 }}
-                style={{
-                  display: 'grid', gridTemplateColumns: 'auto 36px 1fr 200px auto', gap: 10, alignItems: 'flex-start',
-                  padding: 12, border: '1px solid var(--border)', borderRadius: 10, background: 'var(--surface)',
-                  outline: overIdx === i && draggingIdx !== null ? '2px solid var(--primary)' : 'none',
-                  opacity: draggingIdx === i ? 0.4 : 1,
-                }}
+                className={`paso-card${draggingIdx === i ? ' is-dragging' : ''}${overIdx === i && draggingIdx !== null ? ' is-over' : ''}`}
               >
-                <button className="btn btn--ghost btn--sm" style={{ cursor: 'grab', padding: 4 }}>
-                  <Icono nombre="drag" className="icon icon--sm" />
-                </button>
-                <div style={{ width: 32, height: 32, borderRadius: 8, background: 'var(--primary-soft)', color: 'var(--primary-ink)', display: 'grid', placeItems: 'center', fontWeight: 700, fontFamily: 'var(--font-mono)', fontSize: 13 }}>
-                  {String(i + 1).padStart(2, '0')}
+                <div className="paso-card__head">
+                  <span className="paso-drag" draggable onDragStart={() => setDraggingIdx(i)}>
+                    <Icono nombre="drag" className="icon icon--sm" />
+                  </span>
+                  <div className="paso-num">{String(i + 1).padStart(2, '0')}</div>
+                  <input
+                    className="ca-input"
+                    placeholder="Nombre de la actividad…"
+                    value={paso.nombre}
+                    onChange={e => actualizarPaso(i, 'nombre', e.target.value)}
+                  />
+                  <button className="btn btn--ghost btn--sm" onClick={() => eliminarPaso(i)}>
+                    <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
+                  </button>
                 </div>
-                <textarea
-                  className="ca-textarea"
-                  style={{ minHeight: 60 }}
-                  placeholder="Descripción de la acción…"
-                  value={paso.descripcion}
-                  onChange={e => actualizarPaso(i, 'descripcion', e.target.value)}
-                />
-                <select className="ca-select" value={paso.cargo_responsable} onChange={e => actualizarPaso(i, 'cargo_responsable', e.target.value)}>
-                  <option value="">Cargo responsable…</option>
-                  {cargosFrecuentes.map(c => <option key={c}>{c}</option>)}
-                </select>
-                <button className="btn btn--ghost btn--sm" onClick={() => eliminarPaso(i)}>
-                  <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
-                </button>
+
+                <div className="paso-grid">
+                  <div className="field paso-grid--full">
+                    <label className="field__label">Procedimiento</label>
+                    <textarea
+                      className="ca-textarea" style={{ minHeight: 60 }}
+                      placeholder="Describe cómo se realiza esta actividad…"
+                      value={paso.descripcion}
+                      onChange={e => actualizarPaso(i, 'descripcion', e.target.value)}
+                    />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Cargo responsable</label>
+                    <input className="ca-input ca-input--sm" placeholder="Ej: Analista de Selección"
+                      value={paso.cargo_responsable} onChange={e => actualizarPaso(i, 'cargo_responsable', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Periodicidad</label>
+                    <select className="ca-select ca-select--sm" value={paso.periodicidad} onChange={e => actualizarPaso(i, 'periodicidad', e.target.value)}>
+                      <option value="">Seleccionar…</option>
+                      {periodicidades.map(p => <option key={p}>{p}</option>)}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Entradas</label>
+                    <input className="ca-input ca-input--sm" placeholder="Qué necesita para empezar"
+                      value={paso.entradas} onChange={e => actualizarPaso(i, 'entradas', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Salidas</label>
+                    <input className="ca-input ca-input--sm" placeholder="Qué produce esta actividad"
+                      value={paso.salidas} onChange={e => actualizarPaso(i, 'salidas', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Tiempos</label>
+                    <input className="ca-input ca-input--sm" placeholder="Ej: 2 días hábiles"
+                      value={paso.tiempos} onChange={e => actualizarPaso(i, 'tiempos', e.target.value)} />
+                  </div>
+                  <div className="field">
+                    <label className="field__label">Acuerdo de servicio</label>
+                    <input className="ca-input ca-input--sm" placeholder="SLA o compromiso"
+                      value={paso.acuerdo_servicio} onChange={e => actualizarPaso(i, 'acuerdo_servicio', e.target.value)} />
+                  </div>
+                </div>
               </div>
             ))}
             <button className="btn btn--secondary" onClick={agregarPaso} style={{ alignSelf: 'flex-start' }}>
