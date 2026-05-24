@@ -305,19 +305,19 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               <button type="button" onClick={() => setEsCliente(false)}
                 className={`tipo-opcion${!esCliente ? ' is-active' : ''}`}>
-                <Icono nombre="workflow" className="icon" />
-                <div>
-                  <strong>Proceso general</strong>
+                <span className="tipo-opcion__radio" />
+                <span className="tipo-opcion__body">
+                  <strong><Icono nombre="workflow" className="icon icon--sm" /> Proceso general</strong>
                   <span>Procedimiento con pasos y actividades.</span>
-                </div>
+                </span>
               </button>
               <button type="button" onClick={() => setEsCliente(true)}
                 className={`tipo-opcion${esCliente ? ' is-active' : ''}`}>
-                <Icono nombre="handshake" className="icon" />
-                <div>
-                  <strong>Proceso por cliente</strong>
+                <span className="tipo-opcion__radio" />
+                <span className="tipo-opcion__body">
+                  <strong><Icono nombre="handshake" className="icon icon--sm" /> Proceso por cliente</strong>
                   <span>Ficha del cliente y acuerdo de servicio.</span>
-                </div>
+                </span>
               </button>
             </div>
           </section>
