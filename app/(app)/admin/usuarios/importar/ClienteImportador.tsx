@@ -35,7 +35,7 @@ interface Preview {
   errores: string[]
 }
 
-// Mapeo CCF → Sede de trabajo
+// Mapeo CCF → Sede de trabajo (default)
 const SEDE_POR_CCF: Record<string, string> = {
   'COLSUBSIDIO': 'Bogotá',
   'ANDI COMFENALCO CARTAGENA': 'Cartagena',
@@ -44,8 +44,16 @@ const SEDE_POR_CCF: Record<string, string> = {
   'CCF RISARALDA- COMFAMILIAR RISARALDA': 'Pereira',
   'CCF RISARALDA - COMFAMILIAR RISARALDA': 'Pereira',
   'COMFENALCO VALLE': 'Cali',
+  'CCF COMFENALCO ANTIOQUIA': 'Medellín',
 }
-const sedePorCCF = (ccf: string): string => {
+// Excepciones por código de contrato (sobreescriben el default por CCF)
+const SEDE_POR_CODIGO: Record<string, string> = {
+  'ASI768':  'Rionegro', // HERNADEZ IBARRA MARIA ALEJANDRA
+  'ASI1165': 'Rionegro', // CASTRO CASTRO DAILY GABRIELA
+  'ASI1104': 'Rionegro', // SUAREZ ROSALES ABRAHAM SAHID
+}
+const inferirSede = (codigo: string, ccf: string): string => {
+  if (SEDE_POR_CODIGO[codigo]) return SEDE_POR_CODIGO[codigo]
   const k = (ccf ?? '').trim()
   return SEDE_POR_CCF[k] ?? 'Por confirmar'
 }
@@ -127,7 +135,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           departamento: txt(row['Departamento']),
           ciudad: txt(row['Ciudad']),
           fecha_retiro: fechaIso(row['F. Retiro']),
-          sede_inferida: sedePorCCF(ccf),
+          sede_inferida: inferirSede(codigo, ccf),
           cargo_id: cargo?.id ?? null,
         })
       }
@@ -146,6 +154,11 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
       for (const f of filasParseadas) {
         const ex = mapExistentes.get(f.codigo_contrato)
         if (!ex) { nuevos.push(f); continue }
+        // Preservar sede si el admin la edito manualmente (no es 'Por confirmar' y no es null)
+        const exTyped = ex as { sede?: string | null }
+        if (exTyped.sede && exTyped.sede.trim() !== '' && exTyped.sede !== 'Por confirmar') {
+          f.sede_inferida = exTyped.sede
+        }
         // hay diferencias?
         const cambio = (
           ex.nombre !== f.nombre ||
