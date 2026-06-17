@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation'
+import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
@@ -37,8 +38,11 @@ export default async function AdminUsuarios() {
 
   const { data: usuarios } = await supabase
     .from('usuarios')
-    .select('id, nombre, correo, rol, activo, gestion_id, gestion:gestiones(nombre)')
+    .select('id, codigo_contrato, nombre, correo, rol, activo, sede, tiene_login, gestion_id, gestion:gestiones(nombre), cargo:cargos(nombre, banda)')
     .order('nombre')
+
+  const activos = (usuarios ?? []).filter(u => u.activo).length
+  const conLogin = (usuarios ?? []).filter(u => u.tiene_login).length
 
   const { count: totalAprobaciones } = await supabase
     .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
@@ -58,8 +62,15 @@ export default async function AdminUsuarios() {
         <NavAdmin activa="usuarios" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={0} totalUsuarios={usuarios?.length ?? 0} />
 
         <div className="filter-row">
-          <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{usuarios?.length ?? 0} usuarios registrados.</span>
+          <span style={{ fontSize: 13, color: 'var(--text-3)' }}>
+            <strong style={{ color: 'var(--text)' }}>{usuarios?.length ?? 0}</strong> registrados ·{' '}
+            <strong style={{ color: 'var(--text)' }}>{activos}</strong> activos ·{' '}
+            <strong style={{ color: 'var(--text)' }}>{conLogin}</strong> con login
+          </span>
           <span className="spacer" />
+          <Link href="/admin/usuarios/importar" className="btn btn--secondary btn--sm">
+            <Icono nombre="upload" className="icon icon--sm" /> Importar lista
+          </Link>
           <button className="btn btn--primary btn--sm">
             <Icono nombre="invite" className="icon icon--sm" /> Invitar usuario
           </button>
@@ -70,45 +81,59 @@ export default async function AdminUsuarios() {
             <table className="table table--in-card">
               <thead>
                 <tr>
+                  <th>Código</th>
                   <th>Nombre</th>
-                  <th>Correo</th>
+                  <th>Cargo</th>
+                  <th>Sede</th>
                   <th>Rol</th>
-                  <th>Gestión asociada</th>
                   <th>Estado</th>
-                  <th />
                 </tr>
               </thead>
               <tbody>
                 {(usuarios ?? []).map(u => {
                   const gestionRaw = u.gestion as { nombre: string }[] | { nombre: string } | null
                   const gestionNombre = (Array.isArray(gestionRaw) ? (gestionRaw[0] ?? null) : gestionRaw)?.nombre ?? '—'
+                  const cargoRaw = u.cargo as { nombre: string; banda: string }[] | { nombre: string; banda: string } | null
+                  const cargo = Array.isArray(cargoRaw) ? (cargoRaw[0] ?? null) : cargoRaw
                   return (
                     <tr key={u.id}>
+                      <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12.5 }}>
+                        {u.codigo_contrato ?? '—'}
+                      </td>
                       <td>
                         <div className="hstack" style={{ gap: 10 }}>
                           <div className="avatar avatar--sm">{obtenerIniciales(u.nombre)}</div>
-                          <span className="row-title">{u.nombre}</span>
+                          <div>
+                            <div className="row-title">{u.nombre}</div>
+                            {u.correo && (
+                              <div className="row-sub" style={{ fontFamily: 'var(--font-mono)' }}>{u.correo}</div>
+                            )}
+                          </div>
                         </div>
                       </td>
-                      <td style={{ fontSize: 13, color: 'var(--text-2)', fontFamily: 'var(--font-mono)' }}>{u.correo}</td>
+                      <td>
+                        {cargo ? (
+                          <div>
+                            <div style={{ fontSize: 13 }}>{cargo.nombre}</div>
+                            <div style={{ fontSize: 11.5, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>{cargo.banda}</div>
+                          </div>
+                        ) : (
+                          <span style={{ fontSize: 12.5, color: 'var(--text-3)', fontStyle: 'italic' }}>Sin cargo</span>
+                        )}
+                      </td>
+                      <td style={{ fontSize: 13 }}>
+                        {u.sede ?? <span style={{ color: 'var(--text-3)' }}>—</span>}
+                        {u.gestion_id && (
+                          <div className="row-sub">{gestionNombre}</div>
+                        )}
+                      </td>
                       <td>
                         <span className={`badge ${badgeRol[u.rol] ?? 'badge--neutral'}`}>{etiquetaRol[u.rol] ?? u.rol}</span>
                       </td>
-                      <td style={{ fontSize: 13 }}>{gestionNombre}</td>
                       <td>
                         <span className={`badge badge--${u.activo ? 'success' : 'neutral'}`}>
                           {u.activo ? 'Activo' : 'Inactivo'}
                         </span>
-                      </td>
-                      <td>
-                        <div className="hstack" style={{ gap: 4 }}>
-                          <button className="btn btn--ghost btn--sm">
-                            <Icono nombre="edit" className="icon icon--sm" />
-                          </button>
-                          <button className="btn btn--ghost btn--sm">
-                            <Icono nombre="moreH" className="icon icon--sm" />
-                          </button>
-                        </div>
                       </td>
                     </tr>
                   )
