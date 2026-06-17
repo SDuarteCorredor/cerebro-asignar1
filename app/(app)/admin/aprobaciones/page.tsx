@@ -45,8 +45,15 @@ export default async function AdminAprobaciones() {
     creado_por_usuario: Array.isArray(a.creado_por_usuario) ? (a.creado_por_usuario[0] ?? null) : a.creado_por_usuario as { id: string; nombre: string } | null,
   }))
 
-  const { count: totalAprobaciones } = await supabase
-    .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
+  const [
+    { count: totalAprobaciones },
+    { count: totalGestiones },
+    { count: totalUsuarios },
+  ] = await Promise.all([
+    supabase.from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision'),
+    supabase.from('gestiones').select('id', { count: 'exact', head: true }).eq('activa', true),
+    supabase.from('usuarios').select('id', { count: 'exact', head: true }),
+  ])
 
   return (
     <>
@@ -60,7 +67,7 @@ export default async function AdminAprobaciones() {
           </div>
         </div>
 
-        <NavAdmin activa="aprobaciones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={0} totalUsuarios={0} />
+        <NavAdmin activa="aprobaciones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={totalGestiones ?? 0} totalUsuarios={totalUsuarios ?? 0} />
 
         <ClienteAprobaciones aprobaciones={aprobaciones ?? []} adminId={sesion.id} />
       </main>

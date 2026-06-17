@@ -245,7 +245,11 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
       setPreview(null)
       router.refresh()
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Error aplicando los cambios')
+      const detalle = e instanceof Error
+        ? e.message
+        : (typeof e === 'object' && e !== null ? JSON.stringify(e, null, 2) : String(e))
+      setError(`Error aplicando los cambios: ${detalle}`)
+      console.error('Detalle del error de import:', e)
     } finally {
       setAplicando(false)
     }
