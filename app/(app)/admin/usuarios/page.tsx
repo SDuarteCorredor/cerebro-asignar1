@@ -36,13 +36,30 @@ export default async function AdminUsuarios() {
     iniciales: obtenerIniciales(perfil.nombre),
   }
 
-  const { data: usuarios } = await supabase
-    .from('usuarios')
-    .select('id, codigo_contrato, nombre, correo, rol, activo, sede, tiene_login, gestion_id, gestion:gestiones(nombre), cargo:cargos(nombre, banda)')
-    .order('nombre')
+  // Queries separadas: más robusto que un select con joins nested
+  const [
+    { data: usuariosRaw, error: errUsr },
+    { data: gestiones },
+    { data: cargos },
+  ] = await Promise.all([
+    supabase.from('usuarios')
+      .select('id, codigo_contrato, nombre, correo, rol, activo, sede, tiene_login, gestion_id, cargo_id')
+      .order('nombre'),
+    supabase.from('gestiones').select('id, nombre'),
+    supabase.from('cargos').select('id, nombre, banda'),
+  ])
+  if (errUsr) console.error('Error cargando usuarios:', errUsr)
 
-  const activos = (usuarios ?? []).filter(u => u.activo).length
-  const conLogin = (usuarios ?? []).filter(u => u.tiene_login).length
+  const mapGestiones = new Map((gestiones ?? []).map(g => [g.id, g.nombre]))
+  const mapCargos = new Map((cargos ?? []).map(c => [c.id, c]))
+  const usuarios = (usuariosRaw ?? []).map(u => ({
+    ...u,
+    gestion_nombre: u.gestion_id ? mapGestiones.get(u.gestion_id) ?? null : null,
+    cargo: u.cargo_id ? mapCargos.get(u.cargo_id) ?? null : null,
+  }))
+
+  const activos = usuarios.filter(u => u.activo).length
+  const conLogin = usuarios.filter(u => u.tiene_login).length
 
   const { count: totalAprobaciones } = await supabase
     .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
@@ -90,11 +107,9 @@ export default async function AdminUsuarios() {
                 </tr>
               </thead>
               <tbody>
-                {(usuarios ?? []).map(u => {
-                  const gestionRaw = u.gestion as { nombre: string }[] | { nombre: string } | null
-                  const gestionNombre = (Array.isArray(gestionRaw) ? (gestionRaw[0] ?? null) : gestionRaw)?.nombre ?? '—'
-                  const cargoRaw = u.cargo as { nombre: string; banda: string }[] | { nombre: string; banda: string } | null
-                  const cargo = Array.isArray(cargoRaw) ? (cargoRaw[0] ?? null) : cargoRaw
+                {usuarios.map(u => {
+                  const gestionNombre = u.gestion_nombre ?? '—'
+                  const cargo = u.cargo
                   return (
                     <tr key={u.id}>
                       <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12.5 }}>
