@@ -38,6 +38,8 @@ export default async function AdminGestiones() {
 
   const { count: totalAprobaciones } = await supabase
     .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
+  const { count: totalUsuarios } = await supabase
+    .from('usuarios').select('id', { count: 'exact', head: true })
 
   return (
     <>
@@ -51,7 +53,7 @@ export default async function AdminGestiones() {
           </div>
         </div>
 
-        <NavAdmin activa="gestiones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={gestiones?.length ?? 0} totalUsuarios={0} />
+        <NavAdmin activa="gestiones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={gestiones?.length ?? 0} totalUsuarios={totalUsuarios ?? 0} />
 
         <div className="filter-row">
           <span style={{ fontSize: 13, color: 'var(--text-3)' }}>Crea, edita y asigna líderes a cada Gestión.</span>

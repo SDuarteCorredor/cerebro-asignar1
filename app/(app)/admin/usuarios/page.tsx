@@ -63,6 +63,8 @@ export default async function AdminUsuarios() {
 
   const { count: totalAprobaciones } = await supabase
     .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
+  const { count: totalGestiones } = await supabase
+    .from('gestiones').select('id', { count: 'exact', head: true }).eq('activa', true)
 
   return (
     <>
@@ -76,7 +78,7 @@ export default async function AdminUsuarios() {
           </div>
         </div>
 
-        <NavAdmin activa="usuarios" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={0} totalUsuarios={usuarios?.length ?? 0} />
+        <NavAdmin activa="usuarios" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={totalGestiones ?? 0} totalUsuarios={usuarios.length} />
 
         <div className="filter-row">
           <span style={{ fontSize: 13, color: 'var(--text-3)' }}>
