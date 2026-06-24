@@ -69,7 +69,7 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ### Sub-etapas
 
-#### ✅ Sub-etapa A — Catálogos y datos base *(completada, pendiente de merge)*
+#### ✅ Sub-etapa A — Catálogos y datos base *(completada)*
 - [x] 13 tablas nuevas en Supabase (catálogos + operativas)
 - [x] Extensión de `usuarios` con `cargo_id`, `sede`, `fecha_ingreso`, `jefe_id`
 - [x] Seed completo importado del piloto (Excel):
@@ -80,6 +80,20 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] Vista del cuestionario completo
 - [x] Vista del catálogo de acciones
 - [x] Entrada en sidebar "Desempeño" con badge "Nuevo"
+
+#### ✅ Sub-etapa A.5 — Importador semanal de colaboradores *(completada)*
+- [x] Lee Excel del software HR de Asignar (Código, Cargo, Email, Celular, CCF, etc.)
+- [x] Identifica personas por código de contrato (columna A)
+- [x] Inferencia automática de sede por CCF + excepciones por código
+- [x] Preview con conteos (nuevos / actualizar / inactivar) antes de aplicar
+- [x] 137 colaboradores activos importados
+
+#### ✅ Sub-etapa A.6 — Editor de usuario individual *(completada)*
+- [x] Pantalla `/admin/usuarios/[id]` con form completo
+- [x] Asignar cargo (con bandas agrupadas) y jefe directo
+- [x] Editar correo, celular, sede, rol, gestión, activo
+- [x] Vista de datos contractuales (solo lectura desde el Excel)
+- [x] Botón de editar en la tabla de usuarios
 
 #### 🔵 Sub-etapa B — Ciclos y plan de evaluación
 - [ ] TH crea un ciclo ("Semestre I 2026", "Anual 2026")
