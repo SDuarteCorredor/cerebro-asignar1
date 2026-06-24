@@ -25,6 +25,11 @@ interface FilaExcel {
   fecha_retiro: string | null
   sede_inferida: string
   cargo_id: string | null  // resuelto con el catálogo
+  // Campos opcionales del nuevo Excel
+  correo: string | null
+  celular: string | null
+  direccion: string | null
+  tipo_contrato: string | null
 }
 
 interface Preview {
@@ -137,6 +142,11 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           fecha_retiro: fechaIso(row['F. Retiro']),
           sede_inferida: inferirSede(codigo, ccf),
           cargo_id: cargo?.id ?? null,
+          // Campos opcionales del nuevo Excel (si no están en el archivo, quedan null)
+          correo: txt(row['Email'] ?? row['Correo']) || null,
+          celular: txt(row['Celular']) || null,
+          direccion: txt(row['Dirección'] ?? row['Direccion']) || null,
+          tipo_contrato: txt(row['Tipo contrato'] ?? row['Tipo de contrato']) || null,
         })
       }
 
@@ -219,6 +229,11 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           departamento: f.departamento,
           ciudad: f.ciudad,
           sede: f.sede_inferida,
+          // Solo incluir campos opcionales si el Excel los trae (no sobreescribir con null si admin los seteo)
+          ...(f.correo ? { correo: f.correo } : {}),
+          ...(f.celular ? { celular: f.celular } : {}),
+          ...(f.direccion ? { direccion: f.direccion } : {}),
+          ...(f.tipo_contrato ? { tipo_contrato: f.tipo_contrato } : {}),
           activo: !f.fecha_retiro,
           tiene_login: false,
         }))
