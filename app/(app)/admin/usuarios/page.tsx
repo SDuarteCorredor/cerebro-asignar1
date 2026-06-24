@@ -106,6 +106,7 @@ export default async function AdminUsuarios() {
                   <th>Sede</th>
                   <th>Rol</th>
                   <th>Estado</th>
+                  <th style={{ width: 60 }} />
                 </tr>
               </thead>
               <tbody>
@@ -151,6 +152,11 @@ export default async function AdminUsuarios() {
                         <span className={`badge badge--${u.activo ? 'success' : 'neutral'}`}>
                           {u.activo ? 'Activo' : 'Inactivo'}
                         </span>
+                      </td>
+                      <td style={{ textAlign: 'right' }}>
+                        <Link href={`/admin/usuarios/${u.id}`} className="btn btn--ghost btn--sm" title="Editar">
+                          <Icono nombre="edit" className="icon icon--sm" />
+                        </Link>
                       </td>
                     </tr>
                   )
