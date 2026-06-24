@@ -35,8 +35,8 @@ export default async function PaginaDashboard() {
 
   const esAdmin = sesion.rol === 'admin'
 
-  // Gestiones con contador de procesos activos
-  const { data: gestiones } = await supabase
+  // 2 queries secuenciales (más amable con conexiones lentas que 5 en paralelo)
+  const { data: gestionesRaw, error: errGest } = await supabase
     .from('gestiones')
     .select(`
       id, nombre, descripcion, icono, color_soft, color_primary, lider_id, activa,
@@ -46,18 +46,35 @@ export default async function PaginaDashboard() {
     .eq('activa', true)
     .eq('procesos.estado', 'activo')
     .order('nombre')
+  if (errGest) console.error('Error gestiones:', errGest)
 
-  // Procesos actualizados recientemente
-  const { data: recientes } = await supabase
+  const { data: recientesRaw, error: errRec } = await supabase
     .from('procesos')
     .select(`
       id, nombre, version, fecha_actualizacion, estado,
       gestion:gestiones(id, nombre, icono, color_soft, color_primary),
-      pasos(cargo_responsable)
+      pasos(cargo_responsable, numero_orden)
     `)
     .eq('estado', 'activo')
     .order('fecha_actualizacion', { ascending: false })
     .limit(5)
+  if (errRec) console.error('Error recientes:', errRec)
+
+  // Normalizar arrays-vs-objeto que devuelve Supabase
+  const gestiones = (gestionesRaw ?? []).map(g => {
+    const liderRaw = g.lider as unknown as { id: string; nombre: string }[] | { id: string; nombre: string } | null
+    const lider = Array.isArray(liderRaw) ? (liderRaw[0] ?? null) : liderRaw
+    const activos = (g.procesos_activos as { count: number }[] | undefined)?.[0]?.count ?? 0
+    return { ...g, lider, procesos_activos_count: activos }
+  })
+  const recientes = (recientesRaw ?? []).map(p => {
+    const gRaw = p.gestion as unknown as { id: string; nombre: string; icono: string; color_soft: string; color_primary: string }[] | { id: string; nombre: string; icono: string; color_soft: string; color_primary: string } | null
+    const gestion = Array.isArray(gRaw) ? (gRaw[0] ?? null) : gRaw
+    const pasos = (p.pasos as { cargo_responsable: string; numero_orden: number }[] | undefined) ?? []
+    pasos.sort((a, b) => a.numero_orden - b.numero_orden)
+    return { ...p, gestion, cargo_principal: pasos[0]?.cargo_responsable ?? '—' }
+  })
+  const errorBD = errGest || errRec
 
   // Stats para admin
   let aprobacionesPendientes = 0
@@ -94,6 +111,17 @@ export default async function PaginaDashboard() {
           <BuscadorHero />
         </div>
 
+        {errorBD && (
+          <div style={{
+            background: 'var(--warning-soft)', border: '1px solid var(--warning)',
+            borderRadius: 10, padding: '12px 16px', marginBottom: 24,
+            color: 'var(--warning-ink)', fontSize: 13.5,
+          }}>
+            <strong>No se pudieron cargar los datos.</strong> La conexión con Supabase está lenta o intermitente.
+            Recarga la página en unos segundos para reintentar.
+          </div>
+        )}
+
         {/* Accesos rápidos Admin */}
         {esAdmin && (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 36 }}>
@@ -120,14 +148,13 @@ export default async function PaginaDashboard() {
         <section style={{ marginBottom: 40 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Todas las Gestiones</h2>
-            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{gestiones?.length ?? 0} gestiones</span>
+            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{gestiones.length} gestiones</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
-            {(gestiones ?? []).map((g) => {
-              const liderRaw = g.lider as unknown as { id: string; nombre: string }[] | { id: string; nombre: string } | null
-              const lider = Array.isArray(liderRaw) ? (liderRaw[0] ?? null) : liderRaw
-              const activos = (g.procesos_activos as { count: number }[])?.[0]?.count ?? 0
+            {gestiones.map((g) => {
+              const lider = g.lider
+              const activos = g.procesos_activos_count
               return (
                 <Link
                   key={g.id}
@@ -148,7 +175,7 @@ export default async function PaginaDashboard() {
                     <span style={{ flex: 1 }} />
                     {lider && (
                       <div className="avatar avatar--sm" title={`Líder: ${lider.nombre}`}>
-                        {lider.nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()}
+                        {lider.nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()}
                       </div>
                     )}
                   </div>
@@ -176,10 +203,9 @@ export default async function PaginaDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(recientes ?? []).map((p) => {
-                    const gRaw = p.gestion as unknown as { id: string; nombre: string; icono: string; color_soft: string; color_primary: string }[] | { id: string; nombre: string; icono: string; color_soft: string; color_primary: string } | null
-                    const g = Array.isArray(gRaw) ? (gRaw[0] ?? null) : gRaw
-                    const cargoPrincipal = (p.pasos as { cargo_responsable: string }[])?.[0]?.cargo_responsable ?? '—'
+                  {recientes.map((p) => {
+                    const g = p.gestion
+                    const cargoPrincipal = p.cargo_principal
                     return (
                       <tr key={p.id} style={{ cursor: 'pointer' }}>
                         <td>
@@ -204,7 +230,7 @@ export default async function PaginaDashboard() {
                       </tr>
                     )
                   })}
-                  {(recientes ?? []).length === 0 && (
+                  {recientes.length === 0 && (
                     <tr>
                       <td colSpan={5} style={{ textAlign: 'center', padding: 40, color: 'var(--text-3)' }}>
                         Aún no hay procesos publicados.

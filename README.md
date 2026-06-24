@@ -24,10 +24,10 @@ La herramienta total de TH: repositorio de procesos, evaluación de competencias
 |---|---|---|
 | 1 | Repositorio de Procesos | ✅ Completada |
 | 2 | Editor completo de procesos | ✅ Completada |
-| **3** | **Desempeño · ECO-Asignar** | 🔄 **En curso (Sub-etapa A completa, falta merge)** |
-| 4 | Documentos adjuntos | ⏳ Pendiente |
+| **3** | **Desempeño · ECO-Asignar** | 🔄 **En curso (Sub-etapa A completa)** |
+| 4 | Deploy en Vercel | ✅ Completada |
 | 5 | Gestión de usuarios y líderes | ⏳ Pendiente |
-| 6 | Deploy en Vercel | ⏳ Pendiente |
+| 6 | Documentos adjuntos en procesos | ⏳ Pendiente |
 | 7 | Políticas y Reglamentos | ⏳ Pendiente |
 | 8 | Onboarding / Acogida Laboral | ⏳ Pendiente |
 | 9 | Entrenamientos y Capacitaciones | ⏳ Pendiente |
@@ -112,33 +112,33 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ---
 
-## 🔵 Etapa 4 — Documentos adjuntos
-*Objetivo: adjuntar PDFs, Word y Excel a cada proceso.*
+## ✅ Etapa 4 — Deploy en Vercel *(completada)*
+*Objetivo: la app disponible en una URL pública para todo el equipo.*
 
-- [ ] Carga de archivos a Supabase Storage
-- [ ] Descarga de documentos desde la página del proceso
-- [ ] Límite de tamaño y validación de tipos
+- [x] Proyecto en Vercel conectado al repo
+- [x] Variables de entorno configuradas
+- [ ] Dominio personalizado (`cerebro.asignar.com.co`)
+- [ ] Mantener Supabase despierto con tráfico real
 
 ---
 
 ## 🔵 Etapa 5 — Gestión de usuarios y líderes
 *Objetivo: el admin gestiona el equipo directamente desde la plataforma.*
 
+- [x] Importador semanal desde Excel del software HR (Etapa 3b)
+- [ ] UI para editar usuario individual (cargo, jefe, sede, correo)
+- [ ] Invitar al sistema (crear auth user con password reset)
 - [ ] Asignar líder a cada gestión
-- [ ] Crear / desactivar colaboradores
-- [ ] Invitar por email
-- [ ] Vista del perfil de cada usuario
-- [ ] Asignar cargo (para que aparezca la banda en Desempeño)
+- [ ] Vista del perfil completo de cada usuario
 
 ---
 
-## 🔵 Etapa 6 — Deploy en Vercel
-*Objetivo: la app disponible en una URL de Asignar SAS.*
+## 🔵 Etapa 6 — Documentos adjuntos en procesos
+*Objetivo: adjuntar PDFs, Word y Excel a cada proceso.*
 
-- [ ] Proyecto en Vercel conectado al repo
-- [ ] Variables de entorno configuradas
-- [ ] Dominio personalizado (`cerebro.asignar.com.co`)
-- [ ] Mantener Supabase despierto con tráfico real
+- [ ] Carga de archivos a Supabase Storage
+- [ ] Descarga de documentos desde la página del proceso
+- [ ] Límite de tamaño y validación de tipos
 
 ---
 
