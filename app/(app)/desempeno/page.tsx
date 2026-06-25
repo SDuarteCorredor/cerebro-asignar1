@@ -32,16 +32,21 @@ export default async function PaginaDesempeno() {
   ])
   const { count: ciclosCount } = await supabase
     .from('ciclos_evaluacion').select('id', { count: 'exact', head: true })
+  const { count: misPendientes } = await supabase
+    .from('plan_evaluacion')
+    .select('id', { count: 'exact', head: true })
+    .eq('evaluador_id', user.id)
+    .eq('estado', 'Pendiente')
 
   const catalogos = [
-    { href: '/desempeno/ciclos', icono: 'history', titulo: 'Ciclos de evaluación', sub: `${ciclosCount ?? 0} ciclos`, desc: 'Crear ciclos, instanciar evaluaciones y asignar evaluadores.' },
-    { href: '/desempeno/competencias', icono: 'target', titulo: 'Modelo de competencias', sub: `${competencias.count ?? 0} competencias · ${bandas.count ?? 0} bandas`, desc: 'Las 8 competencias organizacionales y la matriz de niveles esperados por banda.' },
-    { href: '/desempeno/cuestionario', icono: 'clipboard', titulo: 'Cuestionario', sub: `${items.count ?? 0} ítems`, desc: 'Los ítems con doble redacción (tercera persona y primera persona).' },
-    { href: '/desempeno/acciones', icono: 'bookmark', titulo: 'Acciones de desarrollo', sub: `${acciones.count ?? 0} acciones`, desc: 'Catálogo de acciones por competencia y banda para construir los PDIs.' },
+    { href: '/desempeno/mis-pendientes', icono: 'edit', titulo: 'Mis cuestionarios', sub: `${misPendientes ?? 0} pendientes por responder`, desc: 'Responde los cuestionarios que te asignaron en los ciclos activos.', destacado: (misPendientes ?? 0) > 0 },
+    { href: '/desempeno/ciclos', icono: 'history', titulo: 'Ciclos de evaluación', sub: `${ciclosCount ?? 0} ciclos`, desc: 'Crear ciclos, instanciar evaluaciones y asignar evaluadores.', destacado: false },
+    { href: '/desempeno/competencias', icono: 'target', titulo: 'Modelo de competencias', sub: `${competencias.count ?? 0} competencias · ${bandas.count ?? 0} bandas`, desc: 'Las 8 competencias organizacionales y la matriz de niveles esperados por banda.', destacado: false },
+    { href: '/desempeno/cuestionario', icono: 'clipboard', titulo: 'Cuestionario', sub: `${items.count ?? 0} ítems`, desc: 'Los ítems con doble redacción (tercera persona y primera persona).', destacado: false },
+    { href: '/desempeno/acciones', icono: 'bookmark', titulo: 'Acciones de desarrollo', sub: `${acciones.count ?? 0} acciones`, desc: 'Catálogo de acciones por competencia y banda para construir los PDIs.', destacado: false },
   ]
 
   const proximos = [
-    { icono: 'edit', titulo: 'Captura de respuestas', desc: 'Responder cuestionarios pendientes (360° y 270°).' },
     { icono: 'chart', titulo: 'Reporte individual', desc: 'Radar actual vs esperado, brechas y TOP 3 de acciones.' },
     { icono: 'paper', titulo: 'Plan de Desarrollo Individual', desc: 'PDI con firmas y seguimiento mensual.' },
   ]
@@ -66,17 +71,25 @@ export default async function PaginaDesempeno() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
             {catalogos.map(c => (
-              <Link key={c.href} href={c.href} className="card" style={{ padding: 22, transition: 'border-color 120ms, transform 120ms', display: 'block' }}>
+              <Link key={c.href} href={c.href} className="card" style={{
+                padding: 22, transition: 'border-color 120ms, transform 120ms', display: 'block',
+                ...(c.destacado ? { borderColor: 'var(--warning)', background: 'var(--warning-soft)' } : {}),
+              }}>
                 <div className="hstack" style={{ gap: 10, marginBottom: 12 }}>
-                  <div style={{ width: 36, height: 36, borderRadius: 10, background: 'var(--primary-soft)', color: 'var(--primary-ink)', display: 'grid', placeItems: 'center' }}>
+                  <div style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    background: c.destacado ? 'var(--warning)' : 'var(--primary-soft)',
+                    color: c.destacado ? '#fff' : 'var(--primary-ink)',
+                    display: 'grid', placeItems: 'center',
+                  }}>
                     <Icono nombre={c.icono} className="icon" />
                   </div>
-                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'var(--text-3)' }}>{c.sub}</div>
+                  <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', color: c.destacado ? 'var(--warning-ink)' : 'var(--text-3)' }}>{c.sub}</div>
                 </div>
                 <h3 style={{ margin: '0 0 6px', fontSize: 16, fontWeight: 700, letterSpacing: '-0.01em' }}>{c.titulo}</h3>
-                <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-3)', lineHeight: 1.5 }}>{c.desc}</p>
-                <div className="hstack" style={{ marginTop: 14, color: 'var(--primary)', fontSize: 13, fontWeight: 600 }}>
-                  Abrir <Icono nombre="arrowRight" className="icon icon--sm" />
+                <p style={{ margin: 0, fontSize: 13.5, color: c.destacado ? 'var(--warning-ink)' : 'var(--text-3)', lineHeight: 1.5 }}>{c.desc}</p>
+                <div className="hstack" style={{ marginTop: 14, color: c.destacado ? 'var(--warning-ink)' : 'var(--primary)', fontSize: 13, fontWeight: 600 }}>
+                  {c.destacado ? 'Responder ahora' : 'Abrir'} <Icono nombre="arrowRight" className="icon icon--sm" />
                 </div>
               </Link>
             ))}
