@@ -95,12 +95,18 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] Vista de datos contractuales (solo lectura desde el Excel)
 - [x] Botón de editar en la tabla de usuarios
 
-#### 🔵 Sub-etapa B — Ciclos y plan de evaluación
-- [ ] TH crea un ciclo ("Semestre I 2026", "Anual 2026")
-- [ ] Instanciación automática de `evaluaciones` por colaborador
-- [ ] Pantalla para asignar pares/reportes específicos por evaluado
-- [ ] Validación de modalidad según banda
-- [ ] Dashboard de cobertura del ciclo (planificadas / respondidas)
+#### ✅ Sub-etapa A.7 — Asignación masiva desde Excel *(completada)*
+- [x] 128 jefes asignados por matching de nombre desde el Excel
+- [x] 132 gestiones asignadas (creadas 12 nuevas: Estratégica, TI, Tesorería, Contabilidad, etc.)
+- [x] 27 líderes promovidos automáticamente desde la columna "Líder de gestión"
+
+#### ✅ Sub-etapa B — Ciclos y plan de evaluación *(completada)*
+- [x] TH crea un ciclo con nombre, fechas y bandas que aplican
+- [x] Al guardar: instanciación automática de evaluaciones por colaborador
+- [x] Auto-asignación de jefe inmediato y autoevaluación
+- [x] Pantalla de detalle con tabla, filtros y modal de asignación de pares/reportes
+- [x] Validación de modalidad según banda (360° / 270°)
+- [x] KPIs de cobertura del ciclo
 
 #### 🔵 Sub-etapa C — Captura de cuestionarios
 - [ ] Lista de pendientes por evaluador
