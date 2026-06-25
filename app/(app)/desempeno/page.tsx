@@ -30,16 +30,17 @@ export default async function PaginaDesempeno() {
     supabase.from('items_cuestionario').select('id', { count: 'exact', head: true }),
     supabase.from('acciones_desarrollo').select('id', { count: 'exact', head: true }),
   ])
+  const { count: ciclosCount } = await supabase
+    .from('ciclos_evaluacion').select('id', { count: 'exact', head: true })
 
   const catalogos = [
+    { href: '/desempeno/ciclos', icono: 'history', titulo: 'Ciclos de evaluación', sub: `${ciclosCount ?? 0} ciclos`, desc: 'Crear ciclos, instanciar evaluaciones y asignar evaluadores.' },
     { href: '/desempeno/competencias', icono: 'target', titulo: 'Modelo de competencias', sub: `${competencias.count ?? 0} competencias · ${bandas.count ?? 0} bandas`, desc: 'Las 8 competencias organizacionales y la matriz de niveles esperados por banda.' },
     { href: '/desempeno/cuestionario', icono: 'clipboard', titulo: 'Cuestionario', sub: `${items.count ?? 0} ítems`, desc: 'Los ítems con doble redacción (tercera persona y primera persona).' },
     { href: '/desempeno/acciones', icono: 'bookmark', titulo: 'Acciones de desarrollo', sub: `${acciones.count ?? 0} acciones`, desc: 'Catálogo de acciones por competencia y banda para construir los PDIs.' },
   ]
 
   const proximos = [
-    { icono: 'history', titulo: 'Ciclos de evaluación', desc: 'Crear y administrar ciclos semestrales y anuales.' },
-    { icono: 'users', titulo: 'Plan de evaluación', desc: 'Asignar pares y reportes a cada evaluado.' },
     { icono: 'edit', titulo: 'Captura de respuestas', desc: 'Responder cuestionarios pendientes (360° y 270°).' },
     { icono: 'chart', titulo: 'Reporte individual', desc: 'Radar actual vs esperado, brechas y TOP 3 de acciones.' },
     { icono: 'paper', titulo: 'Plan de Desarrollo Individual', desc: 'PDI con firmas y seguimiento mensual.' },
@@ -63,7 +64,7 @@ export default async function PaginaDesempeno() {
             <div className="page__eyebrow" style={{ margin: 0 }}>Catálogos · Etapa A</div>
             <span style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Configuración del modelo</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14 }}>
             {catalogos.map(c => (
               <Link key={c.href} href={c.href} className="card" style={{ padding: 22, transition: 'border-color 120ms, transform 120ms', display: 'block' }}>
                 <div className="hstack" style={{ gap: 10, marginBottom: 12 }}>
