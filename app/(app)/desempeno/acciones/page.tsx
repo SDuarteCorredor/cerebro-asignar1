@@ -1,12 +1,7 @@
-import { redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 type Accion = {
   id: string
@@ -47,19 +42,8 @@ const esfuerzoColor: Record<string, string> = {
 }
 
 export default async function PaginaAcciones() {
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: perfil.rol as Rol, gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const [{ data: acciones }, { data: competencias }] = await Promise.all([
     supabase.from('acciones_desarrollo').select('*').eq('activo', true).order('id'),
@@ -101,20 +85,20 @@ export default async function PaginaAcciones() {
                 const tc = tipoColor[a.tipo] ?? { bg: 'var(--surface-sunken)', fg: 'var(--text-2)' }
                 return (
                   <tr key={a.id}>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 13 }}>{a.id}</td>
+                    <td className="text-mono font-semibold text-sm">{a.id}</td>
                     <td>
                       <div className="row-title">{a.nombre}</div>
                       <div className="row-sub">
                         {a.competencia} · {compNombre(a.competencia)}
                       </div>
-                      <div style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 4, lineHeight: 1.4 }}>{a.descripcion}</div>
+                      <div className="text-xs text-muted" style={{ marginTop: 4, lineHeight: 1.4 }}>{a.descripcion}</div>
                     </td>
                     <td>
                       <span className="badge badge--no-dot" style={{ background: tc.bg, color: tc.fg, fontSize: 11.5 }}>
                         {a.tipo}
                       </span>
                     </td>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: 'var(--text-2)' }}>
+                    <td className="text-mono text-sm text-2">
                       {a.banda_min}–{a.banda_max}
                     </td>
                     <td>
@@ -127,7 +111,7 @@ export default async function PaginaAcciones() {
                         {a.esfuerzo_th}
                       </span>
                     </td>
-                    <td style={{ fontSize: 12.5, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>{a.duracion ?? '—'}</td>
+                    <td className="text-xs text-muted text-mono">{a.duracion ?? '—'}</td>
                   </tr>
                 )
               })}

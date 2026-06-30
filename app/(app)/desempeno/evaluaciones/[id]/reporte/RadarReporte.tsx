@@ -21,7 +21,7 @@ export default function RadarReporte({ data }: { data: DatoRadar[] }) {
           <Radar name="Actual" dataKey="actual" stroke="var(--primary)" fill="var(--primary)" fillOpacity={0.35} />
           <Tooltip
             contentStyle={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 8, fontSize: 12 }}
-            formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : String(v ?? '—'))}
+            formatter={((v: unknown) => (typeof v === 'number' ? v.toFixed(2) : String(v ?? '—'))) as never}
           />
           <Legend wrapperStyle={{ display: 'none' }} />
         </RadarChart>

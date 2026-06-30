@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Icono from './Icono'
+import { useShell } from './AppShell'
 import type { SesionUsuario } from '@/types'
 import { crearClienteNavegador } from '@/lib/supabase/client'
 
@@ -19,6 +20,7 @@ interface TopbarProps {
 
 export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: TopbarProps) {
   const router = useRouter()
+  const { openSidebar } = useShell()
   const supabase = crearClienteNavegador()
 
   async function cerrarSesion() {
@@ -34,13 +36,17 @@ export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: To
 
   return (
     <header className="topbar">
+      <button className="topbar__menu-btn" onClick={openSidebar} aria-label="Abrir menú">
+        <Icono nombre="menu" className="icon" />
+      </button>
+
       <nav className="topbar__breadcrumb">
-        <Link href="/dashboard" className="topbar__breadcrumb-item" style={{ color: 'var(--text-3)' }}>
+        <Link href="/dashboard" className="topbar__breadcrumb-item hide-mobile" style={{ color: 'var(--text-3)' }}>
           Inicio
         </Link>
         {migas.map((m, i) => (
-          <span key={i} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Icono nombre="chevronRight" className="icon icon--sm" style={{ color: 'var(--text-muted)' }} />
+          <span key={i} className={i < migas.length - 1 ? 'hide-mobile' : ''} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Icono nombre="chevronRight" className="icon icon--sm hide-mobile" style={{ color: 'var(--text-muted)' }} />
             {m.href ? (
               <Link href={m.href} className="topbar__breadcrumb-item">{m.etiqueta}</Link>
             ) : (

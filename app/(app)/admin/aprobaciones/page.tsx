@@ -1,28 +1,12 @@
-import { redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesionAdmin } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
 import ClienteAprobaciones from './ClienteAprobaciones'
-import type { SesionUsuario } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
 
 export default async function AdminAprobaciones() {
+  const sesion = await obtenerSesionAdmin()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil || perfil.rol !== 'admin') redirect('/dashboard')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: 'admin', gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const { data: aprobacionesRaw } = await supabase
     .from('procesos')

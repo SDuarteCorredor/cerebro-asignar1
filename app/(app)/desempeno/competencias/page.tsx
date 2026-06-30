@@ -1,31 +1,15 @@
-import { redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 type Banda = { codigo: string; nombre: string; descripcion: string; modalidad: string; orden: number; tiene_personal_a_cargo: boolean }
 type Competencia = { codigo: string; nombre: string; tipo: string; definicion: string; aplica_a_bandas: string; orden: number }
 type Matriz = { banda: string; competencia: string; nivel: number }
 
 export default async function PaginaCompetencias() {
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: perfil.rol as Rol, gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const [{ data: bandas }, { data: competencias }, { data: matriz }] = await Promise.all([
     supabase.from('bandas').select('*').order('orden'),
@@ -64,7 +48,7 @@ export default async function PaginaCompetencias() {
         <section className="card card--table" style={{ marginBottom: 28, overflow: 'hidden' }}>
           <div style={{ padding: '20px 22px 12px', borderBottom: '1px solid var(--divider)' }}>
             <div className="page__eyebrow" style={{ marginBottom: 4 }}>Niveles esperados</div>
-            <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Matriz banda × competencia</h2>
+            <h2 className="section-title" style={{ fontSize: 16 }}>Matriz banda × competencia</h2>
           </div>
           <div className="table-scroll">
             <table className="table table--in-card">
@@ -126,21 +110,20 @@ export default async function PaginaCompetencias() {
         {/* Competencias detalle */}
         <section style={{ marginBottom: 28 }}>
           <div className="page__eyebrow" style={{ marginBottom: 14 }}>Definiciones</div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          <div className="grid-2col">
             {Cs.map(c => (
-              <div key={c.codigo} className="card" style={{ padding: 18 }}>
+              <div key={c.codigo} className="card card--padded-sm">
                 <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
-                  <div style={{
-                    width: 32, height: 32, borderRadius: 8,
-                    background: c.tipo === 'Gerencial' ? 'oklch(0.95 0.05 280)' : 'var(--primary-soft)',
-                    color: c.tipo === 'Gerencial' ? 'oklch(0.35 0.10 280)' : 'var(--primary-ink)',
-                    display: 'grid', placeItems: 'center', fontWeight: 700, fontFamily: 'var(--font-mono)', fontSize: 13,
+                  <div className="icon-circle text-mono font-semibold" style={{
+                    width: 32, height: 32, borderRadius: 8, fontSize: 13,
+                    background: c.tipo === 'Gerencial' ? 'oklch(0.95 0.05 280)' : undefined,
+                    color: c.tipo === 'Gerencial' ? 'oklch(0.35 0.10 280)' : undefined,
                   }}>{c.codigo}</div>
                   <strong style={{ fontSize: 14.5 }}>{c.nombre}</strong>
                   <span className="badge badge--neutral badge--no-dot" style={{ marginLeft: 'auto', fontSize: 11 }}>{c.tipo}</span>
                 </div>
-                <p style={{ margin: '4px 0 8px', fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5 }}>{c.definicion}</p>
-                <div style={{ fontSize: 11.5, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>Aplica a {c.aplica_a_bandas}</div>
+                <p className="text-sm text-2" style={{ margin: '4px 0 8px', lineHeight: 1.5 }}>{c.definicion}</p>
+                <div className="text-xs text-muted text-mono">Aplica a {c.aplica_a_bandas}</div>
               </div>
             ))}
           </div>
@@ -162,11 +145,11 @@ export default async function PaginaCompetencias() {
               <tbody>
                 {Bs.map(b => (
                   <tr key={b.codigo}>
-                    <td style={{ fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{b.codigo}</td>
+                    <td className="font-semibold text-mono">{b.codigo}</td>
                     <td className="row-title">{b.nombre}</td>
-                    <td style={{ color: 'var(--text-3)', fontSize: 13 }}>{b.descripcion}</td>
+                    <td className="text-muted text-sm">{b.descripcion}</td>
                     <td style={{ textAlign: 'center' }}>
-                      <span className="badge badge--neutral badge--no-dot" style={{ fontFamily: 'var(--font-mono)' }}>
+                      <span className="badge badge--neutral badge--no-dot text-mono">
                         <Icono nombre="target" className="icon icon--sm" /> {b.modalidad}
                       </span>
                     </td>

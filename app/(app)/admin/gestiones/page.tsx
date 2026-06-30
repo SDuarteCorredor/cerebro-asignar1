@@ -1,30 +1,14 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesionAdmin, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
 import IconoGestion from '@/components/app/IconoGestion'
 import Icono from '@/components/app/Icono'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
 
 export default async function AdminGestiones() {
+  const sesion = await obtenerSesionAdmin()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil || perfil.rol !== 'admin') redirect('/dashboard')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: 'admin', gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const { data: gestiones } = await supabase
     .from('gestiones')
@@ -56,7 +40,7 @@ export default async function AdminGestiones() {
         <NavAdmin activa="gestiones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={gestiones?.length ?? 0} totalUsuarios={totalUsuarios ?? 0} />
 
         <div className="filter-row">
-          <span style={{ fontSize: 13, color: 'var(--text-3)' }}>Crea, edita y asigna líderes a cada Gestión.</span>
+          <span className="text-sm text-muted">Crea, edita y asigna líderes a cada Gestión.</span>
           <span className="spacer" />
           <button className="btn btn--primary btn--sm">
             <Icono nombre="plus" className="icon icon--sm" /> Nueva Gestión
@@ -95,13 +79,13 @@ export default async function AdminGestiones() {
                         {lider ? (
                           <div className="hstack" style={{ gap: 8 }}>
                             <div className="avatar avatar--sm">{obtenerIniciales(lider.nombre)}</div>
-                            <span style={{ fontSize: 13 }}>{lider.nombre}</span>
+                            <span className="text-sm">{lider.nombre}</span>
                           </div>
                         ) : (
-                          <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Sin líder</span>
+                          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Sin líder</span>
                         )}
                       </td>
-                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{activos}</td>
+                      <td className="tabular-nums font-semibold" style={{ textAlign: 'right' }}>{activos}</td>
                       <td>
                         <span className={`badge badge--${g.activa ? 'success' : 'neutral'}`}>
                           {g.activa ? 'Activa' : 'Inactiva'}

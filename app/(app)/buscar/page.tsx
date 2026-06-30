@@ -1,29 +1,12 @@
-import { redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import ClienteBusqueda from './ClienteBusqueda'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
 
 export default async function PaginaBusqueda({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
   const { q } = await searchParams
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: perfil.rol as Rol, gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   // Cargar todos los procesos visibles con sus pasos y gestión
   const puedeVerBorradores = sesion.rol !== 'colaborador'

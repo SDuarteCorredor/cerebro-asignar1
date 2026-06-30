@@ -1,29 +1,13 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import IconoGestion from '@/components/app/IconoGestion'
 import Icono from '@/components/app/Icono'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
 
 export default async function PaginaGestiones() {
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: perfil.rol as Rol, gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const { data: gestiones } = await supabase
     .from('gestiones')

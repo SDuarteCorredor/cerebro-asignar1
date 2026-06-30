@@ -265,7 +265,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
               <label className="field__label">Nombre del proceso</label>
               <input className="ca-input" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Selección de Personal" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 120px', gap: 14 }}>
+            <div className="grid-3col" style={{ gap: 14 }}>
               <div className="field">
                 <label className="field__label">Gestión</label>
                 <select className="ca-select" value={gestionId} onChange={e => setGestionId(e.target.value)}>
@@ -302,7 +302,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             <p style={{ margin: '0 0 14px', fontSize: 13, color: 'var(--text-3)' }}>
               En Servicio y Programación puedes documentar el proceso general o un proceso específico por cliente.
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+            <div className="tipo-selector">
               <button type="button" onClick={() => setEsCliente(false)}
                 className={`tipo-opcion${!esCliente ? ' is-active' : ''}`}>
                 <span className="tipo-opcion__radio" />
@@ -493,7 +493,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
           </label>
 
           {documentos.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 14 }}>
+            <div className="grid-2col" style={{ gap: 8, marginTop: 14 }}>
               {documentos.map((d, i) => (
                 <div key={i} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: 10, border: '1px solid var(--border)', borderRadius: 8 }}>
                   <IconoArchivo tipo={d.tipo_archivo} />

@@ -1,14 +1,9 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesionAdmin, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
 import Icono from '@/components/app/Icono'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
 
 const badgeRol: Record<string, string> = {
   admin: 'badge--primary',
@@ -22,19 +17,8 @@ const etiquetaRol: Record<string, string> = {
 }
 
 export default async function AdminUsuarios() {
+  const sesion = await obtenerSesionAdmin()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil || perfil.rol !== 'admin') redirect('/dashboard')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: 'admin', gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   // Queries separadas: más robusto que un select con joins nested
   const [
