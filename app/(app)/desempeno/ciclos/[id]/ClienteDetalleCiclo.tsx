@@ -300,6 +300,9 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
                             <Icono nombre="plus" className="icon icon--sm" /> Reporte
                           </button>
                         )}
+                        <Link href={`/desempeno/evaluaciones/${ev.id}/reporte`} className="btn btn--ghost btn--sm" title="Ver reporte">
+                          <Icono nombre="chart" className="icon icon--sm" />
+                        </Link>
                       </div>
                     </td>
                   </tr>
