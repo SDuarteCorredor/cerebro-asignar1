@@ -3,7 +3,12 @@ import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
-import RadarReporte from './RadarReporte'
+import dynamic from 'next/dynamic'
+
+const RadarReporte = dynamic(() => import('./RadarReporte'), {
+  loading: () => <div style={{ width: '100%', height: 360, display: 'grid', placeItems: 'center', color: 'var(--text-3)', fontSize: 13 }}>Cargando gráfico…</div>,
+  ssr: false,
+})
 import { calcularReporte, calcularTop3Acciones, type Plan, type Item, type Respuesta, type Ponderacion, type NivelEsperado, type Accion, type Modalidad, type Prioridad } from '@/lib/desempeno/calculo'
 import type { SesionUsuario, Rol } from '@/types'
 
