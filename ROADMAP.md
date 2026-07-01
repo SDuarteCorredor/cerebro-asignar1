@@ -18,7 +18,7 @@
 |---|---|---|
 | 1 | Repositorio de Procesos | Completada |
 | 2 | Editor completo de procesos | Completada |
-| **3** | **Desempeño - ECO-Asignar** | **En curso (Sub-etapa E en progreso)** |
+| **3** | **Desempeño - ECO-Asignar** | **Completada** |
 | 4 | Deploy en Vercel | Completada (parcial) |
 | 5 | Gestión de usuarios y líderes | Pendiente |
 | 6 | Documentos adjuntos en procesos | Pendiente |
@@ -126,13 +126,13 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] TOP 3 de acciones recomendadas con diversidad por competencia
 - [x] Alerta automática si líder con promedio general < 4.0
 
-### Sub-etapa E — PDI y seguimiento | Asignado: `Claude-Simon`
+### Sub-etapa E — PDI y seguimiento (completada) | Claude-Simon
 
 - [x] Generación del borrador de PDI desde TOP 3
 - [x] Selección manual de hasta 3 acciones del catálogo
-- [ ] Firma digital del colaborador, jefe y TH
-- [ ] Seguimiento mensual del avance de cada acción
-- [ ] Dashboard de cumplimiento de PDIs vigentes
+- [x] Firma digital del colaborador, jefe y TH
+- [x] Seguimiento mensual del avance de cada acción
+- [x] Dashboard de cumplimiento de PDIs vigentes
 
 ---
 

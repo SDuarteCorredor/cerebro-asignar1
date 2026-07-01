@@ -126,3 +126,82 @@ export async function enviarPdiAFirma(pdiId: string, evaluacionId: string) {
   revalidatePath(`/desempeno/evaluaciones/${evaluacionId}/pdi`)
   return { ok: true }
 }
+
+export type TipoFirma = 'colaborador' | 'jefe' | 'th'
+
+export async function firmarPdi(args: { pdiId: string; evaluacionId: string; tipo: TipoFirma }) {
+  const { pdiId, evaluacionId, tipo } = args
+  const supabase = await crearClienteServidor()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Sesión requerida' }
+
+  const { data: perfil } = await supabase
+    .from('usuarios').select('id, nombre, rol').eq('id', user.id).single()
+  if (!perfil) return { error: 'Perfil no encontrado' }
+
+  const { data: pdi } = await supabase
+    .from('pdi').select('id, evaluacion_id, estado, firma_colaborador, firma_jefe, firma_th')
+    .eq('id', pdiId).single()
+  if (!pdi) return { error: 'PDI no encontrado' }
+  if (pdi.estado !== 'en_firma' && pdi.estado !== 'vigente') return { error: 'El PDI no está en firma' }
+
+  const { data: evaluacion } = await supabase
+    .from('evaluaciones').select('colaborador_id').eq('id', pdi.evaluacion_id).single()
+  if (!evaluacion) return { error: 'Evaluación no encontrada' }
+  const { data: colab } = await supabase
+    .from('usuarios').select('id, jefe_id').eq('id', evaluacion.colaborador_id).single()
+  if (!colab) return { error: 'Colaborador no encontrado' }
+
+  if (tipo === 'colaborador' && perfil.id !== colab.id) return { error: 'Solo el colaborador puede firmar como colaborador' }
+  if (tipo === 'jefe' && perfil.id !== colab.jefe_id) return { error: 'Solo el jefe directo puede firmar como jefe' }
+  if (tipo === 'th' && perfil.rol !== 'admin') return { error: 'Solo TH (admin) puede firmar como TH' }
+
+  const marca = `${perfil.nombre} — ${new Date().toISOString()}`
+  const patch: Record<string, unknown> = { updated_at: new Date().toISOString() }
+  if (tipo === 'colaborador') patch.firma_colaborador = marca
+  if (tipo === 'jefe') patch.firma_jefe = marca
+  if (tipo === 'th') patch.firma_th = marca
+
+  const firmaColab = tipo === 'colaborador' ? marca : pdi.firma_colaborador
+  const firmaJefe = tipo === 'jefe' ? marca : pdi.firma_jefe
+  const firmaTh = tipo === 'th' ? marca : pdi.firma_th
+  if (firmaColab && firmaJefe && firmaTh) {
+    patch.estado = 'vigente'
+    patch.fecha_firma_completa = new Date().toISOString()
+  }
+
+  const { error } = await supabase.from('pdi').update(patch).eq('id', pdiId)
+  if (error) return { error: error.message }
+  revalidatePath(`/desempeno/evaluaciones/${evaluacionId}/pdi`)
+  return { ok: true }
+}
+
+export async function registrarSeguimiento(args: {
+  pdiAccionId: string
+  evaluacionId: string
+  fechaCorte: string
+  avancePct: number
+  comentario: string
+}) {
+  const supabase = await crearClienteServidor()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Sesión requerida' }
+
+  const { error } = await supabase.from('pdi_seguimiento_mensual').insert({
+    pdi_accion_id: args.pdiAccionId,
+    fecha_corte: args.fechaCorte,
+    avance_pct: args.avancePct,
+    comentario: args.comentario || null,
+    registrado_por: user.id,
+  })
+  if (error) return { error: error.message }
+
+  if (args.avancePct === 100) {
+    await supabase.from('pdi_acciones').update({ estado: 'Completada' }).eq('id', args.pdiAccionId)
+  } else if (args.avancePct > 0) {
+    await supabase.from('pdi_acciones').update({ estado: 'En curso' }).eq('id', args.pdiAccionId)
+  }
+
+  revalidatePath(`/desempeno/evaluaciones/${args.evaluacionId}/pdi`)
+  return { ok: true }
+}
