@@ -140,9 +140,12 @@ export default async function PaginaReporteEvaluacion({ params }: { params: Prom
         { etiqueta: 'Reporte' },
       ]} />
       <main className="page fade-up">
-        <div style={{ marginBottom: 20 }}>
+        <div className="hstack" style={{ marginBottom: 20, justifyContent: 'space-between' }}>
           <Link href={`/desempeno/ciclos/${ciclo?.id}`} className="btn btn--ghost btn--sm">
             <Icono nombre="chevronRight" className="icon icon--sm" style={{ transform: 'rotate(180deg)' }} /> Volver al ciclo
+          </Link>
+          <Link href={`/desempeno/evaluaciones/${id}/pdi`} className="btn btn--primary btn--sm">
+            Ver / crear PDI
           </Link>
         </div>
 

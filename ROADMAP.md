@@ -128,8 +128,8 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ### Sub-etapa E — PDI y seguimiento | Asignado: `Claude-Simon`
 
-- [~] Generación del borrador de PDI desde TOP 3
-- [ ] Selección manual de hasta 3 acciones del catálogo
+- [x] Generación del borrador de PDI desde TOP 3
+- [x] Selección manual de hasta 3 acciones del catálogo
 - [ ] Firma digital del colaborador, jefe y TH
 - [ ] Seguimiento mensual del avance de cada acción
 - [ ] Dashboard de cumplimiento de PDIs vigentes
