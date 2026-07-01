@@ -18,7 +18,7 @@
 |---|---|---|
 | 1 | Repositorio de Procesos | Completada |
 | 2 | Editor completo de procesos | Completada |
-| **3** | **Desempeño - ECO-Asignar** | **En curso (Sub-etapa D pendiente)** |
+| **3** | **Desempeño - ECO-Asignar** | **En curso (Sub-etapa E en progreso)** |
 | 4 | Deploy en Vercel | Completada (parcial) |
 | 5 | Gestión de usuarios y líderes | Pendiente |
 | 6 | Documentos adjuntos en procesos | Pendiente |
@@ -117,19 +117,19 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] Confidencialidad: RLS + mensaje al evaluador
 - [x] Guardado parcial + barra de progreso sticky
 
-### Sub-etapa D — Cálculo y reporte individual | Asignado: `Simon`
+### Sub-etapa D — Cálculo y reporte individual (completada) | Claude-Simon
 
-- [ ] Motor de cálculo con promedios simples y ponderados por fuente
-- [ ] Redistribución de pesos cuando una fuente no tiene respuestas
-- [ ] Cálculo de brechas vs matriz de niveles esperados
-- [ ] Reporte individual con radar chart actual vs esperado
-- [ ] TOP 3 de acciones recomendadas con diversidad por competencia
-- [ ] Alerta automática si líder con promedio general < 4.0
+- [x] Motor de cálculo con promedios simples y ponderados por fuente
+- [x] Redistribución de pesos cuando una fuente no tiene respuestas
+- [x] Cálculo de brechas vs matriz de niveles esperados
+- [x] Reporte individual con radar chart actual vs esperado
+- [x] TOP 3 de acciones recomendadas con diversidad por competencia
+- [x] Alerta automática si líder con promedio general < 4.0
 
-### Sub-etapa E — PDI y seguimiento | Asignado: ``
+### Sub-etapa E — PDI y seguimiento | Asignado: `Claude-Simon`
 
-- [ ] Generación del borrador de PDI desde TOP 3
-- [ ] Selección manual de hasta 3 acciones del catálogo
+- [x] Generación del borrador de PDI desde TOP 3
+- [x] Selección manual de hasta 3 acciones del catálogo
 - [ ] Firma digital del colaborador, jefe y TH
 - [ ] Seguimiento mensual del avance de cada acción
 - [ ] Dashboard de cumplimiento de PDIs vigentes
