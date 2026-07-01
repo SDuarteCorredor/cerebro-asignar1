@@ -21,19 +21,19 @@ export default async function PaginaDesempeno() {
     .select('id', { count: 'exact', head: true })
     .eq('evaluador_id', sesion.id)
     .eq('estado', 'Pendiente')
+  const { count: pdisCount } = await supabase
+    .from('pdi').select('id', { count: 'exact', head: true })
 
   const catalogos = [
     { href: '/desempeno/mis-pendientes', icono: 'edit', titulo: 'Mis cuestionarios', sub: `${misPendientes ?? 0} pendientes por responder`, desc: 'Responde los cuestionarios que te asignaron en los ciclos activos.', destacado: (misPendientes ?? 0) > 0 },
     { href: '/desempeno/ciclos', icono: 'history', titulo: 'Ciclos de evaluación', sub: `${ciclosCount ?? 0} ciclos`, desc: 'Crear ciclos, instanciar evaluaciones y asignar evaluadores.', destacado: false },
+    { href: '/desempeno/pdis', icono: 'paper', titulo: 'Planes de desarrollo', sub: `${pdisCount ?? 0} PDIs`, desc: 'Cumplimiento de PDIs vigentes, firmas y seguimiento mensual.', destacado: false },
     { href: '/desempeno/competencias', icono: 'target', titulo: 'Modelo de competencias', sub: `${competencias.count ?? 0} competencias · ${bandas.count ?? 0} bandas`, desc: 'Las 8 competencias organizacionales y la matriz de niveles esperados por banda.', destacado: false },
     { href: '/desempeno/cuestionario', icono: 'clipboard', titulo: 'Cuestionario', sub: `${items.count ?? 0} ítems`, desc: 'Los ítems con doble redacción (tercera persona y primera persona).', destacado: false },
     { href: '/desempeno/acciones', icono: 'bookmark', titulo: 'Acciones de desarrollo', sub: `${acciones.count ?? 0} acciones`, desc: 'Catálogo de acciones por competencia y banda para construir los PDIs.', destacado: false },
   ]
 
-  const proximos = [
-    { icono: 'chart', titulo: 'Reporte individual', desc: 'Radar actual vs esperado, brechas y TOP 3 de acciones.' },
-    { icono: 'paper', titulo: 'Plan de Desarrollo Individual', desc: 'PDI con firmas y seguimiento mensual.' },
-  ]
+  const proximos: { icono: string; titulo: string; desc: string }[] = []
 
   return (
     <>
@@ -75,21 +75,23 @@ export default async function PaginaDesempeno() {
           </div>
         </section>
 
-        <section>
-          <div className="page__eyebrow" style={{ marginBottom: 14 }}>Próximas etapas</div>
-          <div className="grid-2col">
-            {proximos.map(p => (
-              <div key={p.titulo} className="card card--padded-sm" style={{ opacity: 0.7 }}>
-                <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
-                  <Icono nombre={p.icono} className="icon text-muted" />
-                  <strong style={{ fontSize: 14 }}>{p.titulo}</strong>
-                  <span className="nav-item__pill" style={{ marginLeft: 'auto' }}>Pronto</span>
+        {proximos.length > 0 && (
+          <section>
+            <div className="page__eyebrow" style={{ marginBottom: 14 }}>Próximas etapas</div>
+            <div className="grid-2col">
+              {proximos.map(p => (
+                <div key={p.titulo} className="card card--padded-sm" style={{ opacity: 0.7 }}>
+                  <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
+                    <Icono nombre={p.icono} className="icon text-muted" />
+                    <strong style={{ fontSize: 14 }}>{p.titulo}</strong>
+                    <span className="nav-item__pill" style={{ marginLeft: 'auto' }}>Pronto</span>
+                  </div>
+                  <p className="text-muted text-sm" style={{ margin: 0, lineHeight: 1.4 }}>{p.desc}</p>
                 </div>
-                <p className="text-muted text-sm" style={{ margin: 0, lineHeight: 1.4 }}>{p.desc}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </>
   )

@@ -6,6 +6,9 @@ import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
 import { BotonGenerarPdi, BotonEnviarAFirma } from './BotonesPdi'
 import EditorAccionPdi from './EditorAccionPdi'
+import PanelFirmas from './PanelFirmas'
+import Seguimiento from './Seguimiento'
+import type { TipoFirma } from './acciones'
 
 const ORDEN_BANDA = ['B1', 'B2', 'B3', 'B4', 'B5']
 
@@ -96,13 +99,15 @@ export default async function PaginaPdi({ params }: { params: Promise<{ id: stri
             estado={pdi.estado}
             fechaAcuerdo={pdi.fecha_acuerdo}
             proximaRevision={pdi.proxima_revision}
-            firmaColab={!!pdi.firma_colaborador}
-            firmaJefe={!!pdi.firma_jefe}
-            firmaTh={!!pdi.firma_th}
+            firmaColab={pdi.firma_colaborador}
+            firmaJefe={pdi.firma_jefe}
+            firmaTh={pdi.firma_th}
             observaciones={pdi.observaciones}
-            banda={banda}
             idxBanda={idxBanda}
             editable={esAdmin || esJefeDirecto}
+            esElColaborador={esElColaborador}
+            esJefeDirecto={esJefeDirecto}
+            esAdmin={esAdmin}
           />
         )}
       </main>
@@ -112,20 +117,23 @@ export default async function PaginaPdi({ params }: { params: Promise<{ id: stri
 
 async function PdiDetalle({
   pdiId, evaluacionId, estado, fechaAcuerdo, proximaRevision,
-  firmaColab, firmaJefe, firmaTh, observaciones, banda, idxBanda, editable,
+  firmaColab, firmaJefe, firmaTh, observaciones, idxBanda, editable,
+  esElColaborador, esJefeDirecto, esAdmin,
 }: {
   pdiId: string
   evaluacionId: string
   estado: string
   fechaAcuerdo: string
   proximaRevision: string
-  firmaColab: boolean
-  firmaJefe: boolean
-  firmaTh: boolean
+  firmaColab: string | null
+  firmaJefe: string | null
+  firmaTh: string | null
   observaciones: string | null
-  banda: string
   idxBanda: number
   editable: boolean
+  esElColaborador: boolean
+  esJefeDirecto: boolean
+  esAdmin: boolean
 }) {
   const supabase = await crearClienteServidor()
 
@@ -135,13 +143,29 @@ async function PdiDetalle({
     .eq('pdi_id', pdiId)
 
   const accionIds = (accionesPdi ?? []).map(a => a.accion_id)
-  const { data: catalogo } = accionIds.length > 0
-    ? await supabase
-        .from('acciones_desarrollo')
-        .select('id, competencia, tipo, nombre, banda_min, banda_max, esfuerzo_th, duracion')
-        .in('id', accionIds)
-    : { data: [] }
+  const pdiAccionIds = (accionesPdi ?? []).map(a => a.id)
+
+  const [{ data: catalogo }, { data: seguimientos }] = await Promise.all([
+    accionIds.length > 0
+      ? supabase.from('acciones_desarrollo')
+          .select('id, competencia, tipo, nombre, banda_min, banda_max, esfuerzo_th, duracion')
+          .in('id', accionIds)
+      : Promise.resolve({ data: [] as { id: string; competencia: string; tipo: string; nombre: string; banda_min: string; banda_max: string; esfuerzo_th: string; duracion: string | null }[] }),
+    pdiAccionIds.length > 0
+      ? supabase.from('pdi_seguimiento_mensual')
+          .select('pdi_accion_id, fecha_corte, avance_pct, comentario')
+          .in('pdi_accion_id', pdiAccionIds)
+          .order('fecha_corte', { ascending: true })
+      : Promise.resolve({ data: [] as { pdi_accion_id: string; fecha_corte: string; avance_pct: number; comentario: string | null }[] }),
+  ])
+
   const mapAccion = new Map((catalogo ?? []).map(a => [a.id, a]))
+  const cortesPorAccion = new Map<string, { fecha_corte: string; avance_pct: number; comentario: string | null }[]>()
+  for (const s of seguimientos ?? []) {
+    const arr = cortesPorAccion.get(s.pdi_accion_id) ?? []
+    arr.push({ fecha_corte: s.fecha_corte, avance_pct: s.avance_pct, comentario: s.comentario })
+    cortesPorAccion.set(s.pdi_accion_id, arr)
+  }
 
   const competencias = new Set((catalogo ?? []).map(a => a.competencia))
   const { data: candidatasAll } = await supabase
@@ -162,6 +186,15 @@ async function PdiDetalle({
 
   const puedeEditar = editable && estado === 'borrador'
   const puedeEnviar = editable && estado === 'borrador' && (accionesPdi?.length ?? 0) > 0
+
+  const enFirmaOVigente = estado === 'en_firma' || estado === 'vigente' || estado === 'completado'
+  const firmas = [
+    { tipo: 'colaborador' as TipoFirma, label: 'Colaborador', firma: firmaColab, emoji: '👤', puedeFirmar: esElColaborador && !firmaColab && estado === 'en_firma' },
+    { tipo: 'jefe' as TipoFirma, label: 'Jefe directo', firma: firmaJefe, emoji: '👥', puedeFirmar: esJefeDirecto && !firmaJefe && estado === 'en_firma' },
+    { tipo: 'th' as TipoFirma, label: 'Talento Humano', firma: firmaTh, emoji: '🏢', puedeFirmar: esAdmin && !firmaTh && estado === 'en_firma' },
+  ]
+
+  const puedeRegistrarSeguimiento = (estado === 'vigente' || estado === 'completado') && (esElColaborador || esJefeDirecto || esAdmin)
 
   return (
     <>
@@ -185,13 +218,17 @@ async function PdiDetalle({
           <div>
             <div style={{ fontSize: 11.5, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: 0.4 }}>Firmas</div>
             <div className="hstack" style={{ gap: 6, marginTop: 4, fontSize: 11.5 }}>
-              <span style={{ opacity: firmaColab ? 1 : 0.35 }}>👤 Colab</span>
-              <span style={{ opacity: firmaJefe ? 1 : 0.35 }}>👥 Jefe</span>
-              <span style={{ opacity: firmaTh ? 1 : 0.35 }}>🏢 TH</span>
+              <span style={{ opacity: firmaColab ? 1 : 0.35 }}>👤</span>
+              <span style={{ opacity: firmaJefe ? 1 : 0.35 }}>👥</span>
+              <span style={{ opacity: firmaTh ? 1 : 0.35 }}>🏢</span>
             </div>
           </div>
         </div>
       </section>
+
+      {enFirmaOVigente && (
+        <PanelFirmas pdiId={pdiId} evaluacionId={evaluacionId} firmas={firmas} />
+      )}
 
       {/* Lista de acciones */}
       <section className="card" style={{ padding: 22, marginBottom: 18 }}>
@@ -208,15 +245,18 @@ async function PdiDetalle({
             const cat = mapAccion.get(a.accion_id)
             if (!cat) return null
             const candidatas = (candidatasPorComp.get(cat.competencia) ?? []).filter(c => c.id !== a.accion_id)
+            const cortes = cortesPorAccion.get(a.id) ?? []
+            const avanceActual = cortes.length > 0 ? cortes[cortes.length - 1].avance_pct : 0
             return (
               <div key={a.id} className="card" style={{ padding: 16, background: 'var(--surface-sunken)' }}>
                 <div className="hstack" style={{ gap: 12, alignItems: 'flex-start' }}>
                   <div style={{
                     width: 32, height: 32, borderRadius: 999,
-                    background: 'var(--primary)', color: 'var(--on-primary)',
+                    background: avanceActual === 100 ? 'var(--success)' : 'var(--primary)',
+                    color: 'var(--on-primary)',
                     display: 'grid', placeItems: 'center',
                     fontWeight: 700, fontFamily: 'var(--font-mono)', flexShrink: 0,
-                  }}>{i + 1}</div>
+                  }}>{avanceActual === 100 ? '✓' : i + 1}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div className="hstack" style={{ gap: 8, marginBottom: 4, flexWrap: 'wrap' }}>
                       <strong style={{ fontSize: 14.5 }}>{cat.nombre}</strong>
@@ -226,6 +266,15 @@ async function PdiDetalle({
                     <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>
                       {cat.id} · {cat.duracion ?? '—'} · Esfuerzo TH: {cat.esfuerzo_th} · {a.fecha_inicio} → {a.fecha_fin} · {a.responsable_seguimiento}
                     </div>
+                    {enFirmaOVigente && estado !== 'en_firma' && (
+                      <Seguimiento
+                        pdiAccionId={a.id}
+                        evaluacionId={evaluacionId}
+                        cortes={cortes}
+                        avanceActual={avanceActual}
+                        puedeRegistrar={puedeRegistrarSeguimiento}
+                      />
+                    )}
                   </div>
                   <EditorAccionPdi
                     pdiId={pdiId}
@@ -247,12 +296,6 @@ async function PdiDetalle({
           <div className="page__eyebrow" style={{ marginBottom: 6 }}>Observaciones</div>
           <div style={{ fontSize: 13.5, whiteSpace: 'pre-wrap' }}>{observaciones}</div>
         </section>
-      )}
-
-      {estado === 'en_firma' && (
-        <div style={{ background: 'var(--warning-soft)', border: '1px solid var(--warning)', borderRadius: 10, padding: '12px 16px', color: 'var(--warning-ink)', fontSize: 13 }}>
-          Este PDI está esperando firmas. La captura de firmas y el seguimiento mensual se habilitan en la próxima entrega.
-        </div>
       )}
     </>
   )
