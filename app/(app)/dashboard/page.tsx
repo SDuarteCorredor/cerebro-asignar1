@@ -1,37 +1,16 @@
-import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import IconoGestion from '@/components/app/IconoGestion'
 import BadgeEstado from '@/components/app/BadgeEstado'
 import Icono from '@/components/app/Icono'
 import BuscadorHero from './BuscadorHero'
-import type { SesionUsuario, Rol, EstadoProceso } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()
-}
+import type { EstadoProceso } from '@/types'
 
 export default async function PaginaDashboard() {
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios')
-    .select('id, nombre, correo, rol, gestion_id')
-    .eq('id', user.id)
-    .single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id,
-    nombre: perfil.nombre,
-    correo: perfil.correo,
-    rol: perfil.rol as Rol,
-    gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const esAdmin = sesion.rol === 'admin'
 
@@ -124,7 +103,7 @@ export default async function PaginaDashboard() {
 
         {/* Accesos rápidos Admin */}
         {esAdmin && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 36 }}>
+          <div className="grid-stats" style={{ marginBottom: 36 }}>
             {[
               { titulo: 'Aprobaciones pendientes', cuenta: aprobacionesPendientes, icono: 'inbox', tono: 'warning', href: '/admin/aprobaciones' },
               { titulo: 'Procesos desactualizados', cuenta: procesosDesactualizados, icono: 'history', tono: 'danger', href: '/gestiones' },
@@ -136,8 +115,8 @@ export default async function PaginaDashboard() {
                   <Icono nombre={a.icono} className="icon icon--sm" />
                 </div>
                 <div>
-                  <div style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{a.cuenta}</div>
-                  <div style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 4 }}>{a.titulo}</div>
+                  <div className="stat-number">{a.cuenta}</div>
+                  <div className="stat-label">{a.titulo}</div>
                 </div>
               </Link>
             ))}
@@ -146,12 +125,12 @@ export default async function PaginaDashboard() {
 
         {/* Todas las Gestiones */}
         <section style={{ marginBottom: 40 }}>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Todas las Gestiones</h2>
-            <span style={{ fontSize: 13, color: 'var(--text-3)' }}>{gestiones.length} gestiones</span>
+          <div className="section-header">
+            <h2 className="section-title section-title--lg">Todas las Gestiones</h2>
+            <span className="section-count text-sm">{gestiones.length} gestiones</span>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
+          <div className="grid-cards">
             {gestiones.map((g) => {
               const lider = g.lider
               const activos = g.procesos_activos_count
@@ -164,14 +143,14 @@ export default async function PaginaDashboard() {
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <IconoGestion gestion={g} size={42} rounded={12} />
-                    <Icono nombre="arrowRight" className="icon icon--sm" style={{ color: 'var(--text-muted)' }} />
+                    <Icono nombre="arrowRight" className="icon icon--sm text-muted" />
                   </div>
                   <div>
                     <div className="card__title" style={{ marginBottom: 4 }}>{g.nombre}</div>
-                    <div style={{ fontSize: 12.5, color: 'var(--text-3)', lineHeight: 1.45 }}>{g.descripcion}</div>
+                    <div className="text-xs text-muted" style={{ lineHeight: 1.45 }}>{g.descripcion}</div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, paddingTop: 12, borderTop: '1px solid var(--divider)', fontSize: 12, color: 'var(--text-3)' }}>
-                    <span style={{ fontWeight: 600, color: 'var(--text-2)', fontVariantNumeric: 'tabular-nums' }}>{activos}</span> procesos activos
+                  <div className="card-footer">
+                    <span className="font-semibold text-2 tabular-nums">{activos}</span> procesos activos
                     <span style={{ flex: 1 }} />
                     {lider && (
                       <div className="avatar avatar--sm" title={`Líder: ${lider.nombre}`}>
@@ -187,8 +166,8 @@ export default async function PaginaDashboard() {
 
         {/* Actualizados recientemente */}
         <section>
-          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 18 }}>
-            <h2 style={{ fontSize: 20, fontWeight: 700, margin: 0, letterSpacing: '-0.01em' }}>Actualizados recientemente</h2>
+          <div className="section-header">
+            <h2 className="section-title section-title--lg">Actualizados recientemente</h2>
           </div>
           <div className="card card--table">
             <div className="table-scroll">
@@ -222,8 +201,8 @@ export default async function PaginaDashboard() {
                             </Link>
                           )}
                         </td>
-                        <td style={{ fontSize: 13, color: 'var(--text-2)' }}>{cargoPrincipal}</td>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, color: 'var(--text-3)' }}>
+                        <td className="text-sm text-2">{cargoPrincipal}</td>
+                        <td className="text-mono text-xs text-muted">
                           {new Date(p.fecha_actualizacion).toLocaleDateString('es-CO')}
                         </td>
                         <td><BadgeEstado estado={p.estado as EstadoProceso} /></td>

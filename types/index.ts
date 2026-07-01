@@ -31,8 +31,14 @@ export interface Paso {
   id: string
   proceso_id: string
   numero_orden: number
+  nombre: string | null
   descripcion: string
   cargo_responsable: string
+  entradas: string | null
+  periodicidad: string | null
+  salidas: string | null
+  acuerdo_servicio: string | null
+  tiempos: string | null
 }
 
 export interface Documento {
@@ -56,6 +62,12 @@ export interface HistorialVersion {
   usuario?: Usuario
 }
 
+export interface ContactoCliente {
+  nombre: string
+  telefono: string
+  correo: string
+}
+
 export interface Proceso {
   id: string
   nombre: string
@@ -64,6 +76,14 @@ export interface Proceso {
   version: string
   fecha_actualizacion: string
   estado: EstadoProceso
+  macroproceso: string | null
+  es_proceso_cliente: boolean
+  cliente_nombre: string | null
+  cliente_contactos: ContactoCliente[] | null
+  acuerdo_tarifa: string | null
+  acuerdo_tipo_servicio: string | null
+  acuerdo_uniforme: string | null
+  acuerdo_detalles: string | null
   creado_por: string | null
   aprobado_por: string | null
   comentario_rechazo: string | null

@@ -1,29 +1,13 @@
-import { redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
-import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 type Item = { id: string; competencia: string; numero: number; texto_tercero: string; texto_primera: string }
 type Comp = { codigo: string; nombre: string; tipo: string; orden: number }
 
 export default async function PaginaCuestionario() {
+  const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const { data: perfil } = await supabase
-    .from('usuarios').select('id, nombre, correo, rol, gestion_id').eq('id', user.id).single()
-  if (!perfil) redirect('/login')
-
-  const sesion: SesionUsuario = {
-    id: perfil.id, nombre: perfil.nombre, correo: perfil.correo,
-    rol: perfil.rol as Rol, gestion_id: perfil.gestion_id,
-    iniciales: obtenerIniciales(perfil.nombre),
-  }
 
   const [{ data: items }, { data: competencias }] = await Promise.all([
     supabase.from('items_cuestionario').select('*').order('competencia').order('numero'),
