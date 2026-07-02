@@ -61,11 +61,12 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
           <span className="hide-mobile" style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 11, background: 'var(--surface-sunken)', border: '1px solid var(--border)', padding: '1px 6px', borderRadius: 4, color: 'var(--text-3)' }}>⌘K</span>
         </Link>
 
-        <div className="sidebar__section-label">Próximos módulos</div>
-        <button className="nav-item is-disabled" disabled>
+        <Link href="/politicas" className={`nav-item ${activa('/politicas') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="paper" className="nav-item__icon" /> Políticas y Reglamentos
-          <span className="nav-item__pill">Pronto</span>
-        </button>
+          <span className="nav-item__pill" style={{ background: 'var(--primary-soft)', color: 'var(--primary-ink)' }}>Nuevo</span>
+        </Link>
+
+        <div className="sidebar__section-label">Próximos módulos</div>
         <button className="nav-item is-disabled" disabled>
           <Icono nombre="bookmark" className="nav-item__icon" /> Acogida Laboral
           <span className="nav-item__pill">Pronto</span>
@@ -82,6 +83,9 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
             </Link>
             <Link href="/admin/usuarios" className={`nav-item ${activa('/admin/usuarios') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="users" className="nav-item__icon" /> Gestionar Usuarios
+            </Link>
+            <Link href="/admin/politicas" className={`nav-item ${activa('/admin/politicas') ? 'is-active' : ''}`} onClick={navegar}>
+              <Icono nombre="paper" className="nav-item__icon" /> Gestionar Políticas
             </Link>
             <Link href="/admin/aprobaciones" className={`nav-item ${activa('/admin/aprobaciones') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="inbox" className="nav-item__icon" /> Aprobaciones
@@ -102,7 +106,7 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         <div style={{ padding: '12px 10px', borderTop: '1px solid var(--divider)', marginTop: 10 }}>
           <div className="hstack" style={{ fontSize: 12, color: 'var(--text-3)' }}>
             <Icono nombre="info" className="icon icon--sm" />
-            <span>v0.3 · Etapa 3 · Desempeño</span>
+            <span>v0.4 · Etapa 7 · Políticas</span>
           </div>
         </div>
       </aside>
