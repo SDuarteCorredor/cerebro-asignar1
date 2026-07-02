@@ -74,9 +74,9 @@ export default async function AdminUsuarios() {
           <Link href="/admin/usuarios/importar" className="btn btn--secondary btn--sm">
             <Icono nombre="upload" className="icon icon--sm" /> Importar lista
           </Link>
-          <button className="btn btn--primary btn--sm">
-            <Icono nombre="invite" className="icon icon--sm" /> Invitar usuario
-          </button>
+          <Link href="/admin/usuarios/nuevo" className="btn btn--primary btn--sm">
+            <Icono nombre="plus" className="icon icon--sm" /> Nuevo usuario
+          </Link>
         </div>
 
         <div className="card card--table">

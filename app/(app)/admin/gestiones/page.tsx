@@ -5,6 +5,7 @@ import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
 import IconoGestion from '@/components/app/IconoGestion'
 import Icono from '@/components/app/Icono'
+import SelectorLider from './SelectorLider'
 
 export default async function AdminGestiones() {
   const sesion = await obtenerSesionAdmin()
@@ -24,6 +25,11 @@ export default async function AdminGestiones() {
     .from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision')
   const { count: totalUsuarios } = await supabase
     .from('usuarios').select('id', { count: 'exact', head: true })
+
+  const { data: candidatosLider } = await supabase
+    .from('usuarios').select('id, nombre, codigo_contrato')
+    .eq('activo', true).order('nombre')
+    .limit(500)
 
   return (
     <>
@@ -96,9 +102,12 @@ export default async function AdminGestiones() {
                           <Link href={`/gestiones/${g.id}`} className="btn btn--ghost btn--sm">
                             <Icono nombre="eye" className="icon icon--sm" />
                           </Link>
-                          <button className="btn btn--ghost btn--sm">
-                            <Icono nombre="edit" className="icon icon--sm" />
-                          </button>
+                          <SelectorLider
+                            gestionId={g.id}
+                            gestionNombre={g.nombre}
+                            liderActual={lider}
+                            candidatos={candidatosLider ?? []}
+                          />
                         </div>
                       </td>
                     </tr>

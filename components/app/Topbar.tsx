@@ -64,7 +64,7 @@ export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: To
         </form>
       )}
 
-      <div className="topbar__user">
+      <Link href={`/perfil/${usuario.id}`} className="topbar__user" style={{ textDecoration: 'none', color: 'inherit' }} title="Ver mi perfil">
         <div>
           <div className="topbar__user-name">{usuario.nombre}</div>
           <div className="topbar__user-role">
@@ -72,7 +72,7 @@ export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: To
           </div>
         </div>
         <div className="avatar">{usuario.iniciales}</div>
-      </div>
+      </Link>
 
       <button className="btn btn--ghost btn--sm" onClick={cerrarSesion} title="Cerrar sesión">
         <Icono nombre="logout" className="icon" />

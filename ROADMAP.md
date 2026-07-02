@@ -20,7 +20,7 @@
 | 2 | Editor completo de procesos | Completada |
 | **3** | **Desempeño - ECO-Asignar** | **Completada** |
 | 4 | Deploy en Vercel | Completada (parcial) |
-| 5 | Gestión de usuarios y líderes | Pendiente |
+| 5 | Gestión de usuarios y líderes | Completada |
 | 6 | Documentos adjuntos en procesos | Pendiente |
 | 7 | Políticas y Reglamentos | Completada |
 | 8 | Onboarding / Acogida Laboral | Pendiente |
@@ -145,13 +145,13 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ---
 
-## Etapa 5 — Gestión de usuarios y líderes
+## Etapa 5 — Gestión de usuarios y líderes (completada) | Claude-Simon
 
 - [x] Importador semanal desde Excel del software HR (hecho en Etapa 3)
-- [ ] UI para editar usuario individual (cargo, jefe, sede, correo) | Asignado: ``
-- [ ] Invitar al sistema (crear auth user con password reset) | Asignado: ``
-- [ ] Asignar líder a cada gestión | Asignado: ``
-- [ ] Vista del perfil completo de cada usuario | Asignado: ``
+- [x] UI para editar usuario individual (hecho en Sub-etapa 3.A.6)
+- [x] Invitar al sistema (magic link — el trigger conecta con el registro existente)
+- [x] Asignar líder a cada gestión
+- [x] Vista del perfil completo de cada usuario
 
 ---
 

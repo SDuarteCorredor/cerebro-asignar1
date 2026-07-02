@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Icono from '@/components/app/Icono'
 import { crearClienteNavegador } from '@/lib/supabase/client'
+import { enviarInvitacion } from '../acciones'
 
 interface Cargo { id: string; nombre: string; banda: string }
 interface PosibleJefe { id: string; nombre: string; codigo_contrato: string | null; cargo_id: string | null }
@@ -64,6 +65,8 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')
   const [exito, setExito] = useState(false)
+  const [invitando, startInvitar] = useTransition()
+  const [invitacionMsg, setInvitacionMsg] = useState<{ tipo: 'ok' | 'err'; msg: string } | null>(null)
 
   const cargoSeleccionado = cargos.find(c => c.id === cargoId)
   const cargosByBanda: Record<string, Cargo[]> = {}
@@ -123,15 +126,31 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
             {usuario.tipo_contrato ?? 'Sin tipo de contrato'}
           </p>
         </div>
-        <div className="hstack" style={{ gap: 8 }}>
-          {usuario.tiene_login && (
-            <span className="badge badge--success badge--no-dot">
-              <Icono nombre="check" className="icon icon--sm" /> Con login
+        <div className="vstack" style={{ gap: 8, alignItems: 'flex-end' }}>
+          <div className="hstack" style={{ gap: 8 }}>
+            {usuario.tiene_login && (
+              <span className="badge badge--success badge--no-dot">
+                <Icono nombre="check" className="icon icon--sm" /> Con login
+              </span>
+            )}
+            <span className={`badge badge--${usuario.activo ? 'success' : 'neutral'}`}>
+              {usuario.activo ? 'Activo' : 'Inactivo'}
             </span>
+          </div>
+          {!usuario.tiene_login && usuario.correo && (
+            <button
+              className="btn btn--primary btn--sm"
+              disabled={invitando}
+              onClick={() => startInvitar(async () => {
+                setInvitacionMsg(null)
+                const res = await enviarInvitacion(usuario.id)
+                if (res.error) setInvitacionMsg({ tipo: 'err', msg: res.error })
+                else setInvitacionMsg({ tipo: 'ok', msg: `Invitación enviada a ${usuario.correo}` })
+              })}
+            >
+              {invitando ? 'Enviando…' : 'Enviar invitación'}
+            </button>
           )}
-          <span className={`badge badge--${usuario.activo ? 'success' : 'neutral'}`}>
-            {usuario.activo ? 'Activo' : 'Inactivo'}
-          </span>
         </div>
       </div>
 
@@ -143,6 +162,16 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
       {exito && (
         <div style={{ background: 'var(--success-soft)', color: 'var(--success-ink)', border: '1px solid var(--success)', borderRadius: 8, padding: '10px 14px', fontSize: 13.5, marginBottom: 16 }}>
           <Icono nombre="check" className="icon icon--sm" /> Cambios guardados.
+        </div>
+      )}
+      {invitacionMsg && (
+        <div style={{
+          background: invitacionMsg.tipo === 'ok' ? 'var(--success-soft)' : 'var(--danger-soft)',
+          color: invitacionMsg.tipo === 'ok' ? 'var(--success-ink)' : 'var(--danger-ink)',
+          border: `1px solid ${invitacionMsg.tipo === 'ok' ? 'var(--success)' : 'var(--danger)'}`,
+          borderRadius: 8, padding: '10px 14px', fontSize: 13.5, marginBottom: 16,
+        }}>
+          {invitacionMsg.msg}
         </div>
       )}
 
