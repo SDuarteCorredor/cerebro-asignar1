@@ -28,6 +28,7 @@
 | 10 | Periodos de Prueba | Pendiente |
 | 11 | Encuestas | Pendiente |
 | 12 | Expediente Digital del Colaborador | Pendiente |
+| 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 
 ---
 
@@ -213,6 +214,22 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [ ] Documentos de vinculación | Asignado: ``
 - [ ] Historial de evaluaciones y capacitaciones (Etapa 3 + Etapa 9) | Asignado: ``
 - [ ] Novedades y observaciones | Asignado: ``
+
+---
+
+## Etapa 13 — Comités y Compromisos (4DX) — MVP | Claude-Simon
+
+Base para el sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. Actas semanales por gestión, compromisos con responsable + fecha límite, revisión chuleada en el comité siguiente, cálculo de % de cumplimiento.
+
+- [x] Schema: `comites`, `comite_asistentes`, `compromisos` + RLS por líder de gestión
+- [x] Lista `/comites` con filtro por gestión y % de cumplimiento por comité
+- [x] Crear comité que auto-siembra a los miembros activos de la gestión
+- [x] Detalle del comité con revisión del anterior y compromisos nuevos
+- [x] Marcar compromisos como cumplido / no cumplido / arrastrado
+- [x] Cerrar comité cuando todos están evaluados
+- [ ] Ponderación por impacto (bajo/medio/alto) — v2
+- [ ] Ranking individual dentro de la gestión y tabla general entre gestiones — v2
+- [ ] Cadena con onboarding (arrancar puntos desde período de prueba) — v2
 
 ---
 

@@ -63,6 +63,10 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
 
         <Link href="/politicas" className={`nav-item ${activa('/politicas') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="paper" className="nav-item__icon" /> Políticas y Reglamentos
+        </Link>
+
+        <Link href="/comites" className={`nav-item ${activa('/comites') ? 'is-active' : ''}`} onClick={navegar}>
+          <Icono nombre="check" className="nav-item__icon" /> Comités
           <span className="nav-item__pill" style={{ background: 'var(--primary-soft)', color: 'var(--primary-ink)' }}>Nuevo</span>
         </Link>
 
@@ -106,7 +110,7 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         <div style={{ padding: '12px 10px', borderTop: '1px solid var(--divider)', marginTop: 10 }}>
           <div className="hstack" style={{ fontSize: 12, color: 'var(--text-3)' }}>
             <Icono nombre="info" className="icon icon--sm" />
-            <span>v0.4 · Etapa 7 · Políticas</span>
+            <span>v0.5 · Etapa 13 · Comités</span>
           </div>
         </div>
       </aside>
