@@ -22,7 +22,7 @@
 | 4 | Deploy en Vercel | Completada (parcial) |
 | 5 | Gestión de usuarios y líderes | Pendiente |
 | 6 | Documentos adjuntos en procesos | Pendiente |
-| 7 | Políticas y Reglamentos | Pendiente |
+| 7 | Políticas y Reglamentos | Completada |
 | 8 | Onboarding / Acogida Laboral | Pendiente |
 | 9 | Entrenamientos y Capacitaciones | Pendiente |
 | 10 | Periodos de Prueba | Pendiente |
@@ -163,11 +163,11 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ---
 
-## Etapa 7 — Políticas y Reglamentos
+## Etapa 7 — Políticas y Reglamentos (completada) | Claude-Simon
 
-- [ ] Categorías: reglamento interno, políticas, manuales, circulares | Asignado: ``
-- [ ] Descarga directa de PDFs | Asignado: ``
-- [ ] Control de versiones de documentos | Asignado: ``
+- [x] Categorías: reglamento interno, políticas, manuales, circulares
+- [x] Descarga directa de PDFs
+- [x] Control de versiones de documentos
 
 ---
 
