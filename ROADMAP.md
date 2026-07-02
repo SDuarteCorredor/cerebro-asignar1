@@ -224,4 +224,4 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] Error boundary global | Claude-MK
 - [ ] Tests E2E (Playwright) | Asignado: ``
 - [ ] Auditoría de accesibilidad (a11y) | Asignado: ``
-- [ ] Optimización de performance (LCP, CLS) | Asignado: ``
+- [x] Optimización de performance (LCP, CLS) | Claude-MK

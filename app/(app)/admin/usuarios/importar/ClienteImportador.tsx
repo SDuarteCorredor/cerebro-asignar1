@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import * as XLSX from 'xlsx'
+import type * as XLSXType from 'xlsx'
 import Link from 'next/link'
 import Icono from '@/components/app/Icono'
 import { crearClienteNavegador } from '@/lib/supabase/client'
@@ -63,15 +63,14 @@ const inferirSede = (codigo: string, ccf: string): string => {
   return SEDE_POR_CCF[k] ?? 'Por confirmar'
 }
 
-function fechaIso(v: unknown): string | null {
+function fechaIso(v: unknown, XLSX?: typeof XLSXType): string | null {
   if (v === null || v === undefined || v === '') return null
   if (v instanceof Date) return v.toISOString().split('T')[0]
   if (typeof v === 'string') {
     const d = new Date(v)
     if (!isNaN(d.getTime())) return d.toISOString().split('T')[0]
   }
-  if (typeof v === 'number') {
-    // Excel serial date
+  if (typeof v === 'number' && XLSX) {
     const d = XLSX.SSF.parse_date_code(v)
     if (d) return `${d.y}-${String(d.m).padStart(2, '0')}-${String(d.d).padStart(2, '0')}`
   }
@@ -108,6 +107,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
     setPreview(null)
     setResultado(null)
     try {
+      const XLSX = await import('xlsx')
       const buf = await file.arrayBuffer()
       const wb = XLSX.read(buf, { type: 'array', cellDates: true })
       const sheet = wb.Sheets[wb.SheetNames[0]]
@@ -131,15 +131,15 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           nombre,
           documento: txt(row['Documento']) || null,
           tipo_documento: txt(row['Tipo']) || 'CC',
-          fecha_ingreso: fechaIso(row['F. Ingreso']),
+          fecha_ingreso: fechaIso(row['F. Ingreso'], XLSX),
           salario: num(row['Salario']),
           valor_hora: num(row['Valor hora']),
           cargo_nombre: cargoNombre,
           caja_compensacion: ccf,
-          fecha_nacimiento: fechaIso(row['F. Nacimiento']),
+          fecha_nacimiento: fechaIso(row['F. Nacimiento'], XLSX),
           departamento: txt(row['Departamento']),
           ciudad: txt(row['Ciudad']),
-          fecha_retiro: fechaIso(row['F. Retiro']),
+          fecha_retiro: fechaIso(row['F. Retiro'], XLSX),
           sede_inferida: inferirSede(codigo, ccf),
           cargo_id: cargo?.id ?? null,
           // Campos opcionales del nuevo Excel (si no están en el archivo, quedan null)
