@@ -2,20 +2,9 @@ import FormularioLogin from './FormularioLogin'
 
 export default function PaginaLogin() {
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'grid',
-      gridTemplateColumns: '1fr 1.05fr',
-      background: 'var(--bg)',
-    }}>
+    <div className="login-grid">
       {/* Columna izquierda: formulario */}
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '48px 64px',
-        justifyContent: 'space-between',
-        background: 'var(--surface)',
-      }}>
+      <div className="login-form-col">
         <div className="hstack" style={{ gap: 12 }}>
           <div className="sidebar__logo-mark" style={{ width: 36, height: 36, fontSize: 16 }}>A</div>
           <div>
@@ -44,13 +33,12 @@ export default function PaginaLogin() {
         </div>
       </div>
 
-      {/* Columna derecha: visual */}
-      <div style={{
+      {/* Columna derecha: visual (oculta en móvil) */}
+      <div className="login-visual-col" style={{
         position: 'relative',
         background: 'linear-gradient(155deg, oklch(0.32 0.10 250) 0%, oklch(0.40 0.13 250) 55%, oklch(0.55 0.14 30) 130%)',
         color: 'white',
         padding: '60px',
-        display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
         overflow: 'hidden',
