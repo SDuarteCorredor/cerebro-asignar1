@@ -128,7 +128,7 @@ export default async function PaginaPdis() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
+        <div className="grid-stats" style={{ marginBottom: 24 }}>
           <KpiCard num={filasVisibles.length} label="PDIs totales" />
           <KpiCard num={vigentes.length} label="Vigentes" color="var(--success-ink)" />
           <KpiCard num={enFirma.length} label="En firma" color="var(--warning-ink)" />

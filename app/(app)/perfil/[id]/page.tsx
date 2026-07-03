@@ -85,7 +85,7 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
           </div>
         </section>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 18 }}>
+        <div className="layout-main-aside-wide">
           {/* Datos y contacto */}
           <div className="vstack" style={{ gap: 18 }}>
             <section className="card" style={{ padding: 20 }}>

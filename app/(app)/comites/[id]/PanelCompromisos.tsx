@@ -88,7 +88,7 @@ export default function PanelCompromisos({
               }
             })}
           >
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 180px 140px auto', gap: 8, alignItems: 'end' }}>
+            <div className="form-row-compromiso">
               <label style={{ fontSize: 11.5 }}>
                 <div style={{ marginBottom: 3, color: 'var(--text-3)' }}>Descripción*</div>
                 <input name="descripcion" required className="input" placeholder="Qué se compromete a hacer" />

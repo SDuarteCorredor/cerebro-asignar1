@@ -164,7 +164,7 @@ export default function FormularioCiclo({ conteoPorBanda, totalConJefe, totalAct
               <label className="field__label">Nombre del ciclo</label>
               <input className="ca-input" value={nombre} onChange={e => setNombre(e.target.value)} placeholder="Ej: Semestre I 2026" />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+            <div className="grid-3col">
               <div className="field">
                 <label className="field__label">Inicio</label>
                 <input className="ca-input" type="date" value={fechaInicio} onChange={e => setFechaInicio(e.target.value)} />
@@ -221,7 +221,7 @@ export default function FormularioCiclo({ conteoPorBanda, totalConJefe, totalAct
           <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: 'var(--primary-ink)' }}>
             Resumen — Qué pasará al guardar
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+          <div className="grid-stats-3">
             <div>
               <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>
                 {colaboradoresCubiertos}

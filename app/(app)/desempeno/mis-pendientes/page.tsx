@@ -85,7 +85,7 @@ export default async function PaginaMisPendientes() {
         </div>
 
         {/* KPI bar */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 24 }}>
+        <div className="grid-stats-3" style={{ marginBottom: 24 }}>
           <div className="card" style={{ padding: 16 }}>
             <div style={{ fontSize: 26, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--warning-ink)' }}>{pendientes.length}</div>
             <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Pendientes por responder</div>

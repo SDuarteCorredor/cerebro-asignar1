@@ -189,7 +189,7 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
       </div>
 
       {/* KPIs */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
+      <div className="grid-stats" style={{ marginBottom: 24 }}>
         <div className="card" style={{ padding: 16 }}>
           <div style={{ fontSize: 26, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{total}</div>
           <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Evaluaciones</div>

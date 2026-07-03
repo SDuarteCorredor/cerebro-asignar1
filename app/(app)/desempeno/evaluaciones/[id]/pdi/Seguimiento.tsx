@@ -49,7 +49,7 @@ export default function Seguimiento({
 
       {abierto && puedeRegistrar && (
         <div className="card" style={{ padding: 12, marginTop: 8, background: 'var(--surface)' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '140px 100px 1fr auto', gap: 10, alignItems: 'end' }}>
+          <div className="form-row-seguimiento">
             <label style={{ display: 'block', fontSize: 12 }}>
               <div style={{ marginBottom: 3, color: 'var(--text-3)' }}>Fecha</div>
               <input type="date" value={fecha} onChange={e => setFecha(e.target.value)} className="input" />

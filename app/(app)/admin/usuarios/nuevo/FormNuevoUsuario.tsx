@@ -38,7 +38,7 @@ export default function FormNuevoUsuario({
         else router.push(`/admin/usuarios/${res.id}`)
       })}
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+      <div className="grid-2col" style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12 }}>
           <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Nombre completo*</div>
           <input name="nombre" required className="input" placeholder="Ej. María Gómez Rodríguez" />
@@ -49,7 +49,7 @@ export default function FormNuevoUsuario({
         </label>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, marginBottom: 14 }}>
+      <div className="grid-3col" style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12 }}>
           <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Rol*</div>
           <select name="rol" required defaultValue="colaborador" className="input">
@@ -71,7 +71,7 @@ export default function FormNuevoUsuario({
         </label>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+      <div className="grid-2col" style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12 }}>
           <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Cargo</div>
           <select name="cargo_id" className="input">

@@ -200,7 +200,7 @@ async function PdiDetalle({
     <>
       {/* Datos generales */}
       <section className="card" style={{ padding: 20, marginBottom: 18 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+        <div className="grid-stats">
           <div>
             <div style={{ fontSize: 11.5, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: 0.4 }}>Fecha de acuerdo</div>
             <div style={{ fontSize: 14, fontFamily: 'var(--font-mono)', marginTop: 2 }}>{fechaAcuerdo}</div>

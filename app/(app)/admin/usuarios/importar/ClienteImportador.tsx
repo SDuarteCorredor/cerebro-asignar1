@@ -349,7 +349,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           {/* Resumen */}
           <section className="card" style={{ padding: 22 }}>
             <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700 }}>Previsualización de cambios</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12 }}>
+            <div className="grid-stats">
               <ResumenCard label="Total en archivo" valor={filas.length} color="neutral" />
               <ResumenCard label="Nuevos a agregar" valor={preview.nuevos.length} color="success" />
               <ResumenCard label="Por actualizar" valor={preview.actualizar.length} color="warning" />
@@ -397,7 +397,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
               <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700 }}>
                 A marcar como inactivos ({preview.inactivar.length})
               </h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6, fontSize: 13 }}>
+              <div className="grid-2col" style={{ fontSize: 13 }}>
                 {preview.inactivar.map(p => (
                   <div key={p.codigo_contrato} style={{ padding: '6px 10px', background: 'var(--danger-soft)', borderRadius: 6, color: 'var(--danger-ink)' }}>
                     <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, marginRight: 8 }}>{p.codigo_contrato}</span>

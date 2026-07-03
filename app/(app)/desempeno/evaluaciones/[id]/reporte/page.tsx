@@ -172,7 +172,7 @@ export default async function PaginaReporteEvaluacion({ params }: { params: Prom
         )}
 
         {/* KPIs */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
+        <div className="grid-stats" style={{ marginBottom: 24 }}>
           <div className="card" style={{ padding: 16 }}>
             <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: categoria.color }}>
               {reporte.promedioGeneral?.toFixed(2) ?? '—'}
@@ -201,7 +201,7 @@ export default async function PaginaReporteEvaluacion({ params }: { params: Prom
         </div>
 
         {/* Radar + Tabla */}
-        <div style={{ display: 'grid', gridTemplateColumns: '420px 1fr', gap: 18, marginBottom: 24, alignItems: 'flex-start' }}>
+        <div className="layout-chart-table" style={{ marginBottom: 24 }}>
           <section className="card" style={{ padding: 18 }}>
             <h3 style={{ margin: '0 0 12px', fontSize: 14, fontWeight: 700 }}>Radar — Actual vs Esperado</h3>
             <RadarReporte data={radarData} />

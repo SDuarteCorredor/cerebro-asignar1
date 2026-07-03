@@ -50,11 +50,9 @@ export default async function PaginaCuestionario() {
               </div>
               <div>
                 {items.map((it, idx) => (
-                  <div key={it.id} style={{
-                    display: 'grid', gridTemplateColumns: '40px 1fr 1fr', gap: 18,
+                  <div key={it.id} className="form-row-cuestionario" style={{
                     padding: '14px 22px',
                     borderBottom: idx < items.length - 1 ? '1px solid var(--divider)' : 'none',
-                    alignItems: 'flex-start',
                   }}>
                     <div style={{
                       width: 28, height: 28, borderRadius: 999,

@@ -341,7 +341,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
                   <div className="vstack" style={{ gap: 10 }}>
                     {contactos.map((c, i) => (
                       <div key={i} className="paso-card">
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr auto', gap: 10, alignItems: 'flex-end' }}>
+                        <div className="form-row-contacto">
                           <div className="field">
                             <label className="field__label">Nombre</label>
                             <input className="ca-input ca-input--sm" value={c.nombre} onChange={e => actualizarContacto(i, 'nombre', e.target.value)} placeholder="Nombre del contacto" />

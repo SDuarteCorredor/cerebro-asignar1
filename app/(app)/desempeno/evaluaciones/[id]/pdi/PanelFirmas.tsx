@@ -22,7 +22,7 @@ export default function PanelFirmas({
   return (
     <section className="card" style={{ padding: 20, marginBottom: 18 }}>
       <div className="page__eyebrow" style={{ marginBottom: 10 }}>Firmas</div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+      <div className="grid-stats-3">
         {firmas.map(f => (
           <TarjetaFirma key={f.tipo} pdiId={pdiId} evaluacionId={evaluacionId} data={f} />
         ))}

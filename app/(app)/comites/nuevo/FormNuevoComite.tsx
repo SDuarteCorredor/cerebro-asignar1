@@ -21,7 +21,7 @@ export default function FormNuevoComite({ gestiones }: { gestiones: { id: string
         else if (res.id) router.push(`/comites/${res.id}`)
       })}
     >
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 180px', gap: 14, marginBottom: 14 }}>
+      <div className="form-row-comite" style={{ marginBottom: 14 }}>
         <label style={{ fontSize: 12 }}>
           <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Gestión*</div>
           <select name="gestion_id" required className="input" defaultValue={gestiones.length === 1 ? gestiones[0].id : ''}>

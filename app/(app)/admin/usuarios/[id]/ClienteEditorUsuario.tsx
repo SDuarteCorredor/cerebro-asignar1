@@ -184,7 +184,7 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
               <label className="field__label">Nombre completo</label>
               <input className="ca-input" value={nombre} onChange={e => setNombre(e.target.value)} />
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="grid-2col">
               <div className="field">
                 <label className="field__label">Correo corporativo</label>
                 <input className="ca-input" type="email" value={correo} onChange={e => setCorreo(e.target.value)} placeholder="nombre@asignar.com.co" />
@@ -261,7 +261,7 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
         {/* Ubicación y acceso */}
         <section className="card" style={{ padding: 22 }}>
           <h3 style={{ margin: '0 0 14px', fontSize: 15, fontWeight: 700 }}>Ubicación y acceso</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+          <div className="grid-3col">
             <div className="field">
               <label className="field__label">Sede de trabajo</label>
               <select className="ca-select" value={sede} onChange={e => setSede(e.target.value)}>
@@ -294,7 +294,7 @@ export default function ClienteEditorUsuario({ usuario, cargos, posiblesJefes, g
           <p style={{ margin: '0 0 14px', fontSize: 12.5, color: 'var(--text-3)' }}>
             Provenientes del software de Asignar (solo lectura — se actualizan con cada importación semanal).
           </p>
-          <dl style={{ margin: 0, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px 20px', fontSize: 13 }}>
+          <dl className="grid-3col" style={{ margin: 0, fontSize: 13 }}>
             <div>
               <dt style={{ fontSize: 11.5, fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-3)' }}>Documento</dt>
               <dd style={{ margin: '3px 0 0', fontFamily: 'var(--font-mono)' }}>{usuario.documento ?? '—'}</dd>

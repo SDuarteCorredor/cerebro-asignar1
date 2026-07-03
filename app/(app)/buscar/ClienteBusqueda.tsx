@@ -65,7 +65,7 @@ export default function ClienteBusqueda({ procesos, gestiones, consultaInicial, 
   const porContenido = resultados.filter(r => !r.enNombre)
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '240px 1fr', gap: 32 }}>
+    <div className="layout-aside-main">
       {/* Filtros */}
       <aside style={{ position: 'sticky', top: 80, alignSelf: 'flex-start' }}>
         <div className="page__eyebrow">Filtros</div>

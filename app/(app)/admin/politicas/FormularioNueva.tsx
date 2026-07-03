@@ -36,7 +36,7 @@ export default function FormularioNueva() {
         <button type="button" className="btn btn--ghost btn--sm" onClick={() => setAbierto(false)}>×</button>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 200px 100px', gap: 12, marginBottom: 12 }}>
+      <div className="form-row-politica" style={{ marginBottom: 12 }}>
         <label style={{ fontSize: 12 }}>
           <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Nombre*</div>
           <input name="nombre" required className="input" placeholder="Ej. Reglamento Interno de Trabajo 2026" />
