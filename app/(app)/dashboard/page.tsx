@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { Suspense } from 'react'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
@@ -6,6 +7,7 @@ import IconoGestion from '@/components/app/IconoGestion'
 import BadgeEstado from '@/components/app/BadgeEstado'
 import Icono from '@/components/app/Icono'
 import BuscadorHero from './BuscadorHero'
+import StatsAdmin, { StatsAdminSkeleton } from './StatsAdmin'
 import type { EstadoProceso } from '@/types'
 
 export default async function PaginaDashboard() {
@@ -55,25 +57,6 @@ export default async function PaginaDashboard() {
   })
   const errorBD = errGest || errRec
 
-  // Stats para admin
-  let aprobacionesPendientes = 0
-  let totalUsuarios = 0
-  let procesosDesactualizados = 0
-  let totalProcesos = 0
-
-  if (esAdmin) {
-    const [{ count: ap }, { count: tu }, { count: pd }, { count: tp }] = await Promise.all([
-      supabase.from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'en_revision'),
-      supabase.from('usuarios').select('id', { count: 'exact', head: true }).eq('activo', true),
-      supabase.from('procesos').select('id', { count: 'exact', head: true }).eq('estado', 'desactualizado'),
-      supabase.from('procesos').select('id', { count: 'exact', head: true }),
-    ])
-    aprobacionesPendientes = ap ?? 0
-    totalUsuarios = tu ?? 0
-    procesosDesactualizados = pd ?? 0
-    totalProcesos = tp ?? 0
-  }
-
   const saludo = sesion.nombre.split(' ')[0]
   const fechaHoy = new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
 
@@ -101,26 +84,11 @@ export default async function PaginaDashboard() {
           </div>
         )}
 
-        {/* Accesos rápidos Admin */}
+        {/* Accesos rápidos Admin — se renderiza en streaming, no bloquea el resto */}
         {esAdmin && (
-          <div className="grid-stats" style={{ marginBottom: 36 }}>
-            {[
-              { titulo: 'Aprobaciones pendientes', cuenta: aprobacionesPendientes, icono: 'inbox', tono: 'warning', href: '/admin/aprobaciones' },
-              { titulo: 'Procesos desactualizados', cuenta: procesosDesactualizados, icono: 'history', tono: 'danger', href: '/gestiones' },
-              { titulo: 'Usuarios activos', cuenta: totalUsuarios, icono: 'users', tono: 'primary', href: '/admin/usuarios' },
-              { titulo: 'Total de procesos', cuenta: totalProcesos, icono: 'grid', tono: 'neutral', href: '/gestiones' },
-            ].map((a) => (
-              <Link key={a.titulo} href={a.href} className="card" style={{ textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 14, padding: 18 }}>
-                <div className={`badge badge--${a.tono} badge--no-dot`} style={{ alignSelf: 'flex-start', padding: '5px 8px' }}>
-                  <Icono nombre={a.icono} className="icon icon--sm" />
-                </div>
-                <div>
-                  <div className="stat-number">{a.cuenta}</div>
-                  <div className="stat-label">{a.titulo}</div>
-                </div>
-              </Link>
-            ))}
-          </div>
+          <Suspense fallback={<StatsAdminSkeleton />}>
+            <StatsAdmin />
+          </Suspense>
         )}
 
         {/* Todas las Gestiones */}
