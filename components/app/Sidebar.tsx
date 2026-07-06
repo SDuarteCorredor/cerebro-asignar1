@@ -91,6 +91,9 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
             <Link href="/admin/politicas" className={`nav-item ${activa('/admin/politicas') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="paper" className="nav-item__icon" /> Gestionar Políticas
             </Link>
+            <Link href="/admin/sedes" className={`nav-item ${activa('/admin/sedes') ? 'is-active' : ''}`} onClick={navegar}>
+              <Icono nombre="target" className="nav-item__icon" /> Excepciones de sede
+            </Link>
             <Link href="/admin/aprobaciones" className={`nav-item ${activa('/admin/aprobaciones') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="inbox" className="nav-item__icon" /> Aprobaciones
               {aprobacionesPendientes > 0 && (
