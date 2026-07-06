@@ -51,14 +51,10 @@ const SEDE_POR_CCF: Record<string, string> = {
   'COMFENALCO VALLE': 'Cali',
   'CCF COMFENALCO ANTIOQUIA': 'Medellín',
 }
-// Excepciones por código de contrato (sobreescriben el default por CCF)
-const SEDE_POR_CODIGO: Record<string, string> = {
-  'ASI768':  'Rionegro', // HERNADEZ IBARRA MARIA ALEJANDRA
-  'ASI1165': 'Rionegro', // CASTRO CASTRO DAILY GABRIELA
-  'ASI1104': 'Rionegro', // SUAREZ ROSALES ABRAHAM SAHID
-}
-const inferirSede = (codigo: string, ccf: string): string => {
-  if (SEDE_POR_CODIGO[codigo]) return SEDE_POR_CODIGO[codigo]
+// Excepciones por código de contrato: cargadas desde public.sede_overrides en runtime
+const inferirSede = (codigo: string, ccf: string, overrides: Map<string, string>): string => {
+  const ov = overrides.get(codigo)
+  if (ov) return ov
   const k = (ccf ?? '').trim()
   return SEDE_POR_CCF[k] ?? 'Por confirmar'
 }
@@ -107,6 +103,10 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
     setPreview(null)
     setResultado(null)
     try {
+      const { data: overridesData } = await supabase
+        .from('sede_overrides').select('codigo_contrato, sede')
+      const overrides = new Map((overridesData ?? []).map(o => [o.codigo_contrato, o.sede]))
+
       const XLSX = await import('xlsx')
       const buf = await file.arrayBuffer()
       const wb = XLSX.read(buf, { type: 'array', cellDates: true })
@@ -140,7 +140,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
           departamento: txt(row['Departamento']),
           ciudad: txt(row['Ciudad']),
           fecha_retiro: fechaIso(row['F. Retiro'], XLSX),
-          sede_inferida: inferirSede(codigo, ccf),
+          sede_inferida: inferirSede(codigo, ccf, overrides),
           cargo_id: cargo?.id ?? null,
           // Campos opcionales del nuevo Excel (si no están en el archivo, quedan null)
           correo: txt(row['Email'] ?? row['Correo']) || null,
