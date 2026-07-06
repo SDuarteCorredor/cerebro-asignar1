@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Icono from '@/components/app/Icono'
@@ -25,11 +25,17 @@ interface Props {
 
 export default function ClienteBusqueda({ procesos, gestiones, consultaInicial, puedeCrear }: Props) {
   const router = useRouter()
-  const [q, setQ] = useState(consultaInicial)
+  const [qLocal, setQ] = useState(consultaInicial)
+  const [ultimaInicial, setUltimaInicial] = useState(consultaInicial)
   const [filtroGestion, setFiltroGestion] = useState('Todas')
   const [filtroEstado, setFiltroEstado] = useState('Todos')
 
-  useEffect(() => { setQ(consultaInicial) }, [consultaInicial])
+  // Si cambió la consulta inicial (nueva navegación), resincronizamos sin useEffect.
+  if (consultaInicial !== ultimaInicial) {
+    setUltimaInicial(consultaInicial)
+    setQ(consultaInicial)
+  }
+  const q = qLocal
 
   const termino = q.trim().toLowerCase()
 

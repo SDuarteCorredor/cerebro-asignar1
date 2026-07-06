@@ -14,7 +14,7 @@ export default function FormularioNueva() {
 
   if (!abierto) {
     return (
-      <button className="btn btn--primary" onClick={() => setAbierto(true)}>
+      <button type="button" className="btn btn--primary" onClick={() => setAbierto(true)}>
         + Nueva política
       </button>
     )

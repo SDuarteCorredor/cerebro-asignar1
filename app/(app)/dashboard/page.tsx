@@ -154,7 +154,7 @@ export default async function PaginaDashboard() {
                     <span style={{ flex: 1 }} />
                     {lider && (
                       <div className="avatar avatar--sm" title={`Líder: ${lider.nombre}`}>
-                        {lider.nombre.split(' ').slice(0, 2).map((p: string) => p[0]).join('').toUpperCase()}
+                        {obtenerIniciales(lider.nombre)}
                       </div>
                     )}
                   </div>

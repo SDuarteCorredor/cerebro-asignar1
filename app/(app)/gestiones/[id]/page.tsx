@@ -1,13 +1,9 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import IconoGestion from '@/components/app/IconoGestion'
-import BadgeEstado from '@/components/app/BadgeEstado'
-import Icono from '@/components/app/Icono'
 import FiltrosGestion from './FiltrosGestion'
-import type { EstadoProceso } from '@/types'
 
 export default async function PaginaGestion({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

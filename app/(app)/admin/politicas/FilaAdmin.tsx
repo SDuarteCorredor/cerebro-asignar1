@@ -38,8 +38,8 @@ export default function FilaAdmin({ politica }: { politica: Politica }) {
       </td>
       <td>
         <div className="hstack" style={{ gap: 6, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-          <button className="btn btn--ghost btn--sm" onClick={() => { setModo('version'); setError(null) }}>+ Versión</button>
-          <button className="btn btn--ghost btn--sm" onClick={() => { setModo('editar'); setError(null) }}>Editar</button>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={() => { setModo('version'); setError(null) }}>+ Versión</button>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={() => { setModo('editar'); setError(null) }}>Editar</button>
           <button
             className="btn btn--ghost btn--sm"
             style={{ color: 'var(--danger-ink)' }}

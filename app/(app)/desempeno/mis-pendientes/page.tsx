@@ -3,11 +3,8 @@ import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
+import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 const colorTipo: Record<string, { bg: string; fg: string; etiqueta: string }> = {
   'Jefe inmediato':  { bg: 'oklch(0.95 0.04 250)', fg: 'oklch(0.32 0.10 250)', etiqueta: 'Como jefe' },

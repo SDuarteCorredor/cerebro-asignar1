@@ -236,9 +236,22 @@ Base para el sistema de ejecución semanal inspirado en las 4 Disciplinas de la 
 ## Mejoras transversales
 
 - [x] Responsive/mobile first (CSS breakpoints) | Claude-MK
+  - [x] Login responsive en móvil (2 columnas → 1 columna, panel visual oculto) | Claude-Marketing (PR #2)
+  - [x] Barrido de grids fijos inline en 18 archivos más (buscar, reporte desempeño, perfil, comités, PDI, admin usuarios, etc.) | Claude-Marketing (PR #3)
 - [x] Clases CSS reutilizables (DRY) | Claude-MK
+  - [x] Nuevas clases mobile-first: `.layout-aside-main`, `.layout-chart-table`, `.layout-main-aside-wide`, `.grid-stats-3`, `.form-row-*` | Claude-Marketing (PR #3)
 - [x] Loading skeletons por ruta | Claude-MK
 - [x] Error boundary global | Claude-MK
 - [ ] Tests E2E (Playwright) | Asignado: ``
 - [ ] Auditoría de accesibilidad (a11y) | Asignado: ``
+  - [x] Primera pasada: `aria-hidden` en emojis decorativos del PDI | Claude-Marketing (PR #4)
+  - [ ] Pendiente: aria-labels en botones-ícono (~40 casos), audit completo
 - [x] Optimización de performance (LCP, CLS) | Claude-MK
+- [x] Limpieza de código (build fix + higiene) | Claude-Marketing
+  - [x] Fix build Vercel: mover `dynamic ssr:false` a Client Component (Next.js 16) (PR #1)
+  - [x] Fix errores `react-hooks/purity` en `FormularioCiclo.tsx` y `ClienteAprobaciones.tsx` (PR #4)
+  - [x] Fix `react-hooks/set-state-in-effect` en `ClienteBusqueda.tsx` (PR #4)
+  - [x] Centralizar `obtenerIniciales` (elimina duplicación en 8 archivos, ya existía en `lib/sesion.ts`) (PR #4)
+  - [x] `type="button"` a botones fuera de submit (PR #4)
+  - [x] Quitar imports y parámetros no usados (PR #4)
+  - Estado ESLint: 0 errores, 1 warning cosmético (`_error` requerido por firma de Next)

@@ -218,9 +218,9 @@ async function PdiDetalle({
           <div>
             <div style={{ fontSize: 11.5, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: 0.4 }}>Firmas</div>
             <div className="hstack" style={{ gap: 6, marginTop: 4, fontSize: 11.5 }}>
-              <span style={{ opacity: firmaColab ? 1 : 0.35 }}>👤</span>
-              <span style={{ opacity: firmaJefe ? 1 : 0.35 }}>👥</span>
-              <span style={{ opacity: firmaTh ? 1 : 0.35 }}>🏢</span>
+              <span aria-hidden="true" style={{ opacity: firmaColab ? 1 : 0.35 }}>👤</span>
+              <span aria-hidden="true" style={{ opacity: firmaJefe ? 1 : 0.35 }}>👥</span>
+              <span aria-hidden="true" style={{ opacity: firmaTh ? 1 : 0.35 }}>🏢</span>
             </div>
           </div>
         </div>

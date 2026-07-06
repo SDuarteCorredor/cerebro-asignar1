@@ -26,18 +26,18 @@ const RANGOS_PREDEFINIDOS = [
   { codigo: 'B3-B5', etiqueta: 'Solo líderes y dirección (B3-B5)', bandas: ['B3','B4','B5'] },
 ]
 
+function fechaISO(offsetDias = 0): string {
+  return new Date(Date.now() + offsetDias * 24 * 3600 * 1000).toISOString().split('T')[0]
+}
+
 export default function FormularioCiclo({ conteoPorBanda, totalConJefe, totalActivosConCargo }: Props) {
   const router = useRouter()
   const supabase = crearClienteNavegador()
 
-  const hoy = new Date().toISOString().split('T')[0]
-  const enUnMes = new Date(Date.now() + 30 * 24 * 3600 * 1000).toISOString().split('T')[0]
-  const enDosMeses = new Date(Date.now() + 60 * 24 * 3600 * 1000).toISOString().split('T')[0]
-
   const [nombre, setNombre] = useState('')
-  const [fechaInicio, setFechaInicio] = useState(hoy)
-  const [fechaFinCaptura, setFechaFinCaptura] = useState(enUnMes)
-  const [fechaFinProceso, setFechaFinProceso] = useState(enDosMeses)
+  const [fechaInicio, setFechaInicio] = useState(() => fechaISO(0))
+  const [fechaFinCaptura, setFechaFinCaptura] = useState(() => fechaISO(30))
+  const [fechaFinProceso, setFechaFinProceso] = useState(() => fechaISO(60))
   const [rangoSeleccionado, setRangoSeleccionado] = useState('B1-B5')
   const [guardando, setGuardando] = useState(false)
   const [error, setError] = useState('')

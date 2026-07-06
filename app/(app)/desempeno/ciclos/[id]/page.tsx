@@ -2,11 +2,8 @@ import { notFound, redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import ClienteDetalleCiclo from './ClienteDetalleCiclo'
+import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 export default async function PaginaDetalleCiclo({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

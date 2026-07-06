@@ -2,7 +2,7 @@
 
 import Icono from '@/components/app/Icono'
 
-export default function ErrorBoundary({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
+export default function ErrorBoundary({ error: _error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
     <div className="page fade-up" style={{ display: 'grid', placeItems: 'center', minHeight: '60vh' }}>
       <div style={{ textAlign: 'center', maxWidth: 420 }}>

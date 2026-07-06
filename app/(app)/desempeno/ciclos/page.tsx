@@ -3,11 +3,8 @@ import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
+import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 const colorEstado: Record<string, string> = {
   'Programado':  'badge--neutral',

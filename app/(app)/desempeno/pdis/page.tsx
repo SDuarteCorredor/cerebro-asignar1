@@ -42,7 +42,6 @@ export default async function PaginaPdis() {
     return { ...p, evaluacion: evalObj }
   })
 
-  const evalIds = pdis.map(p => p.evaluacion?.id).filter((x): x is string => !!x)
   const colabIds = pdis.map(p => p.evaluacion?.colaborador_id).filter((x): x is string => !!x)
   const cicloIds = pdis.map(p => p.evaluacion?.ciclo_id).filter((x): x is string => !!x)
   const pdiIds = pdis.map(p => p.id)

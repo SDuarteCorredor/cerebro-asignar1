@@ -23,6 +23,7 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: 
   const [rechazando, setRechazando] = useState<Aprobacion | null>(null)
   const [comentario, setComentario] = useState('')
   const [procesando, setProcesando] = useState('')
+  const [ahora] = useState(() => Date.now())
 
   async function aprobar(id: string) {
     setProcesando(id)
@@ -76,7 +77,7 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: 
 
       <div className="vstack" style={{ gap: 12 }}>
         {items.map(a => {
-          const diasEspera = Math.floor((Date.now() - new Date(a.created_at).getTime()) / 86400000)
+          const diasEspera = Math.floor((ahora - new Date(a.created_at).getTime()) / 86400000)
           return (
             <div key={a.id} className="card" style={{ padding: 18 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, alignItems: 'flex-start' }}>

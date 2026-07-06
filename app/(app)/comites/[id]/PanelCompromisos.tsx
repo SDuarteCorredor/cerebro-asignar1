@@ -70,7 +70,7 @@ export default function PanelCompromisos({
 
       {editable && (
         !abierto ? (
-          <button className="btn btn--ghost btn--sm" onClick={() => setAbierto(true)} style={{ alignSelf: 'flex-start' }}>
+          <button type="button" className="btn btn--ghost btn--sm" onClick={() => setAbierto(true)} style={{ alignSelf: 'flex-start' }}>
             + Agregar compromiso
           </button>
         ) : (

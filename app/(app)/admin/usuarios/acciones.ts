@@ -41,7 +41,7 @@ export async function crearUsuarioPreregistro(formData: FormData) {
   if (errIns || !nuevo) return { error: errIns?.message ?? 'No se pudo crear el usuario' }
 
   if (enviarInvitacion) {
-    const res = await enviarInvitacion_(supabase, sesion.id, nuevo.id, correo, nombre)
+    const res = await enviarInvitacion_(supabase, sesion.id, nuevo.id, correo)
     if (res.error) return { ok: true, id: nuevo.id, warn: `Usuario creado pero no se pudo enviar invitación: ${res.error}` }
   }
 
@@ -58,7 +58,7 @@ export async function enviarInvitacion(usuarioId: string) {
   if (!u.correo) return { error: 'El usuario no tiene correo registrado' }
   if (u.tiene_login) return { error: 'El usuario ya tiene sesión activa' }
 
-  const res = await enviarInvitacion_(supabase, sesion.id, u.id, u.correo, u.nombre)
+  const res = await enviarInvitacion_(supabase, sesion.id, u.id, u.correo)
   if (res.error) return { error: res.error }
   revalidatePath('/admin/usuarios')
   revalidatePath(`/admin/usuarios/${usuarioId}`)
@@ -70,7 +70,6 @@ async function enviarInvitacion_(
   invitadoPor: string,
   usuarioId: string,
   correo: string,
-  _nombre: string,
 ) {
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? ''
   const { error } = await supabase.auth.signInWithOtp({

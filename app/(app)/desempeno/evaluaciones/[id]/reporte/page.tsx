@@ -9,11 +9,8 @@ const RadarReporte = dynamic(() => import('./RadarReporte'), {
   loading: () => <div style={{ width: '100%', height: 360, display: 'grid', placeItems: 'center', color: 'var(--text-3)', fontSize: 13 }}>Cargando gráfico…</div>,
 })
 import { calcularReporte, calcularTop3Acciones, type Plan, type Item, type Respuesta, type Ponderacion, type NivelEsperado, type Accion, type Modalidad, type Prioridad } from '@/lib/desempeno/calculo'
+import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
-
-function obtenerIniciales(nombre: string) {
-  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
-}
 
 const colorPrioridad: Record<Prioridad, string> = {
   'Cumple':         'badge--success',
