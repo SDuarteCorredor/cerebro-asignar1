@@ -84,3 +84,26 @@ export function colorPct(pct: number): string {
 export function badgePct(pct: number): string {
   return pct >= 80 ? 'badge--success' : pct >= 50 ? 'badge--warning' : 'badge--danger'
 }
+
+/** Semana ISO + año ISO de una fecha (lunes = inicio de semana). */
+export function semanaISOde(fecha: Date): { semana: number; anio: number } {
+  const d = new Date(Date.UTC(fecha.getFullYear(), fecha.getMonth(), fecha.getDate()))
+  const dayNum = d.getUTCDay() || 7
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+  const semana = Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1) / 7)
+  return { semana, anio: d.getUTCFullYear() }
+}
+
+/** Nº de semanas ISO que tiene un año (52 o 53). */
+export function numSemanasISO(anio: number): number {
+  return semanaISOde(new Date(anio, 11, 28)).semana
+}
+
+/** Color del heatmap para el % de una semana (null = sin comité → neutro). */
+export function colorHeatmap(pct: number | null): string {
+  if (pct === null) return 'var(--border)'
+  if (pct >= 80) return 'var(--success)'
+  if (pct >= 50) return 'var(--warning)'
+  return 'var(--danger)'
+}

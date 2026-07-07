@@ -241,7 +241,12 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 - [x] Tabla comparativa normalizada en % entre gestiones, con posiciones
 - [x] Filtro por año (acumulado anual, default año en curso)
 
-### Fase 3 (pendiente, depende de Etapa 8)
+### Fase 3 — gamificación (completada)
+- [x] Heatmap de constancia semanal por persona (celdas coloreadas por % ponderado)
+- [x] Ventanas de tiempo en el ranking (semana / mes / año)
+- [x] Delta de puntos ganados en la semana en curso (+X)
+
+### Fase 4 (pendiente, depende de Etapa 8)
 - [ ] Cadena con onboarding (arrancar puntos desde período de prueba)
 
 ---

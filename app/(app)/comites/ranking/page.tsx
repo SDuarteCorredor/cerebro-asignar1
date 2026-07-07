@@ -3,28 +3,40 @@ import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
-import { calcularPonderado, colorPct, badgePct } from '@/lib/comites/puntaje'
+import { calcularPonderado, colorPct, badgePct, pesoDe, semanaISOde, numSemanasISO } from '@/lib/comites/puntaje'
+import HeatmapSemanal, { type CeldaSemana } from '../HeatmapSemanal'
+
+type Ventana = 'semana' | 'mes' | 'anio'
+const VENTANAS: { clave: Ventana; label: string }[] = [
+  { clave: 'semana', label: 'Semana' },
+  { clave: 'mes', label: 'Mes' },
+  { clave: 'anio', label: 'Año' },
+]
 
 export default async function RankingComites({ searchParams }: {
-  searchParams: Promise<{ anio?: string }>
+  searchParams: Promise<{ anio?: string; ventana?: string }>
 }) {
   const sesion = await obtenerSesion()
-  const { anio: anioParam } = await searchParams
+  const { anio: anioParam, ventana: ventanaParam } = await searchParams
   const supabase = await crearClienteServidor()
   const esAdmin = sesion.rol === 'admin'
 
-  const anioActual = new Date().getFullYear()
+  const hoy = new Date()
+  const anioActual = hoy.getFullYear()
+  const { semana: semanaActual } = semanaISOde(hoy)
+  const mesActual = hoy.getMonth() + 1
   const anio = anioParam ? parseInt(anioParam, 10) : anioActual
+  const ventana: Ventana = (['semana', 'mes', 'anio'] as const).includes(ventanaParam as Ventana)
+    ? (ventanaParam as Ventana) : 'anio'
 
-  // Todos los comités del año (RLS permite lectura a autenticados; la comparativa necesita todas las gestiones)
+  // Todos los comités del año (la comparativa necesita todas las gestiones; heatmap y delta necesitan todo el año)
   const { data: comitesAnio } = await supabase
-    .from('comites').select('id, gestion_id, anio').eq('anio', anio)
-  // Años disponibles para el selector
+    .from('comites').select('id, gestion_id, anio, semana_iso, fecha').eq('anio', anio)
   const { data: aniosRaw } = await supabase.from('comites').select('anio')
   const aniosDisponibles = Array.from(new Set([anioActual, ...(aniosRaw ?? []).map(a => a.anio)])).sort((a, b) => b - a)
 
   const comiteIds = (comitesAnio ?? []).map(c => c.id)
-  const comiteAGestion = new Map((comitesAnio ?? []).map(c => [c.id, c.gestion_id]))
+  const comiteInfo = new Map((comitesAnio ?? []).map(c => [c.id, { gestion_id: c.gestion_id, semana: c.semana_iso, fecha: c.fecha }]))
   const gestionIds = Array.from(new Set((comitesAnio ?? []).map(c => c.gestion_id)))
 
   const { data: compromisos } = comiteIds.length > 0
@@ -45,36 +57,48 @@ export default async function RankingComites({ searchParams }: {
   const mapGestion = new Map((gestiones ?? []).map(g => [g.id, g.nombre]))
   const mapUsuario = new Map((usuarios ?? []).map(u => [u.id, u.nombre]))
 
-  // --- Comparativa entre gestiones (normalizada en %) ---
-  const compsPorGestion = new Map<string, { estado: string; impacto: string }[]>()
-  // --- Escalafón individual: gestión -> persona -> compromisos ---
-  const porGestionPersona = new Map<string, Map<string, { estado: string; impacto: string }[]>>()
+  // ¿Qué comités entran según la ventana de tiempo?
+  const entraEnVentana = (comiteId: string): boolean => {
+    const info = comiteInfo.get(comiteId)
+    if (!info) return false
+    if (ventana === 'anio') return true
+    if (ventana === 'semana') return info.semana === semanaActual
+    if (ventana === 'mes') return parseInt((info.fecha ?? '').slice(5, 7), 10) === mesActual
+    return true
+  }
 
-  for (const comp of compromisos ?? []) {
-    const gid = comiteAGestion.get(comp.comite_origen_id)
+  const compsVentana = (compromisos ?? []).filter(c => entraEnVentana(c.comite_origen_id))
+
+  // --- Comparativa entre gestiones (según ventana) ---
+  const compsPorGestion = new Map<string, { estado: string; impacto: string }[]>()
+  const porGestionPersona = new Map<string, Map<string, { estado: string; impacto: string }[]>>()
+  for (const comp of compsVentana) {
+    const gid = comiteInfo.get(comp.comite_origen_id)?.gestion_id
     if (!gid) continue
     const fila = { estado: comp.estado, impacto: comp.impacto }
-
     const g = compsPorGestion.get(gid) ?? []
-    g.push(fila)
-    compsPorGestion.set(gid, g)
-
-    const personas = porGestionPersona.get(gid) ?? new Map<string, { estado: string; impacto: string }[]>()
+    g.push(fila); compsPorGestion.set(gid, g)
+    const personas = porGestionPersona.get(gid) ?? new Map()
     const p = personas.get(comp.responsable_id) ?? []
-    p.push(fila)
-    personas.set(comp.responsable_id, p)
+    p.push(fila); personas.set(comp.responsable_id, p)
     porGestionPersona.set(gid, personas)
+  }
+
+  // --- Delta: puntos ganados en la semana ISO actual, por persona (solo en el año en curso) ---
+  const deltaPorPersona = new Map<string, number>()
+  if (anio === anioActual) {
+    for (const comp of compromisos ?? []) {
+      if (comiteInfo.get(comp.comite_origen_id)?.semana !== semanaActual) continue
+      if (comp.estado !== 'cumplido') continue
+      deltaPorPersona.set(comp.responsable_id, (deltaPorPersona.get(comp.responsable_id) ?? 0) + pesoDe(comp.impacto))
+    }
   }
 
   const comparativa = gestionIds
     .map(gid => ({ gestion_id: gid, nombre: mapGestion.get(gid) ?? '—', r: calcularPonderado(compsPorGestion.get(gid) ?? []) }))
     .sort((a, b) => (b.r.pctPonderado ?? -1) - (a.r.pctPonderado ?? -1))
 
-  // Gestiones a mostrar en escalafón individual: admin ve todas; el resto solo la suya
-  const gestionesEscalafon = esAdmin
-    ? gestionIds
-    : gestionIds.filter(gid => gid === sesion.gestion_id)
-
+  const gestionesEscalafon = esAdmin ? gestionIds : gestionIds.filter(gid => gid === sesion.gestion_id)
   const escalafones = gestionesEscalafon.map(gid => {
     const personas = porGestionPersona.get(gid) ?? new Map()
     const filas = Array.from(personas.entries())
@@ -83,15 +107,37 @@ export default async function RankingComites({ searchParams }: {
         return {
           usuario_id: uid as string,
           nombre: mapUsuario.get(uid as string) ?? '—',
-          puntos: r.pesoCumplido,
-          pct: r.pctPonderado,
-          cumplidos: r.cumplidos,
-          total: r.total,
+          puntos: r.pesoCumplido, pct: r.pctPonderado, cumplidos: r.cumplidos, total: r.total,
+          delta: deltaPorPersona.get(uid as string) ?? 0,
         }
       })
       .sort((a, b) => b.puntos - a.puntos || (b.pct ?? -1) - (a.pct ?? -1))
     return { gestion_id: gid, nombre: mapGestion.get(gid) ?? '—', filas }
   }).filter(e => e.filas.length > 0)
+
+  // --- Heatmap personal del usuario (año completo, independiente de la ventana) ---
+  const misCompsPorSemana = new Map<number, { estado: string; impacto: string }[]>()
+  for (const comp of compromisos ?? []) {
+    if (comp.responsable_id !== sesion.id) continue
+    const sem = comiteInfo.get(comp.comite_origen_id)?.semana
+    if (!sem) continue
+    const arr = misCompsPorSemana.get(sem) ?? []
+    arr.push({ estado: comp.estado, impacto: comp.impacto })
+    misCompsPorSemana.set(sem, arr)
+  }
+  const totalSemanas = numSemanasISO(anio)
+  const celdasHeatmap: CeldaSemana[] = Array.from({ length: totalSemanas }, (_, i) => {
+    const semana = i + 1
+    const comps = misCompsPorSemana.get(semana)
+    if (!comps) return { semana, pct: null, cumplidos: 0, total: 0 }
+    const r = calcularPonderado(comps)
+    return { semana, pct: r.pctPonderado, cumplidos: r.cumplidos, total: r.total }
+  })
+  const tengoDatosHeatmap = misCompsPorSemana.size > 0
+
+  const subtituloVentana = ventana === 'semana' ? `Semana ISO ${semanaActual}`
+    : ventana === 'mes' ? `Mes ${String(mesActual).padStart(2, '0')}/${anio}`
+    : `Año ${anio} completo`
 
   return (
     <>
@@ -100,24 +146,40 @@ export default async function RankingComites({ searchParams }: {
         { etiqueta: 'Ranking' },
       ]} />
       <main className="page fade-up">
-        <div className="hstack" style={{ justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+        <div className="hstack" style={{ justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 16, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <div className="page__eyebrow">Escalafón · 4DX</div>
-            <h1 className="page__title">Ranking de cumplimiento {anio}</h1>
+            <h1 className="page__title">Ranking de cumplimiento</h1>
             <p style={{ margin: '4px 0 0', fontSize: 13, color: 'var(--text-3)' }}>
-              Puntos por compromisos cumplidos (peso alto=3, medio=2, bajo=1) y % de cumplimiento personal.
+              Puntos por compromisos cumplidos (peso alto=3, medio=2, bajo=1) y % personal · {subtituloVentana}
             </p>
           </div>
           <div className="hstack" style={{ gap: 6 }}>
             {aniosDisponibles.map(a => (
-              <Link key={a} href={`/comites/ranking?anio=${a}`}
+              <Link key={a} href={`/comites/ranking?anio=${a}&ventana=${ventana}`}
                 className={`btn btn--sm ${a === anio ? 'btn--primary' : 'btn--ghost'}`}>{a}</Link>
             ))}
-            <Link href="/comites" className="btn btn--ghost btn--sm">
-              <Icono nombre="history" className="icon icon--sm" /> Comités
-            </Link>
           </div>
         </div>
+
+        {/* Pestañas de ventana */}
+        <div className="hstack" style={{ gap: 6, marginBottom: 22 }}>
+          {VENTANAS.map(v => (
+            <Link key={v.clave} href={`/comites/ranking?anio=${anio}&ventana=${v.clave}`}
+              className={`btn btn--sm ${v.clave === ventana ? 'btn--primary' : 'btn--ghost'}`}>{v.label}</Link>
+          ))}
+        </div>
+
+        {/* Heatmap personal */}
+        {tengoDatosHeatmap && (
+          <section style={{ marginBottom: 26 }}>
+            <HeatmapSemanal
+              titulo={`Tu constancia semanal · ${anio}`}
+              celdas={celdasHeatmap}
+              semanaActual={anio === anioActual ? semanaActual : null}
+            />
+          </section>
+        )}
 
         {/* Comparativa entre gestiones */}
         <section style={{ marginBottom: 30 }}>
@@ -127,7 +189,7 @@ export default async function RankingComites({ searchParams }: {
           </div>
           {comparativa.length === 0 ? (
             <div className="card" style={{ padding: 22, textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>
-              No hay comités registrados en {anio}.
+              No hay comités en este período.
             </div>
           ) : (
             <div className="card card--table">
@@ -182,8 +244,9 @@ export default async function RankingComites({ searchParams }: {
                     <th style={{ width: 50 }}>#</th>
                     <th>Persona</th>
                     <th style={{ width: 90, textAlign: 'center' }}>Puntos</th>
-                    <th style={{ width: 100, textAlign: 'center' }}>Cumplidos</th>
-                    <th style={{ width: 110, textAlign: 'center' }}>% personal</th>
+                    <th style={{ width: 90, textAlign: 'center' }}>Esta sem.</th>
+                    <th style={{ width: 90, textAlign: 'center' }}>Cumplidos</th>
+                    <th style={{ width: 100, textAlign: 'center' }}>% personal</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -201,6 +264,9 @@ export default async function RankingComites({ searchParams }: {
                           </div>
                         </td>
                         <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15 }}>{f.puntos}</td>
+                        <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', color: f.delta > 0 ? 'var(--success-ink)' : 'var(--text-3)' }}>
+                          {f.delta > 0 ? `+${f.delta}` : '—'}
+                        </td>
                         <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>{f.cumplidos}/{f.total}</td>
                         <td style={{ textAlign: 'center' }}>
                           {f.pct === null
@@ -218,7 +284,7 @@ export default async function RankingComites({ searchParams }: {
 
         {escalafones.length === 0 && comparativa.length > 0 && (
           <div className="card" style={{ padding: 22, textAlign: 'center', color: 'var(--text-3)', fontSize: 13 }}>
-            Aún no hay compromisos con responsable en tu gestión para armar el escalafón.
+            Aún no hay compromisos con responsable en tu gestión para este período.
           </div>
         )}
       </main>
