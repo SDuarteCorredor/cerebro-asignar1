@@ -7,6 +7,7 @@ import Icono from '@/components/app/Icono'
 import PanelRevision from './PanelRevision'
 import PanelCompromisos from './PanelCompromisos'
 import BotonCerrar from './BotonCerrar'
+import { calcularPonderado, badgePct } from '@/lib/comites/puntaje'
 
 export default async function PaginaComite({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -25,7 +26,7 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
       .select('usuario_id, presente, usuarios:usuario_id(id, nombre, codigo_contrato)')
       .eq('comite_id', id),
     supabase.from('compromisos')
-      .select('id, responsable_id, descripcion, fecha_limite, estado, notas_revision, revisado_en_id')
+      .select('id, responsable_id, descripcion, fecha_limite, estado, impacto, autorreporte_nota, notas_revision, revisado_en_id')
       .eq('comite_origen_id', id).order('created_at'),
   ])
   if (!gestion) notFound()
@@ -44,9 +45,9 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
 
   const { data: compromisosARevisar } = comiteAnterior
     ? await supabase.from('compromisos')
-        .select('id, responsable_id, descripcion, fecha_limite, estado, notas_revision, revisado_en_id')
+        .select('id, responsable_id, descripcion, fecha_limite, estado, impacto, autorreporte_nota, notas_revision, revisado_en_id')
         .eq('comite_origen_id', comiteAnterior.id)
-    : { data: [] as { id: string; responsable_id: string; descripcion: string; fecha_limite: string | null; estado: string; notas_revision: string | null; revisado_en_id: string | null }[] }
+    : { data: [] as { id: string; responsable_id: string; descripcion: string; fecha_limite: string | null; estado: string; impacto: string; autorreporte_nota: string | null; notas_revision: string | null; revisado_en_id: string | null }[] }
 
   const asisArr = (asistentes ?? []).map(a => {
     const rawU = a.usuarios as unknown as { id: string; nombre: string; codigo_contrato: string | null }[] | { id: string; nombre: string; codigo_contrato: string | null } | null
@@ -56,12 +57,13 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
 
   const mapUsuario = new Map(asisArr.map(a => [a.usuario_id, a.u!]))
 
-  // Estadísticas del comité actual (compromisos propuestos aquí)
-  const total = (compromisosActuales ?? []).length
-  const cumplidos = (compromisosActuales ?? []).filter(c => c.estado === 'cumplido').length
-  const noCumplidos = (compromisosActuales ?? []).filter(c => c.estado === 'no_cumplido').length
-  const evaluados = cumplidos + noCumplidos
-  const pct = evaluados > 0 ? Math.round((cumplidos / evaluados) * 100) : null
+  // Estadísticas del comité actual — ponderadas por impacto (§4DX)
+  const stats = calcularPonderado(compromisosActuales ?? [])
+  const total = stats.total
+  const cumplidos = stats.cumplidos
+  const noCumplidos = stats.noCumplidos
+  const evaluados = stats.evaluados
+  const pct = stats.pctPonderado
 
   return (
     <>
@@ -88,8 +90,8 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
               ? <span className="badge badge--neutral">Cerrado</span>
               : <span className="badge badge--success">Abierto</span>}
             {pct !== null && (
-              <span className={`badge ${pct >= 80 ? 'badge--success' : pct >= 50 ? 'badge--warning' : 'badge--danger'}`}>
-                Cumplimiento {pct}% ({cumplidos}/{evaluados})
+              <span className={`badge ${badgePct(pct)}`}>
+                Cumplimiento ponderado {pct}% ({cumplidos}/{evaluados})
               </span>
             )}
           </div>
@@ -151,11 +153,9 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
               <div className="page__eyebrow" style={{ marginBottom: 4 }}>Esta semana</div>
               <h2 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Compromisos para la próxima revisión</h2>
             </div>
-            {pct !== null && (
-              <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
-                {cumplidos} cumplidos · {noCumplidos} no cumplidos · {total - evaluados} sin revisar
-              </span>
-            )}
+            <span style={{ fontSize: 12, color: 'var(--text-3)' }}>
+              {cumplidos} cumplidos · {noCumplidos} no cumplidos · {stats.reportados} reportados · {stats.pendientes} pendientes
+            </span>
           </div>
           <PanelCompromisos
             comiteId={comite.id}
@@ -165,6 +165,7 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
             }))}
             asistentes={asisArr.map(a => ({ id: a.usuario_id, nombre: a.u!.nombre }))}
             editable={puedeEditar && !comite.cerrado}
+            sesionId={sesion.id}
           />
         </section>
 

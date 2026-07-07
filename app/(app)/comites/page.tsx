@@ -3,12 +3,13 @@ import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
+import { calcularPonderado, badgePct } from '@/lib/comites/puntaje'
 
-const badgeCumplimiento = (pct: number) =>
-  pct >= 80 ? 'badge--success' : pct >= 50 ? 'badge--warning' : 'badge--danger'
-
-export default async function PaginaComites() {
+export default async function PaginaComites({ searchParams }: {
+  searchParams: Promise<{ gestion?: string }>
+}) {
   const sesion = await obtenerSesion()
+  const { gestion: filtroGestion } = await searchParams
   const supabase = await crearClienteServidor()
 
   const esAdmin = sesion.rol === 'admin'
@@ -20,6 +21,7 @@ export default async function PaginaComites() {
     .order('fecha', { ascending: false })
     .limit(50)
   if (!esAdmin && sesion.gestion_id) query = query.eq('gestion_id', sesion.gestion_id)
+  else if (esAdmin && filtroGestion) query = query.eq('gestion_id', filtroGestion)
 
   const { data: comites } = await query
 
@@ -31,20 +33,20 @@ export default async function PaginaComites() {
       ? supabase.from('gestiones').select('id, nombre').in('id', gestionIds)
       : Promise.resolve({ data: [] as { id: string; nombre: string }[] }),
     comiteIds.length > 0
-      ? supabase.from('compromisos').select('comite_origen_id, estado').in('comite_origen_id', comiteIds)
-      : Promise.resolve({ data: [] as { comite_origen_id: string; estado: string }[] }),
+      ? supabase.from('compromisos').select('comite_origen_id, estado, impacto').in('comite_origen_id', comiteIds)
+      : Promise.resolve({ data: [] as { comite_origen_id: string; estado: string; impacto: string }[] }),
   ])
 
   const mapGestion = new Map((gestiones ?? []).map(g => [g.id, g.nombre]))
-  const statsPorComite = new Map<string, { total: number; cumplidos: number; no_cumplidos: number; pendientes: number }>()
+  const compsPorComite = new Map<string, { estado: string; impacto: string }[]>()
   for (const c of compromisos ?? []) {
-    const s = statsPorComite.get(c.comite_origen_id) ?? { total: 0, cumplidos: 0, no_cumplidos: 0, pendientes: 0 }
-    s.total++
-    if (c.estado === 'cumplido') s.cumplidos++
-    else if (c.estado === 'no_cumplido') s.no_cumplidos++
-    else if (c.estado === 'pendiente') s.pendientes++
-    statsPorComite.set(c.comite_origen_id, s)
+    const arr = compsPorComite.get(c.comite_origen_id) ?? []
+    arr.push({ estado: c.estado, impacto: c.impacto })
+    compsPorComite.set(c.comite_origen_id, arr)
   }
+  const statsPorComite = new Map(
+    Array.from(compsPorComite.entries()).map(([id, comps]) => [id, calcularPonderado(comps)])
+  )
 
   // Mis gestiones para crear
   const misGestiones = esAdmin
@@ -65,11 +67,16 @@ export default async function PaginaComites() {
               Actas semanales por equipo con compromisos, revisión y % de cumplimiento.
             </p>
           </div>
-          {puedeCrear && (
-            <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
-              <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
+          <div className="hstack" style={{ gap: 8 }}>
+            <Link href="/comites/tablero" className="btn btn--ghost btn--sm">
+              <Icono nombre="chart" className="icon icon--sm" /> Tablero
             </Link>
-          )}
+            {puedeCrear && (
+              <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
+                <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
+              </Link>
+            )}
+          </div>
         </div>
 
         {(!comites || comites.length === 0) ? (
@@ -100,9 +107,9 @@ export default async function PaginaComites() {
               </thead>
               <tbody>
                 {comites.map(c => {
-                  const s = statsPorComite.get(c.id) ?? { total: 0, cumplidos: 0, no_cumplidos: 0, pendientes: 0 }
-                  const evaluados = s.cumplidos + s.no_cumplidos
-                  const pct = evaluados > 0 ? Math.round((s.cumplidos / evaluados) * 100) : null
+                  const s = statsPorComite.get(c.id)
+                  const total = s?.total ?? 0
+                  const pct = s?.pctPonderado ?? null
                   return (
                     <tr key={c.id}>
                       <td>
@@ -111,7 +118,7 @@ export default async function PaginaComites() {
                       </td>
                       <td>{mapGestion.get(c.gestion_id) ?? '—'}</td>
                       <td>{c.titulo ?? <span className="text-muted">Comité semanal</span>}</td>
-                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>{s.total}</td>
+                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>{total}</td>
                       <td>
                         {pct === null ? (
                           <span className="text-muted text-sm">Sin evaluar</span>
@@ -120,7 +127,7 @@ export default async function PaginaComites() {
                             <div style={{ flex: 1, background: 'var(--border)', height: 6, borderRadius: 999, overflow: 'hidden' }}>
                               <div style={{ width: `${pct}%`, height: '100%', background: pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)' }} />
                             </div>
-                            <span className={`badge ${badgeCumplimiento(pct)}`}>{pct}%</span>
+                            <span className={`badge ${badgePct(pct)}`}>{pct}%</span>
                           </div>
                         )}
                       </td>

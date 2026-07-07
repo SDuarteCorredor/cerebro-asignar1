@@ -71,6 +71,8 @@ export async function agregarCompromiso(formData: FormData) {
   const responsableId = String(formData.get('responsable_id') ?? '')
   const descripcion = String(formData.get('descripcion') ?? '').trim()
   const fechaLimite = String(formData.get('fecha_limite') ?? '') || null
+  const impactoRaw = String(formData.get('impacto') ?? 'medio')
+  const impacto = ['bajo', 'medio', 'alto'].includes(impactoRaw) ? impactoRaw : 'medio'
 
   if (!comiteId || !responsableId || !descripcion) return { error: 'Datos incompletos' }
 
@@ -79,10 +81,40 @@ export async function agregarCompromiso(formData: FormData) {
     responsable_id: responsableId,
     descripcion,
     fecha_limite: fechaLimite,
+    impacto,
     estado: 'pendiente',
   })
   if (error) return { error: error.message }
   revalidatePath(`/comites/${comiteId}`)
+  return { ok: true }
+}
+
+/** Autorreporte del responsable: marca su compromiso como 'reportado' con nota de avance.
+ *  La RLS impide que ponga estados de confirmación (cumplido/no_cumplido). */
+export async function autorreportarCompromiso(args: {
+  compromiso_id: string
+  comite_id: string
+  nota: string
+  deshacer?: boolean
+}) {
+  const { supabase, userId } = await autenticar()
+
+  // Solo el responsable puede autorreportar su compromiso
+  const { data: comp } = await supabase
+    .from('compromisos').select('responsable_id, estado').eq('id', args.compromiso_id).single()
+  if (!comp) return { error: 'Compromiso no encontrado' }
+  if (comp.responsable_id !== userId) return { error: 'Solo el responsable puede reportar su avance' }
+  if (comp.estado === 'cumplido' || comp.estado === 'no_cumplido') {
+    return { error: 'El líder ya confirmó este compromiso' }
+  }
+
+  const patch = args.deshacer
+    ? { estado: 'pendiente', autorreporte_nota: null, autorreportado_en: null, updated_at: new Date().toISOString() }
+    : { estado: 'reportado', autorreporte_nota: args.nota.trim() || null, autorreportado_en: new Date().toISOString(), updated_at: new Date().toISOString() }
+
+  const { error } = await supabase.from('compromisos').update(patch).eq('id', args.compromiso_id)
+  if (error) return { error: error.message }
+  revalidatePath(`/comites/${args.comite_id}`)
   return { ok: true }
 }
 

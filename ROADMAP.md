@@ -217,19 +217,29 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ---
 
-## Etapa 13 — Comités y Compromisos (4DX) — MVP | Claude-Simon
+## Etapa 13 — Comités y Compromisos (4DX) | Claude-Simon
 
-Base para el sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. Actas semanales por gestión, compromisos con responsable + fecha límite, revisión chuleada en el comité siguiente, cálculo de % de cumplimiento.
+Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. Actas semanales por gestión, compromisos con responsable + fecha límite, revisión chuleada en el comité siguiente, cálculo de % de cumplimiento.
 
+### MVP (completado)
 - [x] Schema: `comites`, `comite_asistentes`, `compromisos` + RLS por líder de gestión
 - [x] Lista `/comites` con filtro por gestión y % de cumplimiento por comité
 - [x] Crear comité que auto-siembra a los miembros activos de la gestión
 - [x] Detalle del comité con revisión del anterior y compromisos nuevos
 - [x] Marcar compromisos como cumplido / no cumplido / arrastrado
 - [x] Cerrar comité cuando todos están evaluados
-- [ ] Ponderación por impacto (bajo/medio/alto) — v2
-- [ ] Ranking individual dentro de la gestión y tabla general entre gestiones — v2
-- [ ] Cadena con onboarding (arrancar puntos desde período de prueba) — v2
+
+### Fase 1 (completada)
+- [x] Ponderación por impacto (bajo/medio/alto) — peso 1/2/3, resuelve anti-sandbagging
+- [x] % de cumplimiento ponderado en lista, detalle y tablero
+- [x] Autorreporte del responsable (estado `reportado`) + confirmación del líder (2 pasos)
+- [x] RLS: el responsable solo puede dejar su compromiso en pendiente/reportado, no auto-confirmarse
+- [x] Tablero de resultados `/comites/tablero` por gestión con % ponderado acumulado y de la semana reciente
+
+### Fase 2 (pendiente)
+- [ ] Ranking individual dentro de la gestión (puntos por cumplimiento ponderado)
+- [ ] Tabla general normalizada en % para comparar entre gestiones
+- [ ] Cadena con onboarding (arrancar puntos desde período de prueba) — depende de Etapa 8
 
 ---
 
