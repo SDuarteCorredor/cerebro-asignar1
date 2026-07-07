@@ -68,11 +68,16 @@ export default async function PaginaComites({ searchParams }: {
               Actas semanales por equipo con compromisos, revisión y % de cumplimiento.
             </p>
           </div>
-          {puedeCrear && (
-            <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
-              <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
+          <div className="hstack" style={{ gap: 8 }}>
+            <Link href="/comites/ranking" className="btn btn--ghost btn--sm">
+              <Icono nombre="target" className="icon icon--sm" /> Ranking
             </Link>
-          )}
+            {puedeCrear && (
+              <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
+                <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Tablero de resultados — siempre visible */}

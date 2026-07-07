@@ -236,10 +236,13 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 - [x] RLS: el responsable solo puede dejar su compromiso en pendiente/reportado, no auto-confirmarse
 - [x] Tablero de resultados `/comites/tablero` por gestión con % ponderado acumulado y de la semana reciente
 
-### Fase 2 (pendiente)
-- [ ] Ranking individual dentro de la gestión (puntos por cumplimiento ponderado)
-- [ ] Tabla general normalizada en % para comparar entre gestiones
-- [ ] Cadena con onboarding (arrancar puntos desde período de prueba) — depende de Etapa 8
+### Fase 2 (completada)
+- [x] Ranking individual dentro de la gestión — puntos (peso cumplido) + % personal, `/comites/ranking`
+- [x] Tabla comparativa normalizada en % entre gestiones, con posiciones
+- [x] Filtro por año (acumulado anual, default año en curso)
+
+### Fase 3 (pendiente, depende de Etapa 8)
+- [ ] Cadena con onboarding (arrancar puntos desde período de prueba)
 
 ---
 
