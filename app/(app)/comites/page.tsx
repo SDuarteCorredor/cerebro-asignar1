@@ -4,6 +4,7 @@ import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
 import { calcularPonderado, badgePct } from '@/lib/comites/puntaje'
+import TableroGestiones from './TableroGestiones'
 
 export default async function PaginaComites({ searchParams }: {
   searchParams: Promise<{ gestion?: string }>
@@ -67,16 +68,18 @@ export default async function PaginaComites({ searchParams }: {
               Actas semanales por equipo con compromisos, revisión y % de cumplimiento.
             </p>
           </div>
-          <div className="hstack" style={{ gap: 8 }}>
-            <Link href="/comites/tablero" className="btn btn--ghost btn--sm">
-              <Icono nombre="chart" className="icon icon--sm" /> Tablero
+          {puedeCrear && (
+            <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
+              <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
             </Link>
-            {puedeCrear && (
-              <Link href="/comites/nuevo" className="btn btn--primary btn--sm">
-                <Icono nombre="plus" className="icon icon--sm" /> Nuevo comité
-              </Link>
-            )}
-          </div>
+          )}
+        </div>
+
+        {/* Tablero de resultados — siempre visible */}
+        <TableroGestiones sesion={sesion} />
+
+        <div className="section-header" style={{ marginBottom: 12 }}>
+          <div className="page__eyebrow" style={{ margin: 0 }}>Actas semanales</div>
         </div>
 
         {(!comites || comites.length === 0) ? (
