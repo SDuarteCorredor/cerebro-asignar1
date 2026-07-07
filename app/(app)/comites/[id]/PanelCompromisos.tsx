@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { agregarCompromiso, eliminarCompromiso, autorreportarCompromiso } from '../acciones'
+import { agregarCompromiso, eliminarCompromiso, autorreportarCompromiso, marcarEstado } from '../acciones'
 import { BADGE_IMPACTO, ETIQUETA_IMPACTO, type Impacto } from '@/lib/comites/puntaje'
 
 interface Comp {
@@ -47,6 +47,17 @@ export default function PanelCompromisos({
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
+  function marcar(compromisoId: string, estado: 'cumplido' | 'no_cumplido' | 'pendiente') {
+    startTransition(async () => {
+      const res = await marcarEstado({
+        compromiso_id: compromisoId, comite_id: comiteId, estado,
+        revisado_en_id: estado === 'pendiente' ? null : comiteId,
+      })
+      if (res.error) alert(res.error)
+      else router.refresh()
+    })
+  }
+
   return (
     <div className="vstack" style={{ gap: 10 }}>
       {compromisos.length === 0 && (
@@ -78,17 +89,30 @@ export default function PanelCompromisos({
                   </div>
                 )}
               </div>
-              {editable && c.estado === 'pendiente' && (
-                <button
-                  className="btn btn--ghost btn--sm"
-                  disabled={isPending}
-                  style={{ color: 'var(--danger-ink)' }}
-                  onClick={() => startTransition(async () => {
-                    if (!confirm('¿Eliminar este compromiso?')) return
-                    await eliminarCompromiso(c.id, comiteId)
-                    router.refresh()
-                  })}
-                >×</button>
+              {editable && (
+                <div className="hstack" style={{ gap: 4, flexShrink: 0 }}>
+                  <button
+                    className="btn btn--ghost btn--sm" title="Confirmar cumplido" disabled={isPending}
+                    onClick={() => marcar(c.id, 'cumplido')}
+                    style={{ background: c.estado === 'cumplido' ? 'var(--success)' : undefined, color: c.estado === 'cumplido' ? 'var(--on-primary)' : undefined }}
+                  >✓</button>
+                  <button
+                    className="btn btn--ghost btn--sm" title="Confirmar no cumplido" disabled={isPending}
+                    onClick={() => marcar(c.id, 'no_cumplido')}
+                    style={{ background: c.estado === 'no_cumplido' ? 'var(--danger)' : undefined, color: c.estado === 'no_cumplido' ? 'var(--on-primary)' : undefined }}
+                  >✗</button>
+                  {(c.estado === 'pendiente' || c.estado === 'reportado') && (
+                    <button
+                      className="btn btn--ghost btn--sm" title="Eliminar" disabled={isPending}
+                      style={{ color: 'var(--danger-ink)' }}
+                      onClick={() => startTransition(async () => {
+                        if (!confirm('¿Eliminar este compromiso?')) return
+                        await eliminarCompromiso(c.id, comiteId)
+                        router.refresh()
+                      })}
+                    >×</button>
+                  )}
+                </div>
               )}
             </div>
 
