@@ -30,6 +30,7 @@
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
+| 15 | Ausencias y permisos laborales | Pendiente (planificada) |
 
 ---
 
@@ -259,6 +260,33 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 - [x] En `/perfil/[id]`, cuando es el propio usuario: personalizar nombre preferido + celular
 - [x] Mi desempeño en comités (puntos + % + compromisos) y heatmap de constancia en el propio perfil
 - [x] Datos de contrato en solo lectura; jefe/cargo/gestión/rol bloqueados (solo admin)
+
+---
+
+## Etapa 15 — Ausencias y permisos laborales | Asignado: ``
+
+Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo interno con aprobación, doble validación y datos limpios para nómina. **Objetivo central: eliminar los errores de quincena** causados por digitación manual y procesos sueltos.
+
+**Fuentes originales (solo referencia, no modificar):**
+- Forms: `docs.google.com/forms/d/1QDSxAv-kYXS_K5QaVWqaeDcdPgpfSeWFiMjabY59AfM`
+- Respuestas: `docs.google.com/spreadsheets/d/1OnlapgiNMiWckN2YA6oI2Td0KeMjaZ-CrVwo2vnaQSM`
+
+**15 tipos de ausencia** (del Forms): Cita Médica EPS · Cita médico hijo/pariente · Medio día cumpleaños · Reposición del día · Diligencias personales · Licencia Maternidad/Paternidad · Permiso no remunerado · Votación Electoral · Permiso Remunerado · Calamidad Doméstica · Licencia por Luto · Día de la familia I Sem · Incapacidad · Trabajo en Casa · Otras.
+
+### Sub-etapa A — Catálogo y solicitud
+- [ ] Tabla `tipos_ausencia` con atributos de nómina por tipo: remunerado (sí/no), descuenta (sí/no), requiere soporte, requiere doble validación, aprobador de 2º nivel (director/gerente/TH). Seed con los 15 tipos.
+- [ ] Solicitud del colaborador: **autocompleta** nombre, documento, cargo, gestión, jefe y ciudad desde su perfil (cero digitación). Elige tipo, fechas desde/hasta, horario (AM/PM/todo el día), observaciones y adjunta soporte a Storage.
+
+### Sub-etapa B — Aprobación y doble validación
+- [ ] Bandeja del jefe directo: aprobar/denegar con comentario.
+- [ ] Doble validación configurable por tipo: tras el jefe, pasa a un 2º aprobador (director/gerente/TH). Estados: pendiente jefe → pendiente 2º nivel → aprobada / denegada.
+- [ ] Notificar al colaborador el resultado (fase 2: correo).
+
+### Sub-etapa C — Vista de nómina
+- [ ] Vista para TH y contabilidad con TODAS las ausencias aprobadas, filtrable por quincena, con detalle de nómina (tipo, días, remunerado/descuenta, soporte). Exportable.
+- [ ] **Visibilidad global permanente** para: Simón (admin TH), Gabriel (auxiliar TH), Diana Cano (TH), José Fernando (contabilidad — consolida la nómina). Definir cómo se otorga (rol o flag `ve_ausencias`).
+
+**Decisiones a validar antes de construir:** (1) ¿el Cerebro reemplaza el Forms de una o coexisten un tiempo? (2) mapeo exacto tipo→efecto de nómina (cuáles descuentan, cuáles piden doble validación); (3) cómo se identifican director/gerente para el 2º nivel; (4) si migramos las respuestas históricas del Sheet.
 
 ---
 
