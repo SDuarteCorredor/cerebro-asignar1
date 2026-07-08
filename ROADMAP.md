@@ -265,28 +265,34 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 
 ## Etapa 15 — Ausencias y permisos laborales | Asignado: ``
 
-Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo interno con aprobación, doble validación y datos limpios para nómina. **Objetivo central: eliminar los errores de quincena** causados por digitación manual y procesos sueltos.
+Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo interno con aprobación, doble validación y datos limpios para nómina. **Objetivo central: eliminar los errores de quincena** causados por digitación manual y procesos sueltos. **Decisión: Cerebro reemplaza el Forms de una — se deja de usar el Forms, todo se centraliza acá.**
 
-**Fuentes originales (solo referencia, no modificar):**
+**Fuentes originales (solo referencia, NO modificar):**
 - Forms: `docs.google.com/forms/d/1QDSxAv-kYXS_K5QaVWqaeDcdPgpfSeWFiMjabY59AfM`
 - Respuestas: `docs.google.com/spreadsheets/d/1OnlapgiNMiWckN2YA6oI2Td0KeMjaZ-CrVwo2vnaQSM`
+- Organigrama (jerarquía para el 2º nivel): `canva.link/foaftfasyvp8m2r` → estructura mapeada en memoria `project_ausencias_permisos`.
 
-**15 tipos de ausencia** (del Forms): Cita Médica EPS · Cita médico hijo/pariente · Medio día cumpleaños · Reposición del día · Diligencias personales · Licencia Maternidad/Paternidad · Permiso no remunerado · Votación Electoral · Permiso Remunerado · Calamidad Doméstica · Licencia por Luto · Día de la familia I Sem · Incapacidad · Trabajo en Casa · Otras.
+**Tipos de ausencia:** Cita Médica EPS · Cita médico hijo/pariente · Medio día cumpleaños · Reposición del día · Diligencias personales · Licencia Maternidad/Paternidad · Permiso no remunerado · Votación Electoral · Permiso Remunerado · Calamidad Doméstica · Licencia por Luto · **Día de la Familia** (uno solo al año) · **Día de la Excelencia** (nuevo, reemplaza el 2º día de familia) · Incapacidad · Trabajo en Casa · Otras.
 
 ### Sub-etapa A — Catálogo y solicitud
-- [ ] Tabla `tipos_ausencia` con atributos de nómina por tipo: remunerado (sí/no), descuenta (sí/no), requiere soporte, requiere doble validación, aprobador de 2º nivel (director/gerente/TH). Seed con los 15 tipos.
+- [ ] Tabla `tipos_ausencia` con atributos de nómina por tipo: remunerado (sí/no), descuenta (sí/no), requiere soporte, requiere doble validación. Seed con los tipos de arriba.
 - [ ] Solicitud del colaborador: **autocompleta** nombre, documento, cargo, gestión, jefe y ciudad desde su perfil (cero digitación). Elige tipo, fechas desde/hasta, horario (AM/PM/todo el día), observaciones y adjunta soporte a Storage.
 
 ### Sub-etapa B — Aprobación y doble validación
 - [ ] Bandeja del jefe directo: aprobar/denegar con comentario.
-- [ ] Doble validación configurable por tipo: tras el jefe, pasa a un 2º aprobador (director/gerente/TH). Estados: pendiente jefe → pendiente 2º nivel → aprobada / denegada.
+- [ ] **Doble validación** (por ahora solo el **Día de la Excelencia**): tras aprobar el jefe, pasa a un 2º aprobador. Estados: pendiente jefe → pendiente 2º nivel → aprobada / denegada. El 2º nivel se resuelve por la línea de mando del organigrama (coordinador → director/gerente) o TH — aprobador exacto a afinar.
 - [ ] Notificar al colaborador el resultado (fase 2: correo).
 
 ### Sub-etapa C — Vista de nómina
 - [ ] Vista para TH y contabilidad con TODAS las ausencias aprobadas, filtrable por quincena, con detalle de nómina (tipo, días, remunerado/descuenta, soporte). Exportable.
-- [ ] **Visibilidad global permanente** para: Simón (admin TH), Gabriel (auxiliar TH), Diana Cano (TH), José Fernando (contabilidad — consolida la nómina). Definir cómo se otorga (rol o flag `ve_ausencias`).
+- [ ] **Visibilidad global permanente** para: Simón (líder TH), Gabriel (auxiliar TH), Diana Cano (directora control interno), José Fernández (auxiliar contable — consolida la nómina). Definir cómo se otorga (rol o flag `ve_ausencias`).
 
-**Decisiones a validar antes de construir:** (1) ¿el Cerebro reemplaza el Forms de una o coexisten un tiempo? (2) mapeo exacto tipo→efecto de nómina (cuáles descuentan, cuáles piden doble validación); (3) cómo se identifican director/gerente para el 2º nivel; (4) si migramos las respuestas históricas del Sheet.
+### Sub-etapa D — Recordatorios de ausencias vigentes (clave para nómina)
+- [ ] Ausencias de larga duración que cruzan varias quincenas (incapacidades, licencias, permisos largos) **se recuerdan solas** en cada quincena mientras sigan vigentes (fecha_hasta futura), para no tener retrocesos por olvido.
+- [ ] Panel/alerta en la vista de nómina: "personas ausentes vigentes hasta X fecha" en la quincena en curso.
+
+### Migración
+- [ ] Importar del Sheet **solo las respuestas desde junio 2026** en adelante.
 
 ---
 
