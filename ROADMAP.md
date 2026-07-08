@@ -29,6 +29,7 @@
 | 11 | Encuestas | Pendiente |
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
+| 14 | Mi perfil personalizable | Completada |
 
 ---
 
@@ -248,6 +249,16 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 
 ### Fase 4 (pendiente, depende de Etapa 8)
 - [ ] Cadena con onboarding (arrancar puntos desde período de prueba)
+
+---
+
+## Etapa 14 — Mi perfil personalizable (completada) | Claude-Simon
+
+- [x] Columna `usuarios.nombre_preferido` + RPC `actualizar_mi_perfil` (SECURITY DEFINER: solo nombre preferido y celular del propio usuario)
+- [x] Saludo del dashboard usa nombre preferido; fallback = última palabra del nombre en Title Case (los nombres del Excel vienen "APELLIDO APELLIDO NOMBRE")
+- [x] En `/perfil/[id]`, cuando es el propio usuario: personalizar nombre preferido + celular
+- [x] Mi desempeño en comités (puntos + % + compromisos) y heatmap de constancia en el propio perfil
+- [x] Datos de contrato en solo lectura; jefe/cargo/gestión/rol bloqueados (solo admin)
 
 ---
 

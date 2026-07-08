@@ -97,6 +97,8 @@ export interface Proceso {
 export interface SesionUsuario {
   id: string
   nombre: string
+  nombre_preferido?: string | null
+  saludo?: string         // nombre preferido o mejor aproximación del nombre de pila
   correo: string
   rol: Rol
   gestion_id: string | null
