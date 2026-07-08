@@ -21,7 +21,7 @@
 | **3** | **Desempeño - ECO-Asignar** | **Completada** |
 | 4 | Deploy en Vercel | Completada (parcial) |
 | 5 | Gestión de usuarios y líderes | Completada |
-| 6 | Documentos adjuntos en procesos | Pendiente |
+| 6 | Documentos adjuntos en procesos | Completada |
 | 7 | Políticas y Reglamentos | Completada |
 | 8 | Onboarding / Acogida Laboral | Pendiente |
 | 9 | Entrenamientos y Capacitaciones | Pendiente |
@@ -158,11 +158,12 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ---
 
-## Etapa 6 — Documentos adjuntos en procesos
+## Etapa 6 — Documentos adjuntos en procesos (completada) | Claude-Simon
 
-- [ ] Carga de archivos a Supabase Storage | Asignado: ``
-- [ ] Descarga de documentos desde la página del proceso | Asignado: ``
-- [ ] Límite de tamaño y validación de tipos | Asignado: ``
+- [x] Carga de archivos a Supabase Storage (bucket privado `documentos-procesos`)
+- [x] Descarga desde la página del proceso vía URL firmada (10 min)
+- [x] Límite de 20 MB y validación de tipos (PDF, Word, Excel, imágenes)
+- [x] Solo el líder de la gestión del proceso (o admin) sube/elimina — RLS `es_lider_gestion`
 
 ---
 

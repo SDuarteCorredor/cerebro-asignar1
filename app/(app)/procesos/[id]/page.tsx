@@ -5,9 +5,9 @@ import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import IconoGestion from '@/components/app/IconoGestion'
 import BadgeEstado from '@/components/app/BadgeEstado'
-import IconoArchivo from '@/components/app/IconoArchivo'
 import Icono from '@/components/app/Icono'
 import PanelHistorial from './PanelHistorial'
+import DocumentosProceso from './DocumentosProceso'
 import PasoExpandible from '@/components/app/PasoExpandible'
 import type { PasoDetalle } from '@/components/app/PasoExpandible'
 
@@ -23,7 +23,7 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
       gestion:gestiones(id, nombre, descripcion, icono, color_soft, color_primary,
         lider:usuarios!gestiones_lider_id_fkey(id, nombre, correo)),
       pasos(id, numero_orden, nombre, descripcion, cargo_responsable, entradas, periodicidad, salidas, acuerdo_servicio, tiempos),
-      documentos(id, nombre, tipo_archivo, url_descarga, tamano_bytes)
+      documentos(id, nombre, tipo_archivo, tamano_bytes, storage_path)
     `)
     .eq('id', id)
     .single()
@@ -51,9 +51,12 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
   const g = Array.isArray(gRaw) ? (gRaw[0] ?? null) : gRaw
   const pasos = (proceso.pasos as PasoDetalle[])
     .sort((a, b) => a.numero_orden - b.numero_orden)
-  const documentos = proceso.documentos as { id: string; nombre: string; tipo_archivo: string; url_descarga: string; tamano_bytes: number | null }[]
+  const documentos = proceso.documentos as { id: string; nombre: string; tipo_archivo: string; tamano_bytes: number | null; storage_path: string | null }[]
   const liderRaw = g?.lider
   const lider = Array.isArray(liderRaw) ? (liderRaw[0] ?? null) : liderRaw
+
+  // Sube documentos: el líder de la gestión del proceso (lider_id) o admin — alineado con la RLS es_lider_gestion
+  const puedeSubirDocs = sesion.rol === 'admin' || (!!lider && lider.id === sesion.id)
 
   const esCliente = proceso.es_proceso_cliente === true
   const contactos = (proceso.cliente_contactos as { nombre: string; telefono: string; correo: string }[]) ?? []
@@ -203,35 +206,7 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
             )}
 
             {/* Documentos */}
-            <section className="card card--padded">
-              <div className="section-header">
-                <div>
-                  <div className="page__eyebrow" style={{ marginBottom: 4 }}>Recursos</div>
-                  <h2 className="section-title">Documentos Relacionados</h2>
-                </div>
-                <span className="section-count">{documentos.length} archivos</span>
-              </div>
-              {documentos.length > 0 ? (
-                <div className="grid-2col" style={{ gap: 10 }}>
-                  {documentos.map((d) => (
-                    <a key={d.id} href={d.url_descarga} target="_blank" rel="noopener noreferrer" className="doc-link">
-                      <IconoArchivo tipo={d.tipo_archivo} />
-                      <div className="doc-link__info">
-                        <div className="doc-link__name">{d.nombre}</div>
-                        <div className="doc-link__meta">
-                          {d.tipo_archivo}{d.tamano_bytes ? ` · ${Math.round(d.tamano_bytes / 1024)} KB` : ''}
-                        </div>
-                      </div>
-                      <Icono nombre="download" className="icon icon--sm text-muted" />
-                    </a>
-                  ))}
-                </div>
-              ) : (
-                <div className="empty-state">
-                  Aún no hay documentos vinculados.
-                </div>
-              )}
-            </section>
+            <DocumentosProceso procesoId={id} documentos={documentos} puedeSubir={puedeSubirDocs} />
           </div>
 
           {/* Sidebar metadata */}
