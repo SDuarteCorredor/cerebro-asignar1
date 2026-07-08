@@ -57,7 +57,7 @@ export default async function PaginaDashboard() {
   })
   const errorBD = errGest || errRec
 
-  const saludo = sesion.nombre.split(' ')[0]
+  const saludo = sesion.saludo ?? sesion.nombre.split(' ')[0]
   const fechaHoy = new Date().toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (

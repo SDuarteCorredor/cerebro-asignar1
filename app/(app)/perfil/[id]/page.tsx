@@ -4,6 +4,9 @@ import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
+import EditarMiPerfil from '../EditarMiPerfil'
+import HeatmapSemanal, { type CeldaSemana } from '../../comites/HeatmapSemanal'
+import { calcularPonderado, semanaISOde, numSemanasISO } from '@/lib/comites/puntaje'
 
 const badgeRol: Record<string, string> = {
   admin: 'badge--primary',
@@ -23,7 +26,7 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
 
   const { data: u } = await supabase
     .from('usuarios')
-    .select('id, codigo_contrato, nombre, correo, celular, rol, activo, sede, ciudad, departamento, direccion, tipo_contrato, fecha_ingreso, fecha_nacimiento, cargo_id, jefe_id, gestion_id, tiene_login')
+    .select('id, codigo_contrato, nombre, nombre_preferido, correo, celular, rol, activo, sede, ciudad, departamento, direccion, tipo_contrato, fecha_ingreso, fecha_nacimiento, cargo_id, jefe_id, gestion_id, tiene_login')
     .eq('id', id).single()
   if (!u) notFound()
 
@@ -42,6 +45,41 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
     u.jefe_id ? supabase.from('usuarios').select('id, nombre, codigo_contrato').eq('id', u.jefe_id).single() : Promise.resolve({ data: null }),
     supabase.from('usuarios').select('id, nombre, codigo_contrato, cargo_id').eq('jefe_id', id).eq('activo', true).order('nombre'),
   ])
+
+  // Desempeño en comités del usuario (solo se muestra en el propio perfil)
+  const anioActual = new Date().getFullYear()
+  const { semana: semanaActual } = semanaISOde(new Date())
+  let miDesempeno: { puntos: number; pct: number | null; cumplidos: number; total: number; celdas: CeldaSemana[] } | null = null
+  if (esElMismo) {
+    const { data: comitesAnio } = await supabase
+      .from('comites').select('id, semana_iso').eq('anio', anioActual)
+    const comiteSemana = new Map((comitesAnio ?? []).map(c => [c.id, c.semana_iso]))
+    const cIds = (comitesAnio ?? []).map(c => c.id)
+    const { data: misComps } = cIds.length > 0
+      ? await supabase.from('compromisos')
+          .select('comite_origen_id, estado, impacto')
+          .eq('responsable_id', u.id).in('comite_origen_id', cIds)
+      : { data: [] as { comite_origen_id: string; estado: string; impacto: string }[] }
+
+    const total = calcularPonderado((misComps ?? []).map(c => ({ estado: c.estado, impacto: c.impacto })))
+    const porSemana = new Map<number, { estado: string; impacto: string }[]>()
+    for (const c of misComps ?? []) {
+      const sem = comiteSemana.get(c.comite_origen_id)
+      if (!sem) continue
+      const arr = porSemana.get(sem) ?? []
+      arr.push({ estado: c.estado, impacto: c.impacto })
+      porSemana.set(sem, arr)
+    }
+    const nSem = numSemanasISO(anioActual)
+    const celdas: CeldaSemana[] = Array.from({ length: nSem }, (_, i) => {
+      const semana = i + 1
+      const comps = porSemana.get(semana)
+      if (!comps) return { semana, pct: null, cumplidos: 0, total: 0 }
+      const r = calcularPonderado(comps)
+      return { semana, pct: r.pctPonderado, cumplidos: r.cumplidos, total: r.total }
+    })
+    miDesempeno = { puntos: total.pesoCumplido, pct: total.pctPonderado, cumplidos: total.cumplidos, total: total.total, celdas }
+  }
 
   return (
     <>
@@ -84,6 +122,42 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
             )}
           </div>
         </section>
+
+        {/* Personalización (solo el propio usuario) */}
+        {esElMismo && (
+          <EditarMiPerfil
+            nombrePreferido={u.nombre_preferido}
+            celular={u.celular}
+            nombreOficial={u.nombre}
+          />
+        )}
+
+        {/* Mi desempeño en comités (solo el propio usuario) */}
+        {esElMismo && miDesempeno && (
+          <section style={{ margin: '20px 0' }}>
+            <div className="section-header" style={{ marginBottom: 12 }}>
+              <div className="page__eyebrow" style={{ margin: 0 }}>Mi desempeño en comités · {anioActual}</div>
+              <Link href="/comites/ranking" className="section-count" style={{ color: 'var(--primary)' }}>Ver ranking →</Link>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 14 }}>
+              <div className="card" style={{ padding: 16 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>{miDesempeno.puntos}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Puntos del año</div>
+              </div>
+              <div className="card" style={{ padding: 16 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
+                  {miDesempeno.pct === null ? '—' : `${miDesempeno.pct}%`}
+                </div>
+                <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Cumplimiento personal</div>
+              </div>
+              <div className="card" style={{ padding: 16 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{miDesempeno.cumplidos}/{miDesempeno.total}</div>
+                <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Compromisos cumplidos</div>
+              </div>
+            </div>
+            <HeatmapSemanal titulo="Tu constancia semanal" celdas={miDesempeno.celdas} semanaActual={semanaActual} />
+          </section>
+        )}
 
         <div className="layout-main-aside-wide">
           {/* Datos y contacto */}
