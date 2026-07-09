@@ -30,7 +30,7 @@
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
-| 15 | Ausencias y permisos laborales | Pendiente (planificada) |
+| 15 | Ausencias y permisos laborales | En curso (Sub-etapa A lista) |
 
 ---
 
@@ -275,9 +275,12 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
 
 **Tipos de ausencia:** Cita Médica EPS · Cita médico hijo/pariente · Medio día cumpleaños · Reposición del día · Diligencias personales · Licencia Maternidad/Paternidad · Permiso no remunerado · Votación Electoral · Permiso Remunerado · Calamidad Doméstica · Licencia por Luto · **Día de la Familia** (uno solo al año) · **Día de la Excelencia** (nuevo, reemplaza el 2º día de familia) · Incapacidad · Trabajo en Casa · Otras.
 
-### Sub-etapa A — Catálogo y solicitud
-- [ ] Tabla `tipos_ausencia` con atributos de nómina por tipo: remunerado (sí/no), descuenta (sí/no), requiere soporte, requiere doble validación. Seed con los tipos de arriba.
-- [ ] Solicitud del colaborador: **autocompleta** nombre, documento, cargo, gestión, jefe y ciudad desde su perfil (cero digitación). Elige tipo, fechas desde/hasta, horario (AM/PM/todo el día), observaciones y adjunta soporte a Storage.
+### Sub-etapa A — Catálogo y solicitud (completada) | Claude-Simon
+- [x] Tabla `tipos_ausencia` con atributos de nómina + seed de los 16 tipos (Día de la Excelencia con doble validación)
+- [x] Panel admin `/admin/tipos-ausencia`: TH edita remunerado/descuenta/soporte/doble validación/activo (guarda al instante)
+- [x] Solicitud del colaborador `/ausencias/nueva`: **autocompleta** nombre, documento, cargo, gestión, jefe y ciudad desde el perfil. Elige tipo, fechas, horario, observaciones y adjunta soporte a Storage (bucket privado `soportes-ausencias`)
+- [x] `/ausencias`: mis solicitudes con estado + cancelar mientras esté pendiente
+- [x] Link "Permisos y Ausencias" en el sidebar
 
 ### Sub-etapa B — Aprobación y doble validación
 - [ ] Bandeja del jefe directo: aprobar/denegar con comentario.

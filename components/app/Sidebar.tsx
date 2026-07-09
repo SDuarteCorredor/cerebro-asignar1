@@ -67,6 +67,10 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
 
         <Link href="/comites" className={`nav-item ${activa('/comites') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="check" className="nav-item__icon" /> Comités
+        </Link>
+
+        <Link href="/ausencias" className={`nav-item ${activa('/ausencias') ? 'is-active' : ''}`} onClick={navegar}>
+          <Icono nombre="history" className="nav-item__icon" /> Permisos y Ausencias
           <span className="nav-item__pill" style={{ background: 'var(--primary-soft)', color: 'var(--primary-ink)' }}>Nuevo</span>
         </Link>
 
@@ -93,6 +97,9 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
             </Link>
             <Link href="/admin/sedes" className={`nav-item ${activa('/admin/sedes') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="target" className="nav-item__icon" /> Excepciones de sede
+            </Link>
+            <Link href="/admin/tipos-ausencia" className={`nav-item ${activa('/admin/tipos-ausencia') ? 'is-active' : ''}`} onClick={navegar}>
+              <Icono nombre="history" className="nav-item__icon" /> Tipos de ausencia
             </Link>
             <Link href="/admin/aprobaciones" className={`nav-item ${activa('/admin/aprobaciones') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="inbox" className="nav-item__icon" /> Aprobaciones
