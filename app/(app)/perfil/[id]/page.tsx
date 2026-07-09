@@ -42,8 +42,8 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
   const [{ data: cargo }, { data: gestion }, { data: jefe }, { data: reportes }] = await Promise.all([
     u.cargo_id ? supabase.from('cargos').select('nombre, banda').eq('id', u.cargo_id).single() : Promise.resolve({ data: null }),
     u.gestion_id ? supabase.from('gestiones').select('id, nombre').eq('id', u.gestion_id).single() : Promise.resolve({ data: null }),
-    u.jefe_id ? supabase.from('usuarios').select('id, nombre, codigo_contrato').eq('id', u.jefe_id).single() : Promise.resolve({ data: null }),
-    supabase.from('usuarios').select('id, nombre, codigo_contrato, cargo_id').eq('jefe_id', id).eq('activo', true).order('nombre'),
+    u.jefe_id ? supabase.from('directorio_usuarios').select('id, nombre, codigo_contrato').eq('id', u.jefe_id).single() : Promise.resolve({ data: null }),
+    supabase.from('directorio_usuarios').select('id, nombre, codigo_contrato, cargo_id').eq('jefe_id', id).eq('activo', true).order('nombre'),
   ])
 
   // Desempeño en comités del usuario (solo se muestra en el propio perfil)
