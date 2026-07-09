@@ -17,7 +17,7 @@ export default async function NuevaAusenciaPage() {
   const [{ data: cargo }, { data: gestion }, { data: jefe }, { data: tipos }] = await Promise.all([
     u?.cargo_id ? supabase.from('cargos').select('nombre').eq('id', u.cargo_id).single() : Promise.resolve({ data: null }),
     u?.gestion_id ? supabase.from('gestiones').select('nombre').eq('id', u.gestion_id).single() : Promise.resolve({ data: null }),
-    u?.jefe_id ? supabase.from('usuarios').select('nombre').eq('id', u.jefe_id).single() : Promise.resolve({ data: null }),
+    u?.jefe_id ? supabase.from('directorio_usuarios').select('nombre').eq('id', u.jefe_id).single() : Promise.resolve({ data: null }),
     supabase.from('tipos_ausencia').select('id, nombre, requiere_soporte, requiere_doble_validacion').eq('activo', true).order('orden'),
   ])
 
