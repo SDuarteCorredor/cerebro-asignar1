@@ -31,6 +31,7 @@
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | En curso (Sub-etapa A lista) |
+| **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
 
 ---
 
@@ -300,6 +301,55 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
 
 ---
 
+## Etapa 16 — Gestión Documental por Calidad | Asignado: ``
+
+Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. SST y encargado de la gestión documental por calidad). Amplía el módulo de Procesos y Procedimientos (Etapas 1, 2 y 6) para que sirva como sistema de gestión documental de la organización.
+
+> **GIRO DE RUMBO:** el **editor web es la fuente única de verdad**. Los procedimientos, programas e instructivos NO se suben como Word/Excel: se crean en la plataforma y se **exportan a PDF con formato predeterminado**. Los **formatos** sí siguen siendo adjuntos externos (Etapa 6 cubre eso).
+
+**Tipos de documento a soportar (8):** Manual · Procedimiento · Programa · Instructivo · Guía · Formato · Reglamento · Plan. Cada gestión tendrá solo algunos.
+
+**Roles y aprobación (acordados):** colaborador consulta · líder de gestión edita (requiere aprobación) · aprueban Calidad/TH: **Diana Cano, John William, Andrea Ossa**. John William necesita rol **admin**.
+
+### Sub-etapa A — Cimientos: tipos de documento y control documental ⭐ (meta 2 semanas)
+- [ ] Tabla `tipos_documento` + seed con los 8 tipos; `procesos.tipo_documento_id`
+- [ ] Campos de control documental: `codigo` (ej. `TH-PR-01`), `fecha_emision`, `elaborado_por`, `revisado_por`, `aprobado_por`, `fecha_proxima_revision`
+- [ ] Limpieza de las 21 gestiones (hay duplicadas y de prueba)
+- [ ] Rol admin a John William; identificar a los aprobadores de Calidad
+
+### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas)
+- [ ] El editor **escribe** en `historial_versiones` (quién, cuándo, versión anterior→nueva, resumen del cambio) — hoy la tabla existe pero nadie escribe
+- [ ] Botones **aprobar / rechazar** en `/admin/aprobaciones`; flujo `borrador → en_revision → activo`
+- [ ] Firma electrónica del documento **reutilizando la de PDI** (Etapa 3.E)
+- [ ] Notificar al líder el resultado de la aprobación
+
+### Sub-etapa C — Editor web y exportación a PDF
+- [ ] Editor estructurado según el tipo de documento (procedimiento, instructivo, programa…)
+- [ ] **Exportar a PDF** con formato oficial: encabezado con código, versión, fechas y firmas
+- [ ] Los formatos (Excel, etc.) siguen como adjuntos
+
+### Sub-etapa D — Revisión periódica y alertas
+- [ ] `fecha_proxima_revision` + regla de **desactualización automática** por fecha
+- [ ] Alerta al líder cuando un documento está por vencer / venció
+- [ ] **Alertas transversales**: si cambia un cargo en el organigrama, notificar los procedimientos afectados
+
+### Sub-etapa E — Interconexión y glosario
+- [ ] **Glosario por gestión**: cada líder crea y mantiene sus términos
+- [ ] **Repositorio de manuales de cargo**, enlazado con procesos y procedimientos
+- [ ] Interconexión procedimientos ↔ manual de funciones: agregar un cargo a una tarea actualiza el manual; quitar una responsabilidad se refleja en los KPIs del colaborador
+- [ ] Trazabilidad cruzada por cliente entre gestiones, sin que se sobreescriban
+
+### Sub-etapa F — Futuro (IA e integraciones)
+- [ ] Foto de un acta en campo → el sistema la lee y genera el acta digital
+- [ ] Integración con el CRM de Asignar (próximo año, al migrar al software principal). Hoy los acuerdos de servicio por cliente funcionan como CRM interno
+
+### Compromisos operativos
+- [ ] Simón descarga el listado de documentos por gestión que compartió John William y traza la estructura
+- [ ] Simón solicita acceso a la carpeta de calidad de gerencia en Dropbox Medellín (de Sandra)
+- [ ] Reunión presencial la próxima semana para homologar información
+
+---
+
 ## Mejoras transversales
 
 - [x] Responsive/mobile first (CSS breakpoints) | Claude-MK
@@ -309,6 +359,7 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
   - [x] Nuevas clases mobile-first: `.layout-aside-main`, `.layout-chart-table`, `.layout-main-aside-wide`, `.grid-stats-3`, `.form-row-*` | Claude-Marketing (PR #3)
 - [x] Loading skeletons por ruta | Claude-MK
 - [x] Error boundary global | Claude-MK
+- [ ] Filtro de búsqueda por gestión y nombre en `/admin/usuarios` (pedido por John William) | Asignado: ``
 - [ ] Tests E2E (Playwright) | Asignado: ``
 - [ ] Auditoría de accesibilidad (a11y) | Asignado: ``
   - [x] Primera pasada: `aria-hidden` en emojis decorativos del PDI | Claude-Marketing (PR #4)
