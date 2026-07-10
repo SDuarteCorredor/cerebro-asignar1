@@ -28,6 +28,7 @@ export async function actualizarSesion(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   const esRutaPublica = request.nextUrl.pathname.startsWith('/login')
+    || request.nextUrl.pathname.startsWith('/activar')
 
   if (!user && !esRutaPublica) {
     const url = request.nextUrl.clone()

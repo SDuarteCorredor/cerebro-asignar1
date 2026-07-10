@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import FormularioLogin from './FormularioLogin'
 
 export default function PaginaLogin() {
@@ -23,7 +24,8 @@ export default function PaginaLogin() {
           </p>
           <FormularioLogin />
           <p style={{ fontSize: 12.5, color: 'var(--text-3)', marginTop: 28, textAlign: 'center' }}>
-            ¿No tienes cuenta? Solicítala al equipo de Vinculación.
+            ¿Primera vez aquí?{' '}
+            <Link href="/activar" style={{ color: 'var(--primary)', fontWeight: 600 }}>Activa tu cuenta</Link>
           </p>
         </div>
 

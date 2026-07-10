@@ -32,6 +32,7 @@
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | En curso (Sub-etapa A lista) |
 | **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
+| 17 | Autoservicio: activar mi cuenta | Completada |
 
 ---
 
@@ -347,6 +348,22 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 - [ ] Simón descarga el listado de documentos por gestión que compartió John William y traza la estructura
 - [ ] Simón solicita acceso a la carpeta de calidad de gerencia en Dropbox Medellín (de Sandra)
 - [ ] Reunión presencial la próxima semana para homologar información
+
+---
+
+## Etapa 17 — Autoservicio: activar mi cuenta (completada) | Claude-Simon
+
+Permite que los 138 colaboradores creen su propio acceso sin que TH reparta contraseñas y **sin enviar correos** (el SMTP de Supabase no sirve para producción). Solo 14 de 138 tenían correo cargado; en cambio 137 tienen cédula y fecha de nacimiento — por eso la identidad se valida con esos dos datos.
+
+- [x] Pantalla pública `/activar` con asistente de 2 pasos
+- [x] Paso 1: cédula + fecha de nacimiento → muestra el nombre **enmascarado** (`PUERTA C****** S****`) para confirmar
+- [x] Paso 2: la persona elige su correo `@asignar.com.co` y su contraseña; queda vinculada a su ficha existente (jefe, cargo, gestión)
+- [x] RPC `completar_registro` crea el login **reusando el id del registro** → no toca ninguna FK ni requiere service-role key
+- [x] Rate limit: 5 intentos fallidos por cédula por hora (`intentos_registro`, auditable por admin)
+- [x] Validación de correo institucional y contraseña ≥ 8 caracteres
+- [x] Enlace "Activa tu cuenta" en el login; `/activar` exenta en el middleware
+
+**Nota de costos:** Supabase Auth no cobra por usuario a esta escala (Free = 50.000 usuarios activos/mes; hay 138). Lo que consume plan es Storage y ancho de banda, no la autenticación.
 
 ---
 
