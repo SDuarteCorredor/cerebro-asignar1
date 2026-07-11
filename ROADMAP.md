@@ -30,7 +30,7 @@
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
-| 15 | Ausencias y permisos laborales | En curso (Sub-etapa A lista) |
+| 15 | Ausencias y permisos laborales | En curso (Sub-etapas A y B listas) |
 | **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
@@ -284,10 +284,11 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
 - [x] `/ausencias`: mis solicitudes con estado + cancelar mientras esté pendiente
 - [x] Link "Permisos y Ausencias" en el sidebar
 
-### Sub-etapa B — Aprobación y doble validación
-- [ ] Bandeja del jefe directo: aprobar/denegar con comentario.
-- [ ] **Doble validación** (por ahora solo el **Día de la Excelencia**): tras aprobar el jefe, pasa a un 2º aprobador. Estados: pendiente jefe → pendiente 2º nivel → aprobada / denegada. El 2º nivel se resuelve por la línea de mando del organigrama (coordinador → director/gerente) o TH — aprobador exacto a afinar.
-- [ ] Notificar al colaborador el resultado (fase 2: correo).
+### Sub-etapa B — Aprobación y doble validación (completada) | Claude-Simon
+- [x] Bandeja `/ausencias/bandeja`: el jefe aprueba/deniega (con motivo) sus solicitudes pendientes; badge "Por aprobar" con contador en `/ausencias`
+- [x] **Doble validación** (Día de la Excelencia): al aprobar el jefe pasa a `pendiente_segundo`; TH (admin) hace la 2ª validación → `aprobada`. RPCs `aprobar_ausencia`/`denegar_ausencia` (SECURITY DEFINER) blindan el flujo para que el jefe no lo salte
+- [x] Trazabilidad: `aprobado_jefe_por/_at`, `aprobado_segundo_por/_at`, `rechazado_por`, `motivo_rechazo`
+- [ ] Notificar al colaborador el resultado (fase 2: correo)
 
 ### Sub-etapa C — Vista de nómina
 - [ ] Vista para TH y contabilidad con TODAS las ausencias aprobadas, filtrable por quincena, con detalle de nómina (tipo, días, remunerado/descuenta, soporte). Exportable.

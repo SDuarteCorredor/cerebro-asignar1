@@ -97,3 +97,29 @@ export async function obtenerUrlSoporte(path: string): Promise<string | null> {
   if (error) return null
   return data.signedUrl
 }
+
+export async function aprobarAusencia(id: string) {
+  const supabase = await crearClienteServidor()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+  const { data, error } = await supabase.rpc('aprobar_ausencia', { p_id: id })
+  if (error) return { error: error.message }
+  const r = data as { ok: boolean; error?: string; estado?: string }
+  if (!r.ok) return { error: r.error ?? 'No se pudo aprobar' }
+  revalidatePath('/ausencias/bandeja')
+  revalidatePath('/ausencias')
+  return { ok: true, estado: r.estado }
+}
+
+export async function denegarAusencia(id: string, motivo: string) {
+  const supabase = await crearClienteServidor()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) redirect('/login')
+  const { data, error } = await supabase.rpc('denegar_ausencia', { p_id: id, p_motivo: motivo })
+  if (error) return { error: error.message }
+  const r = data as { ok: boolean; error?: string }
+  if (!r.ok) return { error: r.error ?? 'No se pudo denegar' }
+  revalidatePath('/ausencias/bandeja')
+  revalidatePath('/ausencias')
+  return { ok: true }
+}

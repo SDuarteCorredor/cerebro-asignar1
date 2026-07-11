@@ -24,6 +24,17 @@ export default async function MisAusenciasPage() {
   const pendientes = (ausencias ?? []).filter(a => a.estado === 'pendiente_jefe' || a.estado === 'pendiente_segundo').length
   const aprobadas = (ausencias ?? []).filter(a => a.estado === 'aprobada').length
 
+  // ¿Tengo solicitudes que aprobar? (como jefe directo, o como TH en 2ª validación)
+  const esAdmin = sesion.rol === 'admin'
+  const [{ count: porAprobarJefe }, { count: porAprobarSegundo }] = await Promise.all([
+    supabase.from('ausencias').select('id', { count: 'exact', head: true })
+      .eq('jefe_id', sesion.id).eq('estado', 'pendiente_jefe'),
+    esAdmin
+      ? supabase.from('ausencias').select('id', { count: 'exact', head: true }).eq('estado', 'pendiente_segundo')
+      : Promise.resolve({ count: 0 }),
+  ])
+  const porAprobar = (porAprobarJefe ?? 0) + (porAprobarSegundo ?? 0)
+
   return (
     <>
       <Topbar usuario={sesion} migas={[{ etiqueta: 'Ausencias' }]} />
@@ -36,9 +47,17 @@ export default async function MisAusenciasPage() {
               Solicita permisos y consulta el estado de tus solicitudes.
             </p>
           </div>
-          <Link href="/ausencias/nueva" className="btn btn--primary btn--sm">
-            <Icono nombre="plus" className="icon icon--sm" /> Nueva solicitud
-          </Link>
+          <div className="hstack" style={{ gap: 8 }}>
+            {porAprobar > 0 && (
+              <Link href="/ausencias/bandeja" className="btn btn--secondary btn--sm">
+                <Icono nombre="inbox" className="icon icon--sm" /> Por aprobar
+                <span className="nav-item__badge" style={{ marginLeft: 4 }}>{porAprobar}</span>
+              </Link>
+            )}
+            <Link href="/ausencias/nueva" className="btn btn--primary btn--sm">
+              <Icono nombre="plus" className="icon icon--sm" /> Nueva solicitud
+            </Link>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 22 }}>
