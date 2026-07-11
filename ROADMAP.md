@@ -30,7 +30,7 @@
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
-| 15 | Ausencias y permisos laborales | En curso (Sub-etapas A y B listas) |
+| 15 | Ausencias y permisos laborales | En curso (A–D listas; falta migración del Sheet) |
 | **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
@@ -290,13 +290,13 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
 - [x] Trazabilidad: `aprobado_jefe_por/_at`, `aprobado_segundo_por/_at`, `rechazado_por`, `motivo_rechazo`
 - [ ] Notificar al colaborador el resultado (fase 2: correo)
 
-### Sub-etapa C — Vista de nómina
-- [ ] Vista para TH y contabilidad con TODAS las ausencias aprobadas, filtrable por quincena, con detalle de nómina (tipo, días, remunerado/descuenta, soporte). Exportable.
-- [ ] **Visibilidad global permanente** para: Simón (líder TH), Gabriel (auxiliar TH), Diana Cano (directora control interno), José Fernández (auxiliar contable — consolida la nómina). Definir cómo se otorga (rol o flag `ve_ausencias`).
+### Sub-etapa C — Vista de nómina (completada) | Claude-Simon
+- [x] `/ausencias/nomina`: todas las aprobadas que **intersectan la quincena** elegida, con detalle (tipo, días, remunerado, descuenta, ciudad, soporte). Selector mes/año/quincena (1-15 / 16-fin). **Exporta a CSV** (Excel, con BOM).
+- [x] Flag `usuarios.ve_ausencias` + helper `puede_ver_ausencias()` + RLS ampliada. Marcados: Gabriel (TH), Diana Cano (control interno), José Fernando (contable); admin ve todo.
+- [x] Cálculo de días por intersección con la quincena; medio día (AM/PM de 1 día) = 0.5.
 
-### Sub-etapa D — Recordatorios de ausencias vigentes (clave para nómina)
-- [ ] Ausencias de larga duración que cruzan varias quincenas (incapacidades, licencias, permisos largos) **se recuerdan solas** en cada quincena mientras sigan vigentes (fecha_hasta futura), para no tener retrocesos por olvido.
-- [ ] Panel/alerta en la vista de nómina: "personas ausentes vigentes hasta X fecha" en la quincena en curso.
+### Sub-etapa D — Recordatorios de ausencias vigentes (completada) | Claude-Simon
+- [x] En la vista de nómina, panel de **ausencias aprobadas que continúan después de la quincena** (fecha_hasta > fin y ≥ hoy): "sigue ausente hasta X" para no olvidarlas en la siguiente nómina.
 
 ### Migración
 - [ ] Importar del Sheet **solo las respuestas desde junio 2026** en adelante.

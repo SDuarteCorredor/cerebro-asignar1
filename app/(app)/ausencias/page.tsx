@@ -35,6 +35,10 @@ export default async function MisAusenciasPage() {
   ])
   const porAprobar = (porAprobarJefe ?? 0) + (porAprobarSegundo ?? 0)
 
+  // ¿Puede ver el consolidado de nómina? (admin o flag ve_ausencias)
+  const { data: yo } = await supabase.from('usuarios').select('ve_ausencias').eq('id', sesion.id).single()
+  const puedeVerNomina = esAdmin || (yo?.ve_ausencias ?? false)
+
   return (
     <>
       <Topbar usuario={sesion} migas={[{ etiqueta: 'Ausencias' }]} />
@@ -48,6 +52,11 @@ export default async function MisAusenciasPage() {
             </p>
           </div>
           <div className="hstack" style={{ gap: 8 }}>
+            {puedeVerNomina && (
+              <Link href="/ausencias/nomina" className="btn btn--ghost btn--sm">
+                <Icono nombre="chart" className="icon icon--sm" /> Nómina
+              </Link>
+            )}
             {porAprobar > 0 && (
               <Link href="/ausencias/bandeja" className="btn btn--secondary btn--sm">
                 <Icono nombre="inbox" className="icon icon--sm" /> Por aprobar
