@@ -1,20 +1,10 @@
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
-import { obtenerSesionAdmin, obtenerIniciales } from '@/lib/sesion'
+import { obtenerSesionAdmin } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import NavAdmin from '../NavAdmin'
 import Icono from '@/components/app/Icono'
-
-const badgeRol: Record<string, string> = {
-  admin: 'badge--primary',
-  lider: 'badge--warning',
-  colaborador: 'badge--neutral',
-}
-const etiquetaRol: Record<string, string> = {
-  admin: 'Administrador',
-  lider: 'Líder de Gestión',
-  colaborador: 'Colaborador',
-}
+import TablaUsuarios from './TablaUsuarios'
 
 export default async function AdminUsuarios() {
   const sesion = await obtenerSesionAdmin()
@@ -79,76 +69,10 @@ export default async function AdminUsuarios() {
           </Link>
         </div>
 
-        <div className="card card--table">
-          <div className="table-scroll">
-            <table className="table table--in-card">
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Nombre</th>
-                  <th>Cargo</th>
-                  <th>Sede</th>
-                  <th>Rol</th>
-                  <th>Estado</th>
-                  <th style={{ width: 60 }} />
-                </tr>
-              </thead>
-              <tbody>
-                {usuarios.map(u => {
-                  const gestionNombre = u.gestion_nombre ?? '—'
-                  const cargo = u.cargo
-                  return (
-                    <tr key={u.id}>
-                      <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 12.5 }}>
-                        {u.codigo_contrato ?? '—'}
-                      </td>
-                      <td>
-                        <div className="hstack" style={{ gap: 10 }}>
-                          <div className="avatar avatar--sm">{obtenerIniciales(u.nombre)}</div>
-                          <div>
-                            <div className="row-title">{u.nombre}</div>
-                            {u.correo && (
-                              <div className="row-sub" style={{ fontFamily: 'var(--font-mono)' }}>{u.correo}</div>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        {cargo ? (
-                          <div>
-                            <div style={{ fontSize: 13 }}>{cargo.nombre}</div>
-                            <div style={{ fontSize: 11.5, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>{cargo.banda}</div>
-                          </div>
-                        ) : (
-                          <span style={{ fontSize: 12.5, color: 'var(--text-3)', fontStyle: 'italic' }}>Sin cargo</span>
-                        )}
-                      </td>
-                      <td style={{ fontSize: 13 }}>
-                        {u.sede ?? <span style={{ color: 'var(--text-3)' }}>—</span>}
-                        {u.gestion_id && (
-                          <div className="row-sub">{gestionNombre}</div>
-                        )}
-                      </td>
-                      <td>
-                        <span className={`badge ${badgeRol[u.rol] ?? 'badge--neutral'}`}>{etiquetaRol[u.rol] ?? u.rol}</span>
-                      </td>
-                      <td>
-                        <span className={`badge badge--${u.activo ? 'success' : 'neutral'}`}>
-                          {u.activo ? 'Activo' : 'Inactivo'}
-                        </span>
-                      </td>
-                      <td style={{ textAlign: 'right' }}>
-                        <Link href={`/admin/usuarios/${u.id}`} className="btn btn--ghost btn--sm" title="Editar">
-                          <Icono nombre="edit" className="icon icon--sm" />
-                        </Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <TablaUsuarios
+          usuarios={usuarios}
+          gestiones={[...(gestiones ?? [])].sort((a, b) => a.nombre.localeCompare(b.nombre))}
+        />
       </main>
     </>
   )
