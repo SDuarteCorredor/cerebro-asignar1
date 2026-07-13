@@ -1,15 +1,7 @@
-import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
-
-const badgeEstado: Record<string, string> = {
-  borrador: 'badge--warning',
-  en_firma: 'badge--neutral',
-  vigente: 'badge--success',
-  completado: 'badge--success',
-  cancelado: 'badge--danger',
-}
+import TablaPdis from './TablaPdis'
 
 interface PdiFila {
   id: string
@@ -141,52 +133,7 @@ export default async function PaginaPdis() {
             </p>
           </section>
         ) : (
-          <section className="card card--table">
-            <table className="table table--in-card">
-              <thead>
-                <tr>
-                  <th>Colaborador</th>
-                  <th>Ciclo</th>
-                  <th style={{ width: 110 }}>Estado</th>
-                  <th style={{ width: 90, textAlign: 'center' }}>Acciones</th>
-                  <th style={{ width: 220 }}>Avance</th>
-                  <th style={{ width: 130 }}>Próx. revisión</th>
-                  <th style={{ width: 60 }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filasVisibles.map(f => (
-                  <tr key={f.id}>
-                    <td>
-                      <div className="row-title">{f.colaborador?.nombre ?? '—'}</div>
-                      {f.colaborador?.codigo_contrato && (
-                        <div className="row-sub" style={{ fontFamily: 'var(--font-mono)' }}>{f.colaborador.codigo_contrato}</div>
-                      )}
-                    </td>
-                    <td>{f.ciclo?.nombre ?? '—'}</td>
-                    <td><span className={`badge ${badgeEstado[f.estado] ?? 'badge--neutral'}`}>{f.estado}</span></td>
-                    <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>{f.numAcciones}</td>
-                    <td>
-                      <div className="hstack" style={{ gap: 8, alignItems: 'center' }}>
-                        <div style={{ flex: 1, background: 'var(--border)', height: 6, borderRadius: 999, overflow: 'hidden' }}>
-                          <div style={{
-                            width: `${f.avancePromedio}%`,
-                            height: '100%',
-                            background: f.avancePromedio === 100 ? 'var(--success)' : 'var(--primary)',
-                          }} />
-                        </div>
-                        <span style={{ fontSize: 12, fontFamily: 'var(--font-mono)', minWidth: 36, textAlign: 'right' }}>{f.avancePromedio}%</span>
-                      </div>
-                    </td>
-                    <td style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5 }}>{f.proxima_revision}</td>
-                    <td>
-                      <Link href={`/desempeno/evaluaciones/${f.evaluacion_id}/pdi`} className="btn btn--ghost btn--sm">Ver</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
+          <TablaPdis filas={filasVisibles} />
         )}
 
         {borradores.length > 0 && (
