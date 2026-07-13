@@ -30,7 +30,7 @@
 | 12 | Expediente Digital del Colaborador | Pendiente |
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
-| 15 | Ausencias y permisos laborales | En curso (A–D listas; falta migración del Sheet) |
+| 15 | Ausencias y permisos laborales | Completada (A–D + migración) |
 | **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
@@ -298,8 +298,8 @@ Reemplaza el Google Forms "AUSENCIAS LABORALES ASIGNAR 2026" por un flujo intern
 ### Sub-etapa D — Recordatorios de ausencias vigentes (completada) | Claude-Simon
 - [x] En la vista de nómina, panel de **ausencias aprobadas que continúan después de la quincena** (fecha_hasta > fin y ≥ hoy): "sigue ausente hasta X" para no olvidarlas en la siguiente nómina.
 
-### Migración
-- [ ] Importar del Sheet **solo las respuestas desde junio 2026** en adelante.
+### Migración (completada) | Claude-Simon
+- [x] Importadas **142 respuestas del Sheet (1-jun a 10-jul 2026)**: cruzadas por documento con `usuarios`, tipo mapeado a los oficiales, `estado='aprobada'`, `fuente='migracion_forms'`. Los "Día de la Familia II Semestre" históricos se fusionaron en "Día de la Familia". 2 fechas invertidas y 1 sin fecha-hasta corregidas a `hasta=desde`. Ninguna fila perdida.
 
 ---
 
