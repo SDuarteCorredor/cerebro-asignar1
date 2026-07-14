@@ -23,7 +23,8 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
       gestion:gestiones(id, nombre, descripcion, icono, color_soft, color_primary,
         lider:usuarios!gestiones_lider_id_fkey(id, nombre, correo)),
       pasos(id, numero_orden, nombre, descripcion, cargo_responsable, entradas, periodicidad, salidas, acuerdo_servicio, tiempos),
-      documentos(id, nombre, tipo_archivo, tamano_bytes, storage_path)
+      documentos(id, nombre, tipo_archivo, tamano_bytes, storage_path),
+      tipo_documento:tipos_documento(nombre)
     `)
     .eq('id', id)
     .single()
@@ -239,6 +240,28 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
                 )}
               </dl>
             </div>
+
+            {(() => {
+              const td = proceso.tipo_documento as { nombre: string }[] | { nombre: string } | null
+              const tipoDocNombre = Array.isArray(td) ? td[0]?.nombre : td?.nombre
+              const tieneControl = tipoDocNombre || proceso.codigo || proceso.fecha_emision
+                || proceso.elaborado_por || proceso.revisado_por || proceso.aprobado_por || proceso.fecha_proxima_revision
+              if (!tieneControl) return null
+              return (
+                <div className="card card--padded-sm">
+                  <div className="page__eyebrow" style={{ marginBottom: 12 }}>Control documental</div>
+                  <dl className="dl-grid">
+                    {proceso.codigo && <div><dt className="dl-label">Código</dt><dd className="dl-value text-mono">{proceso.codigo}</dd></div>}
+                    {tipoDocNombre && <div><dt className="dl-label">Tipo</dt><dd className="dl-value">{tipoDocNombre}</dd></div>}
+                    {proceso.fecha_emision && <div><dt className="dl-label">Emisión</dt><dd className="dl-value text-mono">{proceso.fecha_emision}</dd></div>}
+                    {proceso.elaborado_por && <div><dt className="dl-label">Elaboró</dt><dd className="dl-value">{proceso.elaborado_por}</dd></div>}
+                    {proceso.revisado_por && <div><dt className="dl-label">Revisó</dt><dd className="dl-value">{proceso.revisado_por}</dd></div>}
+                    {proceso.aprobado_por && <div><dt className="dl-label">Aprobó</dt><dd className="dl-value">{proceso.aprobado_por}</dd></div>}
+                    {proceso.fecha_proxima_revision && <div><dt className="dl-label">Próx. revisión</dt><dd className="dl-value text-mono">{proceso.fecha_proxima_revision}</dd></div>}
+                  </dl>
+                </div>
+              )
+            })()}
 
             {lider && (
               <div className="card callout">

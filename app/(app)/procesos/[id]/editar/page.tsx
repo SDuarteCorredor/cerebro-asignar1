@@ -25,8 +25,10 @@ export default async function PaginaEditarProceso({ params }: { params: Promise<
     redirect(`/procesos/${id}`)
   }
 
-  const { data: gestiones } = await supabase
-    .from('gestiones').select('id, nombre').eq('activa', true).order('nombre')
+  const [{ data: gestiones }, { data: tiposDoc }] = await Promise.all([
+    supabase.from('gestiones').select('id, nombre').eq('activa', true).order('nombre'),
+    supabase.from('tipos_documento').select('id, nombre, prefijo').order('orden'),
+  ])
 
   type PasoForm = {
     id: string; numero_orden: number; nombre: string | null; descripcion: string; cargo_responsable: string
@@ -51,6 +53,7 @@ export default async function PaginaEditarProceso({ params }: { params: Promise<
           gestiones={gestiones ?? []}
           gestionIdInicial={proceso.gestion_id}
           rol={sesion.rol}
+          tiposDocumento={tiposDoc ?? []}
           procesoExistente={{
             id: proceso.id,
             nombre: proceso.nombre,
@@ -67,6 +70,13 @@ export default async function PaginaEditarProceso({ params }: { params: Promise<
             acuerdo_tipo_servicio: proceso.acuerdo_tipo_servicio,
             acuerdo_uniforme: proceso.acuerdo_uniforme,
             acuerdo_detalles: proceso.acuerdo_detalles,
+            tipo_documento_id: proceso.tipo_documento_id,
+            codigo: proceso.codigo,
+            fecha_emision: proceso.fecha_emision,
+            elaborado_por: proceso.elaborado_por,
+            revisado_por: proceso.revisado_por,
+            aprobado_por: proceso.aprobado_por,
+            fecha_proxima_revision: proceso.fecha_proxima_revision,
           }}
         />
       </main>

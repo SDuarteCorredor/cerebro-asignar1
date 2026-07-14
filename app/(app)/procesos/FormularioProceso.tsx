@@ -34,6 +34,7 @@ interface Props {
   gestiones: { id: string; nombre: string }[]
   gestionIdInicial: string
   rol: Rol
+  tiposDocumento: { id: string; nombre: string; prefijo: string }[]
   procesoExistente?: {
     id: string
     nombre: string
@@ -50,6 +51,13 @@ interface Props {
     acuerdo_tipo_servicio?: string | null
     acuerdo_uniforme?: string | null
     acuerdo_detalles?: string | null
+    tipo_documento_id?: string | null
+    codigo?: string | null
+    fecha_emision?: string | null
+    elaborado_por?: string | null
+    revisado_por?: string | null
+    aprobado_por?: string | null
+    fecha_proxima_revision?: string | null
   }
 }
 
@@ -58,7 +66,7 @@ const periodicidades = [
   'Bimestral', 'Trimestral', 'Semestral', 'Anual', 'Ocasional', 'Por demanda',
 ]
 
-export default function FormularioProceso({ gestiones, gestionIdInicial, rol, procesoExistente }: Props) {
+export default function FormularioProceso({ gestiones, gestionIdInicial, rol, tiposDocumento, procesoExistente }: Props) {
   const router = useRouter()
   const supabase = crearClienteNavegador()
   const esAdmin = rol === 'admin'
@@ -88,6 +96,16 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
   const [acuerdoTipoServicio, setAcuerdoTipoServicio] = useState(procesoExistente?.acuerdo_tipo_servicio ?? '')
   const [acuerdoUniforme, setAcuerdoUniforme] = useState(procesoExistente?.acuerdo_uniforme ?? '')
   const [acuerdoDetalles, setAcuerdoDetalles] = useState(procesoExistente?.acuerdo_detalles ?? '')
+
+  // Control documental (Calidad)
+  const [tipoDocId, setTipoDocId] = useState(procesoExistente?.tipo_documento_id ?? '')
+  const [codigo, setCodigo] = useState(procesoExistente?.codigo ?? '')
+  const [fechaEmision, setFechaEmision] = useState(procesoExistente?.fecha_emision ?? '')
+  const [elaboradoPor, setElaboradoPor] = useState(procesoExistente?.elaborado_por ?? '')
+  const [revisadoPor, setRevisadoPor] = useState(procesoExistente?.revisado_por ?? '')
+  const [aprobadoPor, setAprobadoPor] = useState(procesoExistente?.aprobado_por ?? '')
+  const [proximaRevision, setProximaRevision] = useState(procesoExistente?.fecha_proxima_revision ?? '')
+  const prefijoSugerido = tiposDocumento.find(t => t.id === tipoDocId)?.prefijo ?? ''
 
   const gestionActual = gestiones.find(g => g.id === gestionId)
   const esServicioYProgramacion = gestionActual?.nombre === 'Servicio y Programación'
@@ -166,6 +184,13 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
         acuerdo_tipo_servicio: modoCliente ? acuerdoTipoServicio.trim() : null,
         acuerdo_uniforme: modoCliente ? acuerdoUniforme.trim() : null,
         acuerdo_detalles: modoCliente ? acuerdoDetalles.trim() : null,
+        tipo_documento_id: tipoDocId || null,
+        codigo: codigo.trim() || null,
+        fecha_emision: fechaEmision || null,
+        elaborado_por: elaboradoPor.trim() || null,
+        revisado_por: revisadoPor.trim() || null,
+        aprobado_por: aprobadoPor.trim() || null,
+        fecha_proxima_revision: proximaRevision || null,
       }
 
       let procesoId: string
@@ -291,6 +316,52 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, pr
             <div className="field">
               <label className="field__label">Objetivo</label>
               <textarea className="ca-textarea" value={objetivo} onChange={e => setObjetivo(e.target.value)} placeholder="Una línea que explica para qué existe este proceso." />
+            </div>
+          </div>
+        </section>
+
+        {/* Control documental (Calidad) */}
+        <section className="card card--padded">
+          <div className="page__eyebrow" style={{ marginBottom: 4 }}>Control documental</div>
+          <h2 className="section-title" style={{ marginBottom: 4 }}>Datos de calidad</h2>
+          <p className="text-muted text-sm" style={{ margin: '0 0 16px' }}>
+            Tipo de documento, código y responsables. Se usarán en el encabezado del PDF oficial.
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginBottom: 14 }}>
+            <div className="field">
+              <label className="field__label">Tipo de documento</label>
+              <select className="ca-select" value={tipoDocId} onChange={e => setTipoDocId(e.target.value)}>
+                <option value="">Sin definir</option>
+                {tiposDocumento.map(t => <option key={t.id} value={t.id}>{t.nombre}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label className="field__label">Código</label>
+              <input className="ca-input" value={codigo} onChange={e => setCodigo(e.target.value)}
+                placeholder={prefijoSugerido ? `Ej. XX-${prefijoSugerido}-01` : 'Ej. TH-PR-01'} />
+              {prefijoSugerido && <span className="field__hint">Prefijo del tipo: {prefijoSugerido}</span>}
+            </div>
+            <div className="field">
+              <label className="field__label">Fecha de emisión</label>
+              <input type="date" className="ca-input" value={fechaEmision ?? ''} onChange={e => setFechaEmision(e.target.value)} />
+            </div>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14 }}>
+            <div className="field">
+              <label className="field__label">Elaborado por</label>
+              <input className="ca-input" value={elaboradoPor} onChange={e => setElaboradoPor(e.target.value)} placeholder="Nombre y cargo" />
+            </div>
+            <div className="field">
+              <label className="field__label">Revisado por</label>
+              <input className="ca-input" value={revisadoPor} onChange={e => setRevisadoPor(e.target.value)} placeholder="Nombre y cargo" />
+            </div>
+            <div className="field">
+              <label className="field__label">Aprobado por</label>
+              <input className="ca-input" value={aprobadoPor} onChange={e => setAprobadoPor(e.target.value)} placeholder="Nombre y cargo" />
+            </div>
+            <div className="field">
+              <label className="field__label">Próxima revisión</label>
+              <input type="date" className="ca-input" value={proximaRevision ?? ''} onChange={e => setProximaRevision(e.target.value)} />
             </div>
           </div>
         </section>

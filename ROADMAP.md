@@ -31,7 +31,7 @@
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | Completada (A–D + migración) |
-| **16** | **Gestión Documental por Calidad** | **Planificada — meta ~2 semanas (A+B)** |
+| **16** | **Gestión Documental por Calidad** | **En progreso — A completada, B siguiente** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
 ---
@@ -313,10 +313,10 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 
 **Roles y aprobación (acordados):** colaborador consulta · líder de gestión edita (requiere aprobación) · aprueban Calidad/TH: **Diana Cano, John William, Andrea Ossa**. John William necesita rol **admin**.
 
-### Sub-etapa A — Cimientos: tipos de documento y control documental ⭐ (meta 2 semanas)
-- [ ] Tabla `tipos_documento` + seed con los 8 tipos; `procesos.tipo_documento_id`
-- [ ] Campos de control documental: `codigo` (ej. `TH-PR-01`), `fecha_emision`, `elaborado_por`, `revisado_por`, `aprobado_por`, `fecha_proxima_revision`
-- [ ] Limpieza de las 21 gestiones (hay duplicadas y de prueba)
+### Sub-etapa A — Cimientos: tipos de documento y control documental ⭐ (meta 2 semanas) | Claude-Simon
+- [x] Tabla `tipos_documento` + seed con los 8 tipos; `procesos.tipo_documento_id`
+- [x] Campos de control documental: `codigo` (ej. `TH-PR-01`), `fecha_emision`, `elaborado_por`, `revisado_por`, `aprobado_por`, `fecha_proxima_revision` — editables en el editor de proceso y visibles en la ficha
+- [ ] Limpieza de las 21 gestiones (hay duplicadas y de prueba) — requiere confirmación del usuario
 - [ ] Rol admin a John William; identificar a los aprobadores de Calidad
 
 ### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas)

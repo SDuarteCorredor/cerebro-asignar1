@@ -12,8 +12,10 @@ export default async function PaginaNuevoProceso({ searchParams }: { searchParam
 
   const supabase = await crearClienteServidor()
 
-  const { data: gestiones } = await supabase
-    .from('gestiones').select('id, nombre').eq('activa', true).order('nombre')
+  const [{ data: gestiones }, { data: tiposDoc }] = await Promise.all([
+    supabase.from('gestiones').select('id, nombre').eq('activa', true).order('nombre'),
+    supabase.from('tipos_documento').select('id, nombre, prefijo').order('orden'),
+  ])
 
   return (
     <>
@@ -23,6 +25,7 @@ export default async function PaginaNuevoProceso({ searchParams }: { searchParam
           gestiones={gestiones ?? []}
           gestionIdInicial={gestionId ?? sesion.gestion_id ?? ''}
           rol={sesion.rol}
+          tiposDocumento={tiposDoc ?? []}
         />
       </main>
     </>
