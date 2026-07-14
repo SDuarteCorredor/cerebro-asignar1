@@ -316,7 +316,7 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 ### Sub-etapa A — Cimientos: tipos de documento y control documental ⭐ (meta 2 semanas) | Claude-Simon
 - [x] Tabla `tipos_documento` + seed con los 8 tipos; `procesos.tipo_documento_id`
 - [x] Campos de control documental: `codigo` (ej. `TH-PR-01`), `fecha_emision`, `elaborado_por`, `revisado_por`, `aprobado_por`, `fecha_proxima_revision` — editables en el editor de proceso y visibles en la ficha
-- [ ] Limpieza de las 21 gestiones (hay duplicadas y de prueba) — requiere confirmación del usuario
+- [x] Limpieza de gestiones: eliminada "Tecnología" (vacía, duplicaba a "TI" que sí tiene 6 usuarios). Quedan 20, todas con datos reales. "Jurídica" se conserva (0 usuarios) para futuros procesos legales
 - [ ] Rol admin a John William; identificar a los aprobadores de Calidad
 
 ### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas)
