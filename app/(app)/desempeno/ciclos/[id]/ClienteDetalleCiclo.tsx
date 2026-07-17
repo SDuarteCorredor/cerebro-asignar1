@@ -62,16 +62,16 @@ const colorEstadoCiclo: Record<string, string> = {
 }
 
 const colorTipo: Record<string, string> = {
-  'Jefe inmediato':    'oklch(0.95 0.04 250)',
-  'Par':               'oklch(0.95 0.05 280)',
-  'Reporte directo':   'oklch(0.95 0.05 155)',
-  'Autoevaluación':    'oklch(0.95 0.05 70)',
+  'Jefe inmediato':    '#E8EFF9',
+  'Par':               '#EDE8F7',
+  'Reporte directo':   '#E2F5EC',
+  'Autoevaluación':    '#F5F0DE',
 }
 const colorTipoInk: Record<string, string> = {
-  'Jefe inmediato':    'oklch(0.32 0.10 250)',
-  'Par':               'oklch(0.32 0.10 280)',
-  'Reporte directo':   'oklch(0.30 0.10 155)',
-  'Autoevaluación':    'oklch(0.35 0.13 60)',
+  'Jefe inmediato':    '#0D3B6F',
+  'Par':               '#2D1B6B',
+  'Reporte directo':   '#094D3A',
+  'Autoevaluación':    '#7A5F00',
 }
 
 export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvaluadores }: Props) {
@@ -321,7 +321,7 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
       {/* Modal de agregar evaluador */}
       {evaluacionActiva && (
         <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', display: 'grid', placeItems: 'center', zIndex: 100, padding: 24,
+          position: 'fixed', inset: 0, background: 'var(--overlay)', display: 'grid', placeItems: 'center', zIndex: 100, padding: 24,
         }} onClick={cerrarModal}>
           <div className="card" style={{ width: '100%', maxWidth: 480, padding: 24 }} onClick={e => e.stopPropagation()}>
             <div className="hstack" style={{ justifyContent: 'space-between', marginBottom: 14 }}>

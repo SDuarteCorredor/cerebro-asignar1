@@ -371,7 +371,7 @@ export default function ClienteImportador({ cargos }: { cargos: Cargo[] }) {
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {preview.cargosFaltantes.map(c => (
-                  <span key={c} className="badge badge--no-dot" style={{ background: '#fff', color: 'var(--warning-ink)', border: '1px solid var(--warning)' }}>{c}</span>
+                  <span key={c} className="badge badge--no-dot" style={{ background: 'var(--surface)', color: 'var(--warning-ink)', border: '1px solid var(--warning)' }}>{c}</span>
                 ))}
               </div>
             </section>

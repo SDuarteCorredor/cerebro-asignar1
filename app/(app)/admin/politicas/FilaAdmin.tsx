@@ -136,7 +136,7 @@ function FormularioSuperpuesto({ titulo, onClose, children }: {
 }) {
   return (
     <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)',
+      position: 'fixed', inset: 0, background: 'var(--overlay)',
       display: 'grid', placeItems: 'center', zIndex: 100, padding: 16,
     }} onClick={onClose}>
       <div className="card" style={{

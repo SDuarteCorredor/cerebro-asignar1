@@ -123,7 +123,7 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: 
       {/* Modal rechazo */}
       {rechazando && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 80, display: 'grid', placeItems: 'center' }}>
-          <div onClick={() => setRechazando(null)} style={{ position: 'absolute', inset: 0, background: 'rgba(15,25,45,0.4)' }} />
+          <div onClick={() => setRechazando(null)} style={{ position: 'absolute', inset: 0, background: 'var(--overlay)' }} />
           <div className="card fade-up" style={{ position: 'relative', width: 480, padding: 24, boxShadow: 'var(--shadow-lg)' }}>
             <h3 style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>Rechazar &ldquo;{rechazando.nombre}&rdquo;</h3>
             <p style={{ margin: '0 0 14px', fontSize: 13.5, color: 'var(--text-3)' }}>

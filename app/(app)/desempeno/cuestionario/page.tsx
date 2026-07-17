@@ -38,8 +38,8 @@ export default async function PaginaCuestionario() {
                 <div className="hstack" style={{ gap: 12 }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 8,
-                    background: comp.tipo === 'Gerencial' ? 'oklch(0.92 0.07 280)' : 'var(--primary-soft-2)',
-                    color: comp.tipo === 'Gerencial' ? 'oklch(0.30 0.10 280)' : 'var(--primary-ink)',
+                    background: comp.tipo === 'Gerencial' ? '#DDD3F3' : 'var(--primary-soft-2)',
+                    color: comp.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--primary-ink)',
                     display: 'grid', placeItems: 'center', fontWeight: 700, fontFamily: 'var(--font-mono)',
                   }}>{comp.codigo}</div>
                   <div>

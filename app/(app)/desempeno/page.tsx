@@ -60,7 +60,7 @@ export default async function PaginaDesempeno() {
                 ...(c.destacado ? { borderColor: 'var(--warning)', background: 'var(--warning-soft)' } : {}),
               }}>
                 <div className="hstack" style={{ gap: 10, marginBottom: 12 }}>
-                  <div className="icon-circle" style={c.destacado ? { background: 'var(--warning)', color: '#fff' } : undefined}>
+                  <div className="icon-circle" style={c.destacado ? { background: 'var(--warning)', color: 'var(--surface-elevated, #fff)' } : undefined}>
                     <Icono nombre={c.icono} className="icon" />
                   </div>
                   <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase' }} className={c.destacado ? '' : 'text-muted'}>{c.sub}</div>

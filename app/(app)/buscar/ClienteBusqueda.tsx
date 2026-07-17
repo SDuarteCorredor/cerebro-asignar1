@@ -59,7 +59,7 @@ export default function ClienteBusqueda({ procesos, gestiones, consultaInicial, 
     return (
       <>
         {texto.slice(0, idx)}
-        <mark style={{ background: 'oklch(0.94 0.1 90)', color: 'var(--text)', padding: '1px 3px', borderRadius: 3 }}>
+        <mark style={{ background: '#FDF2B0', color: 'var(--text)', padding: '1px 3px', borderRadius: 3 }}>
           {texto.slice(idx, idx + termino.length)}
         </mark>
         {texto.slice(idx + termino.length)}

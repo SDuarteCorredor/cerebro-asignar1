@@ -25,7 +25,7 @@ export default function PanelHistorial({ historial }: { historial: EntradaHistor
         <div style={{ position: 'fixed', inset: 0, zIndex: 80, display: 'flex', justifyContent: 'flex-end' }}>
           <div
             onClick={() => setAbierto(false)}
-            style={{ position: 'absolute', inset: 0, background: 'rgba(15, 25, 45, 0.4)' }}
+            style={{ position: 'absolute', inset: 0, background: 'var(--overlay)' }}
           />
           <div className="fade-up" style={{
             position: 'relative',

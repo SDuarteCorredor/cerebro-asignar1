@@ -26,7 +26,7 @@ export default async function PaginaCompetencias() {
 
   const colorNivel = (n: number | null) => {
     if (n === null) return { bg: 'var(--surface-sunken)', fg: 'var(--text-muted)' }
-    if (n >= 5) return { bg: 'oklch(0.90 0.08 145)', fg: 'oklch(0.30 0.12 145)' }
+    if (n >= 5) return { bg: '#C0EBCC', fg: '#0A6B2A' }
     if (n >= 4) return { bg: 'var(--primary-soft)', fg: 'var(--primary-ink)' }
     if (n >= 3) return { bg: 'var(--warning-soft)', fg: 'var(--warning-ink)' }
     return { bg: 'var(--danger-soft)', fg: 'var(--danger-ink)' }
@@ -93,7 +93,7 @@ export default async function PaginaCompetencias() {
           </div>
           <div style={{ padding: '12px 22px', borderTop: '1px solid var(--divider)', display: 'flex', gap: 16, flexWrap: 'wrap', fontSize: 12, color: 'var(--text-3)' }}>
             <div className="hstack" style={{ gap: 6 }}>
-              <span style={{ width: 14, height: 14, borderRadius: 4, background: 'oklch(0.90 0.08 145)' }} /> Nivel 5 — Excelente
+              <span style={{ width: 14, height: 14, borderRadius: 4, background: '#C0EBCC' }} /> Nivel 5 — Excelente
             </div>
             <div className="hstack" style={{ gap: 6 }}>
               <span style={{ width: 14, height: 14, borderRadius: 4, background: 'var(--primary-soft)' }} /> Nivel 4 — Competente
@@ -116,8 +116,8 @@ export default async function PaginaCompetencias() {
                 <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
                   <div className="icon-circle text-mono font-semibold" style={{
                     width: 32, height: 32, borderRadius: 8, fontSize: 13,
-                    background: c.tipo === 'Gerencial' ? 'oklch(0.95 0.05 280)' : undefined,
-                    color: c.tipo === 'Gerencial' ? 'oklch(0.35 0.10 280)' : undefined,
+                    background: c.tipo === 'Gerencial' ? '#EDE8F7' : undefined,
+                    color: c.tipo === 'Gerencial' ? '#3D2B7A' : undefined,
                   }}>{c.codigo}</div>
                   <strong style={{ fontSize: 14.5 }}>{c.nombre}</strong>
                   <span className="badge badge--neutral badge--no-dot" style={{ marginLeft: 'auto', fontSize: 11 }}>{c.tipo}</span>

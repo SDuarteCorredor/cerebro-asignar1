@@ -32,11 +32,11 @@ interface Props {
 }
 
 const ESCALA = [
-  { valor: 1, etiqueta: 'Nunca',          color: 'oklch(0.92 0.08 25)',  ink: 'oklch(0.40 0.15 25)' },
-  { valor: 2, etiqueta: 'Pocas veces',    color: 'oklch(0.93 0.06 50)',  ink: 'oklch(0.42 0.13 50)' },
-  { valor: 3, etiqueta: 'A veces',        color: 'oklch(0.95 0.05 80)',  ink: 'oklch(0.44 0.13 80)' },
-  { valor: 4, etiqueta: 'Frecuentemente', color: 'oklch(0.94 0.06 145)', ink: 'oklch(0.34 0.11 145)' },
-  { valor: 5, etiqueta: 'Siempre',        color: 'oklch(0.92 0.08 145)', ink: 'oklch(0.30 0.12 145)' },
+  { valor: 1, etiqueta: 'Nunca',          color: '#F6D4C7', ink: '#952E12' },
+  { valor: 2, etiqueta: 'Pocas veces',    color: '#F2DFCA', ink: '#8B5316' },
+  { valor: 3, etiqueta: 'A veces',        color: '#F0ECD4', ink: '#6B6200' },
+  { valor: 4, etiqueta: 'Frecuentemente', color: '#D5F0DB', ink: '#1A6B35' },
+  { valor: 5, etiqueta: 'Siempre',        color: '#C0EBCC', ink: '#0A6B2A' },
 ]
 
 export default function ClienteCuestionario({
@@ -217,8 +217,8 @@ export default function ClienteCuestionario({
                 <div className="hstack" style={{ gap: 12 }}>
                   <div style={{
                     width: 36, height: 36, borderRadius: 8,
-                    background: c.tipo === 'Gerencial' ? 'oklch(0.92 0.07 280)' : 'var(--primary-soft-2)',
-                    color: c.tipo === 'Gerencial' ? 'oklch(0.30 0.10 280)' : 'var(--primary-ink)',
+                    background: c.tipo === 'Gerencial' ? '#DDD3F3' : 'var(--primary-soft-2)',
+                    color: c.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--primary-ink)',
                     display: 'grid', placeItems: 'center',
                     fontWeight: 700, fontFamily: 'var(--font-mono)',
                   }}>{c.codigo}</div>

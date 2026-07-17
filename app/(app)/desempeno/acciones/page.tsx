@@ -18,15 +18,15 @@ type Accion = {
 type Comp = { codigo: string; nombre: string; orden: number }
 
 const tipoColor: Record<string, { bg: string; fg: string }> = {
-  'Lectura':      { bg: 'oklch(0.95 0.04 250)', fg: 'oklch(0.32 0.10 250)' },
-  'Curso':        { bg: 'oklch(0.95 0.05 280)', fg: 'oklch(0.32 0.10 280)' },
-  'Aplicación':   { bg: 'oklch(0.95 0.05 155)', fg: 'oklch(0.30 0.10 155)' },
-  'Feedback':     { bg: 'oklch(0.95 0.05 70)',  fg: 'oklch(0.35 0.13 60)'  },
-  'Mentoría':     { bg: 'oklch(0.95 0.05 25)',  fg: 'oklch(0.35 0.14 25)'  },
-  'Asignación':   { bg: 'oklch(0.95 0.04 195)', fg: 'oklch(0.30 0.10 195)' },
-  'Reto':         { bg: 'oklch(0.94 0.06 30)',  fg: 'oklch(0.38 0.14 25)'  },
-  'Voluntariado': { bg: 'oklch(0.96 0.04 130)', fg: 'oklch(0.30 0.10 145)' },
-  'Programa':     { bg: 'oklch(0.93 0.07 320)', fg: 'oklch(0.32 0.10 320)' },
+  'Lectura':      { bg: '#E8EFF9', fg: '#0D3B6F' },
+  'Curso':        { bg: '#EDE8F7', fg: '#2D1B6B' },
+  'Aplicación':   { bg: '#E2F5EC', fg: '#094D3A' },
+  'Feedback':     { bg: '#F5F0DE', fg: '#7A5F00' },
+  'Mentoría':     { bg: '#F7E7E1', fg: '#7A2100' },
+  'Asignación':   { bg: '#E2F0F3', fg: '#004D5A' },
+  'Reto':         { bg: '#F7E4DA', fg: '#882800' },
+  'Voluntariado': { bg: '#E8F4E4', fg: '#0F5B2D' },
+  'Programa':     { bg: '#F4E2EF', fg: '#6B1A55' },
 }
 
 const prioridadColor: Record<string, string> = {

@@ -7,10 +7,10 @@ import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
 
 const colorTipo: Record<string, { bg: string; fg: string; etiqueta: string }> = {
-  'Jefe inmediato':  { bg: 'oklch(0.95 0.04 250)', fg: 'oklch(0.32 0.10 250)', etiqueta: 'Como jefe' },
-  'Par':             { bg: 'oklch(0.95 0.05 280)', fg: 'oklch(0.32 0.10 280)', etiqueta: 'Como par' },
-  'Reporte directo': { bg: 'oklch(0.95 0.05 155)', fg: 'oklch(0.30 0.10 155)', etiqueta: 'Como reporte' },
-  'Autoevaluación':  { bg: 'oklch(0.95 0.05 70)',  fg: 'oklch(0.35 0.13 60)',  etiqueta: 'Autoevaluación' },
+  'Jefe inmediato':  { bg: '#E8EFF9', fg: '#0D3B6F', etiqueta: 'Como jefe' },
+  'Par':             { bg: '#EDE8F7', fg: '#2D1B6B', etiqueta: 'Como par' },
+  'Reporte directo': { bg: '#E2F5EC', fg: '#094D3A', etiqueta: 'Como reporte' },
+  'Autoevaluación':  { bg: '#F5F0DE', fg: '#7A5F00', etiqueta: 'Autoevaluación' },
 }
 
 export default async function PaginaMisPendientes() {
