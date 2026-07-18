@@ -105,6 +105,9 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
 
           <div className="hstack" style={{ gap: 8, flexShrink: 0 }}>
             <PanelHistorial historial={historial ?? []} />
+            <Link href={`/procesos/${id}/imprimir`} className="btn btn--secondary btn--sm">
+              <Icono nombre="download" className="icon icon--sm" /> Exportar PDF
+            </Link>
             {puedeEditar && (
               <Link href={`/procesos/${id}/editar`} className="btn btn--primary btn--sm">
                 <Icono nombre="edit" className="icon icon--sm" /> Editar
