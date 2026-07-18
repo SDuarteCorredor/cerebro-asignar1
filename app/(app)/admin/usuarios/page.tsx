@@ -61,6 +61,9 @@ export default async function AdminUsuarios() {
             <strong style={{ color: 'var(--text)' }}>{conLogin}</strong> con login
           </span>
           <span className="spacer" />
+          <Link href="/admin/sedes" className="btn btn--ghost btn--sm">
+            <Icono nombre="target" className="icon icon--sm" /> Excepciones de sede
+          </Link>
           <Link href="/admin/usuarios/importar" className="btn btn--secondary btn--sm">
             <Icono nombre="upload" className="icon icon--sm" /> Importar lista
           </Link>

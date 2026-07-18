@@ -25,6 +25,7 @@ export default async function AdminSedes() {
     <>
       <Topbar usuario={sesion} migas={[
         { etiqueta: 'Admin', href: '/admin/gestiones' },
+        { etiqueta: 'Usuarios', href: '/admin/usuarios' },
         { etiqueta: 'Excepciones de sede' },
       ]} />
       <main className="page fade-up">
