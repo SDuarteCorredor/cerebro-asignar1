@@ -31,7 +31,7 @@
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | Completada (A–D + migración) |
-| **16** | **Gestión Documental por Calidad** | **En progreso — A+B y PDF de C listos** |
+| **16** | **Gestión Documental por Calidad** | **En progreso — A, B, D y PDF de C listos** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
 ---
@@ -317,7 +317,7 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 - [x] Tabla `tipos_documento` + seed con los 8 tipos; `procesos.tipo_documento_id`
 - [x] Campos de control documental: `codigo` (ej. `TH-PR-01`), `fecha_emision`, `elaborado_por`, `revisado_por`, `aprobado_por`, `fecha_proxima_revision` — editables en el editor de proceso y visibles en la ficha
 - [x] Limpieza de gestiones: eliminada "Tecnología" (vacía, duplicaba a "TI" que sí tiene 6 usuarios). Quedan 20, todas con datos reales. "Jurídica" se conserva (0 usuarios) para futuros procesos legales
-- [ ] Rol admin a John William; identificar a los aprobadores de Calidad
+- [x] Aprobadores de Calidad con rol admin: John William Guzmán (ya lo tenía), **Diana Cano** (directora de Control Interno) y **Andrea Ossa** (subdirectora) — promovidas 2026-07-18. Ninguna de las dos tiene correo cargado: entran por `/activar` con cédula + fecha de nacimiento
 
 ### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas) | Claude-Simon
 - [x] El editor **escribe** en `historial_versiones` vía RPC `registrar_version_proceso` (SECURITY DEFINER, valida admin o líder de la gestión): guarda quién, cuándo, versión anterior→nueva y resumen del cambio. Campo "Resumen del cambio" en el editor
@@ -332,9 +332,12 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 - [ ] Logo de Asignar en el encabezado del PDF (falta el asset; hoy va el nombre en texto)
 - [x] Los formatos (Excel, etc.) siguen como adjuntos (se listan en el PDF)
 
-### Sub-etapa D — Revisión periódica y alertas
-- [ ] `fecha_proxima_revision` + regla de **desactualización automática** por fecha
-- [ ] Alerta al líder cuando un documento está por vencer / venció
+### Sub-etapa D — Revisión periódica y alertas | Claude-Simon
+- [x] **Vigencia documental calculada** desde `fecha_proxima_revision` (`lib/documentos/vigencia.ts`): vigente / por vencer (≤30 días) / vencido / sin fecha. Lógica pura con tests de borde; usa la fecha de Bogotá, no la del servidor
+- [x] **Tablero `/procesos/revision`**: KPIs (vencidos, por vencer, sin fecha, vigentes) + tabla ordenada por urgencia. El admin ve toda la organización; el líder solo su gestión. Enlace en el sidebar
+- [x] Alerta en la ficha del proceso cuando está vencido o por vencer (mensaje distinto para quien puede editar y para quien solo consulta)
+- [x] **Decisión: NO se cambia `estado` automáticamente.** Un proceso en `desactualizado` deja de ser visible para los colaboradores, así que un job que lo marcara al vencer escondería los procedimientos vencidos de toda la empresa. La vigencia es un eje aparte del ciclo de aprobación
+- [ ] Notificación push/correo al líder al vencer (pendiente: mismo bloqueo de SMTP)
 - [ ] **Alertas transversales**: si cambia un cargo en el organigrama, notificar los procedimientos afectados
 
 ### Sub-etapa E — Interconexión y glosario

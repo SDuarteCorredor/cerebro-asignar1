@@ -10,6 +10,7 @@ import PanelHistorial from './PanelHistorial'
 import DocumentosProceso from './DocumentosProceso'
 import PasoExpandible from '@/components/app/PasoExpandible'
 import type { PasoDetalle } from '@/components/app/PasoExpandible'
+import { calcularVigencia, textoVigencia } from '@/lib/documentos/vigencia'
 
 export default async function PaginaProceso({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -115,6 +116,31 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
             )}
           </div>
         </div>
+
+        {/* Aviso de vigencia — el documento necesita revisión */}
+        {(() => {
+          const vig = calcularVigencia(proceso.fecha_proxima_revision)
+          if (vig.vigencia !== 'vencido' && vig.vigencia !== 'por_vencer') return null
+          const esVencido = vig.vigencia === 'vencido'
+          return (
+            <div className="card" style={{
+              padding: 14, marginBottom: 20,
+              background: esVencido ? 'var(--danger-soft)' : 'var(--warning-soft)',
+              border: `1px solid var(${esVencido ? '--danger' : '--warning'})`,
+            }}>
+              <div className="hstack" style={{ gap: 8, color: `var(${esVencido ? '--danger-ink' : '--warning-ink'})` }}>
+                <Icono nombre="history" className="icon icon--sm" />
+                <span style={{ fontSize: 13.5 }}>
+                  <strong>{esVencido ? 'Documento vencido.' : 'Revisión próxima.'}</strong>{' '}
+                  {textoVigencia(vig)}.{' '}
+                  {puedeEditar
+                    ? 'Actualízalo y envíalo a aprobación para renovar su vigencia.'
+                    : 'Puede contener información desactualizada; consúltalo con el líder de la gestión.'}
+                </span>
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Aviso de rechazo — visible para quien puede editar */}
         {puedeEditar && proceso.estado === 'borrador' && proceso.comentario_rechazo && (

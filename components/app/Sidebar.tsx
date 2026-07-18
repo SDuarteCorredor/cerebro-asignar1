@@ -59,9 +59,15 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
           <Icono nombre="home" className="nav-item__icon" /> Inicio
         </Link>
 
-        <Link href="/gestiones" className={`nav-item ${activa('/gestiones') || activa('/procesos') ? 'is-active' : ''}`} onClick={navegar}>
+        <Link href="/gestiones" className={`nav-item ${(activa('/gestiones') || activa('/procesos')) && !activa('/procesos/revision') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="grid" className="nav-item__icon" /> Procesos y Procedimientos
         </Link>
+
+        {(esAdmin || esLider) && (
+          <Link href="/procesos/revision" className={`nav-item ${activa('/procesos/revision') ? 'is-active' : ''}`} onClick={navegar}>
+            <Icono nombre="history" className="nav-item__icon" /> Revisión documental
+          </Link>
+        )}
 
         <Link href="/desempeno" className={`nav-item ${activa('/desempeno') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="target" className="nav-item__icon" /> Desempeño
