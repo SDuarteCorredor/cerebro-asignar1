@@ -53,7 +53,7 @@ export default async function AdminAprobaciones() {
 
         <NavAdmin activa="aprobaciones" aprobacionesPendientes={totalAprobaciones ?? 0} totalGestiones={totalGestiones ?? 0} totalUsuarios={totalUsuarios ?? 0} />
 
-        <ClienteAprobaciones aprobaciones={aprobaciones ?? []} adminId={sesion.id} />
+        <ClienteAprobaciones aprobaciones={aprobaciones ?? []} adminId={sesion.id} adminNombre={sesion.nombre} />
       </main>
     </>
   )

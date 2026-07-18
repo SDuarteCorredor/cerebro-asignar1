@@ -113,6 +113,17 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
           </div>
         </div>
 
+        {/* Aviso de rechazo — visible para quien puede editar */}
+        {puedeEditar && proceso.estado === 'borrador' && proceso.comentario_rechazo && (
+          <div className="card" style={{ padding: 16, marginBottom: 20, background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
+            <div className="hstack" style={{ gap: 8, marginBottom: 4, color: 'var(--danger-ink)' }}>
+              <Icono nombre="x" className="icon icon--sm" />
+              <strong style={{ fontSize: 13.5 }}>Devuelto por revisión</strong>
+            </div>
+            <p style={{ margin: 0, fontSize: 13.5, color: 'var(--danger-ink)' }}>{proceso.comentario_rechazo}</p>
+          </div>
+        )}
+
         {/* Contenido principal + sidebar */}
         <div className="layout-main-aside">
           <div className="vstack" style={{ gap: 24 }}>
@@ -245,7 +256,7 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
               const td = proceso.tipo_documento as { nombre: string }[] | { nombre: string } | null
               const tipoDocNombre = Array.isArray(td) ? td[0]?.nombre : td?.nombre
               const tieneControl = tipoDocNombre || proceso.codigo || proceso.fecha_emision
-                || proceso.elaborado_por || proceso.revisado_por || proceso.aprobado_por || proceso.fecha_proxima_revision
+                || proceso.elaborado_por || proceso.revisado_por || proceso.aprobado_por_nombre || proceso.fecha_proxima_revision
               if (!tieneControl) return null
               return (
                 <div className="card card--padded-sm">
@@ -256,9 +267,15 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
                     {proceso.fecha_emision && <div><dt className="dl-label">Emisión</dt><dd className="dl-value text-mono">{proceso.fecha_emision}</dd></div>}
                     {proceso.elaborado_por && <div><dt className="dl-label">Elaboró</dt><dd className="dl-value">{proceso.elaborado_por}</dd></div>}
                     {proceso.revisado_por && <div><dt className="dl-label">Revisó</dt><dd className="dl-value">{proceso.revisado_por}</dd></div>}
-                    {proceso.aprobado_por && <div><dt className="dl-label">Aprobó</dt><dd className="dl-value">{proceso.aprobado_por}</dd></div>}
+                    {proceso.aprobado_por_nombre && <div><dt className="dl-label">Aprobó</dt><dd className="dl-value">{proceso.aprobado_por_nombre}</dd></div>}
                     {proceso.fecha_proxima_revision && <div><dt className="dl-label">Próx. revisión</dt><dd className="dl-value text-mono">{proceso.fecha_proxima_revision}</dd></div>}
                   </dl>
+                  {proceso.firma_aprobacion && (
+                    <div className="hstack" style={{ gap: 8, marginTop: 12, paddingTop: 12, borderTop: '1px solid var(--divider)', fontSize: 12.5, color: 'var(--success-ink)' }}>
+                      <Icono nombre="check" className="icon icon--sm" />
+                      <span>Firmado electrónicamente: <strong>{proceso.firma_aprobacion}</strong></span>
+                    </div>
+                  )}
                 </div>
               )
             })()}

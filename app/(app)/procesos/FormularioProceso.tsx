@@ -105,6 +105,7 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
   const [revisadoPor, setRevisadoPor] = useState(procesoExistente?.revisado_por ?? '')
   const [aprobadoPor, setAprobadoPor] = useState(procesoExistente?.aprobado_por ?? '')
   const [proximaRevision, setProximaRevision] = useState(procesoExistente?.fecha_proxima_revision ?? '')
+  const [resumenCambio, setResumenCambio] = useState('')
   const prefijoSugerido = tiposDocumento.find(t => t.id === tipoDocId)?.prefijo ?? ''
 
   const gestionActual = gestiones.find(g => g.id === gestionId)
@@ -189,8 +190,10 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
         fecha_emision: fechaEmision || null,
         elaborado_por: elaboradoPor.trim() || null,
         revisado_por: revisadoPor.trim() || null,
-        aprobado_por: aprobadoPor.trim() || null,
+        aprobado_por_nombre: aprobadoPor.trim() || null,
         fecha_proxima_revision: proximaRevision || null,
+        // Un documento que sale de "activo" pierde su firma electrónica previa
+        firma_aprobacion: estadoFinal === 'activo' ? undefined : null,
       }
 
       let procesoId: string
@@ -203,6 +206,14 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
         const { error: err } = await supabase.from('procesos').update(dataProceso).eq('id', procesoExistente!.id)
         if (err) throw err
         procesoId = procesoExistente!.id
+        // Registrar la versión en el historial (trazabilidad de calidad)
+        const { error: errHist } = await supabase.rpc('registrar_version_proceso', {
+          p_proceso_id: procesoId,
+          p_version_anterior: procesoExistente!.version,
+          p_version_nueva: version,
+          p_resumen: resumenCambio,
+        })
+        if (errHist) throw errHist
         // Eliminar pasos y documentos existentes para recriarlos
         await supabase.from('pasos').delete().eq('proceso_id', procesoId)
       }
@@ -583,6 +594,19 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
             </div>
           )}
         </section>
+
+        {/* Resumen del cambio — solo al editar, para el historial de versiones */}
+        {!esNuevo && (
+          <section className="card card--padded">
+            <div className="page__eyebrow" style={{ marginBottom: 4 }}>Trazabilidad</div>
+            <div className="field">
+              <label className="field__label">Resumen del cambio</label>
+              <textarea className="ca-textarea" value={resumenCambio} onChange={e => setResumenCambio(e.target.value)}
+                placeholder="Ej. Se actualizó el paso 3 y se añadió el responsable de calidad." />
+              <span className="field__hint">Queda registrado en el historial de versiones (quién, cuándo y qué cambió).</span>
+            </div>
+          </section>
+        )}
 
         {/* Acciones */}
         <div style={{ display: 'flex', justifyContent: 'space-between', gap: 10, padding: '20px 0 0', borderTop: '1px solid var(--divider)' }}>

@@ -31,7 +31,7 @@
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | Completada (A–D + migración) |
-| **16** | **Gestión Documental por Calidad** | **En progreso — A completada, B siguiente** |
+| **16** | **Gestión Documental por Calidad** | **En progreso — A+B completadas, C siguiente** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
 ---
@@ -319,11 +319,12 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 - [x] Limpieza de gestiones: eliminada "Tecnología" (vacía, duplicaba a "TI" que sí tiene 6 usuarios). Quedan 20, todas con datos reales. "Jurídica" se conserva (0 usuarios) para futuros procesos legales
 - [ ] Rol admin a John William; identificar a los aprobadores de Calidad
 
-### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas)
-- [ ] El editor **escribe** en `historial_versiones` (quién, cuándo, versión anterior→nueva, resumen del cambio) — hoy la tabla existe pero nadie escribe
-- [ ] Botones **aprobar / rechazar** en `/admin/aprobaciones`; flujo `borrador → en_revision → activo`
-- [ ] Firma electrónica del documento **reutilizando la de PDI** (Etapa 3.E)
-- [ ] Notificar al líder el resultado de la aprobación
+### Sub-etapa B — Trazabilidad: historial y aprobación ⭐ (meta 2 semanas) | Claude-Simon
+- [x] El editor **escribe** en `historial_versiones` vía RPC `registrar_version_proceso` (SECURITY DEFINER, valida admin o líder de la gestión): guarda quién, cuándo, versión anterior→nueva y resumen del cambio. Campo "Resumen del cambio" en el editor
+- [x] Botones **aprobar / rechazar** en `/admin/aprobaciones`; flujo `borrador → en_revision → activo` (ya existían; al aprobar ahora también se registra la versión)
+- [x] Firma electrónica del documento **reutilizando el patrón de PDI** (marca `Nombre — fecha`): se graba `firma_aprobacion` al aprobar y se muestra en la ficha. Un documento que sale de "activo" pierde su firma
+- [x] Fix Sub-etapa A: el "Aprobó" de control documental usaba la columna `aprobado_por` (uuid, reservada al aprobador del flujo) → nueva columna `aprobado_por_nombre` (text)
+- [ ] Notificar al líder el resultado de la aprobación (pendiente: correo, bloqueado por SMTP)
 
 ### Sub-etapa C — Editor web y exportación a PDF
 - [ ] Editor estructurado según el tipo de documento (procedimiento, instructivo, programa…)

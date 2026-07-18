@@ -75,7 +75,7 @@ export default async function PaginaEditarProceso({ params }: { params: Promise<
             fecha_emision: proceso.fecha_emision,
             elaborado_por: proceso.elaborado_por,
             revisado_por: proceso.revisado_por,
-            aprobado_por: proceso.aprobado_por,
+            aprobado_por: proceso.aprobado_por_nombre,
             fecha_proxima_revision: proceso.fecha_proxima_revision,
           }}
         />

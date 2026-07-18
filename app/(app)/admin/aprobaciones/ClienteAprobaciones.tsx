@@ -16,7 +16,7 @@ interface Aprobacion {
   creado_por_usuario: { id: string; nombre: string } | null
 }
 
-export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: { aprobaciones: Aprobacion[]; adminId: string }) {
+export default function ClienteAprobaciones({ aprobaciones: inicial, adminId, adminNombre }: { aprobaciones: Aprobacion[]; adminId: string; adminNombre: string }) {
   const router = useRouter()
   const supabase = crearClienteNavegador()
   const [items, setItems] = useState(inicial)
@@ -25,19 +25,29 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: 
   const [procesando, setProcesando] = useState('')
   const [ahora] = useState(() => Date.now())
 
-  async function aprobar(id: string) {
-    setProcesando(id)
+  async function aprobar(a: Aprobacion) {
+    setProcesando(a.id)
+    const marca = `${adminNombre} — ${new Date().toISOString()}`
     const { error } = await supabase
       .from('procesos')
       .update({
         estado: 'activo',
         aprobado_por: adminId,
+        firma_aprobacion: marca,
+        comentario_rechazo: null,
         fecha_actualizacion: new Date().toISOString().split('T')[0],
       })
-      .eq('id', id)
+      .eq('id', a.id)
 
     if (!error) {
-      setItems(items.filter(i => i.id !== id))
+      // Registra la aprobación en el historial de versiones
+      await supabase.rpc('registrar_version_proceso', {
+        p_proceso_id: a.id,
+        p_version_anterior: a.version,
+        p_version_nueva: a.version,
+        p_resumen: 'Documento aprobado y publicado por Calidad/TH.',
+      })
+      setItems(items.filter(i => i.id !== a.id))
       router.refresh()
     }
     setProcesando('')
@@ -109,7 +119,7 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId }: 
                   <button className="btn btn--secondary btn--sm" onClick={() => setRechazando(a)} disabled={procesando === a.id}>
                     <Icono nombre="x" className="icon icon--sm" /> Rechazar
                   </button>
-                  <button className="btn btn--primary btn--sm" onClick={() => aprobar(a.id)} disabled={procesando === a.id}>
+                  <button className="btn btn--primary btn--sm" onClick={() => aprobar(a)} disabled={procesando === a.id}>
                     <Icono nombre="check" className="icon icon--sm" />
                     {procesando === a.id ? 'Aprobando…' : 'Aprobar'}
                   </button>
