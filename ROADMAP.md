@@ -200,10 +200,13 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 
 > **Contenido pendiente:** Simón enviará la presentación de la acogida (Drive/PowerPoint). Los ítems reales de inducción y socialización se siembran cuando llegue; la Sub-etapa A construye la estructura.
 
-### Sub-etapa A — Modelo y plantilla ⭐ (siguiente)
-- [ ] Tabla `onboarding_items_plantilla` con RLS (admin edita, todos leen) | Asignado: ``
-- [ ] Panel `/admin/onboarding`: ítems de inducción y socialización (comunes) + entrenamiento por gestión; añadir, reordenar, eliminar | Asignado: ``
-- [ ] Sembrar los ítems reales **cuando llegue la presentación de la acogida** | Asignado: ``
+### Sub-etapa A — Modelo y plantilla ⭐ (en curso) | Claude-Simon
+- [x] Tabla `onboarding_items_plantilla` con RLS (admin edita, todos leen) + helper `es_admin()` (no existía). La BD impide que inducción o socialización cuelguen de una gestión: solo el entrenamiento se especializa por área
+- [x] **24 ítems de inducción sembrados** desde `Acogida laboral Final (3).pptx` (mazo "Inducción Fase 1", 54 diapositivas): quiénes somos, valores, DOCA, sedes, mapa de procesos, organigrama, contratos, prestaciones, incapacidades, pagos, caja de compensación, RIT, políticas, SAGRILAFT/PTEE, línea ética, comunicación, vestuario, beneficios, mapa de sueños y los 3 formularios finales. 22 obligatorios, plazos de 1 a 5 días
+- [ ] Panel `/admin/onboarding` para gestionar los ítems (añadir, reordenar, eliminar) | Asignado: ``
+- [ ] Contenido de **socialización** y **entrenamiento por área**: no viene en ese mazo, hay que definirlo con TH | Asignado: ``
+
+> Los 3 formularios de cierre siguen siendo **Google Forms** (asistencia, perfil socio-demográfico, evaluación). Candidatos a internalizarse más adelante, igual que se hizo con el Forms de ausencias.
 
 ### Sub-etapa B — Instancia y vista del colaborador
 - [ ] Tablas de instancia + RPC `iniciar_onboarding(usuario, plantilla)` que copia los ítems | Asignado: ``
