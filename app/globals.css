@@ -704,7 +704,16 @@ a { color: inherit; text-decoration: none; }
 }
 .doc-head__marca { width: 24%; text-align: center; }
 .doc-head__marca strong { font-size: 15px; letter-spacing: 0.5px; display: block; }
-.doc-head__marca span { font-size: 10px; color: #555; }
+.doc-head__marca span { font-size: 10px; color: #555; display: block; }
+/* El PNG del logo trae bastante margen blanco propio: se recorta con un escalado
+   negativo para que ocupe la celda sin dejar un hueco enorme alrededor. */
+.doc-head__logo {
+  display: block;
+  width: 100%;
+  max-width: 118px;
+  height: auto;
+  margin: -14px auto -10px;
+}
 .doc-head__titulo { text-align: center; }
 .doc-head__titulo strong { font-size: 14px; display: block; text-transform: uppercase; }
 .doc-head__titulo span { font-size: 10px; color: #555; }
@@ -777,4 +786,10 @@ a { color: inherit; text-decoration: none; }
   .no-print { display: none !important; }
   .doc-tabla { font-size: 9.5px; }
   .doc-head { page-break-after: avoid; }
+  /* Sin esto el navegador descarta los fondos de las cabeceras de tabla y el logo */
+  .doc-print, .doc-print * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .doc-head__logo { max-width: 96px; }
 }

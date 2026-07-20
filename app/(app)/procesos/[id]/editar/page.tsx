@@ -77,6 +77,7 @@ export default async function PaginaEditarProceso({ params }: { params: Promise<
             revisado_por: proceso.revisado_por,
             aprobado_por: proceso.aprobado_por_nombre,
             fecha_proxima_revision: proceso.fecha_proxima_revision,
+            secciones: (proceso.secciones as { titulo: string; contenido: string }[]) ?? [],
           }}
         />
       </main>

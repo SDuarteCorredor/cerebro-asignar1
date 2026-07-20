@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion } from '@/lib/sesion'
 import Icono from '@/components/app/Icono'
@@ -75,6 +76,13 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
   // La firma se guarda como "Nombre — ISO"
   const [firmanteNombre, firmanteFecha] = (proceso.firma_aprobacion as string | null)?.split(' — ') ?? []
 
+  const secciones = ((proceso.secciones ?? []) as { titulo: string; contenido: string }[])
+    .filter(s => s.titulo?.trim() || s.contenido?.trim())
+
+  // Numeración corrida: las secciones del documento son variables según el tipo
+  let nSec = 0
+  const nx = () => ++nSec
+
   return (
     <main className="page fade-up">
       {/* Barra de acciones — no se imprime */}
@@ -105,7 +113,14 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
           <tbody>
             <tr>
               <td className="doc-head__marca">
-                <strong>ASIGNAR S.A.S.</strong>
+                <Image
+                  src="/logo-asignar.png"
+                  alt="Asignar S.A.S."
+                  width={150}
+                  height={150}
+                  priority
+                  className="doc-head__logo"
+                />
                 <span>{gestion?.nombre ?? 'Gestión'}</span>
               </td>
               <td className="doc-head__titulo">
@@ -124,24 +139,32 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
 
         {/* Objetivo */}
         <section className="doc-seccion">
-          <h2>1. Objetivo</h2>
+          <h2>{nx()}. Objetivo</h2>
           <p>{proceso.objetivo || 'No definido.'}</p>
         </section>
 
         {/* Alcance: gestión responsable */}
         <section className="doc-seccion">
-          <h2>2. Alcance</h2>
+          <h2>{nx()}. Alcance</h2>
           <p>
             Aplica a la gestión de <b>{gestion?.nombre ?? '—'}</b> de Asignar S.A.S.
             {tipoDoc?.nombre ? ` Documento tipo ${tipoDoc.nombre.toLowerCase()}.` : ''}
           </p>
         </section>
 
+        {/* Secciones propias del documento (según su tipo) */}
+        {secciones.map((s, i) => (
+          <section className="doc-seccion" key={i}>
+            <h2>{nx()}. {s.titulo || 'Sección'}</h2>
+            <p style={{ whiteSpace: 'pre-wrap' }}>{s.contenido || '—'}</p>
+          </section>
+        ))}
+
         {/* Desarrollo: actividades o ficha de cliente */}
         {esCliente ? (
           <>
             <section className="doc-seccion">
-              <h2>3. Cliente</h2>
+              <h2>{nx()}. Cliente</h2>
               <p><b>{proceso.cliente_nombre || 'Sin nombre de cliente'}</b></p>
               {contactos.length > 0 && (
                 <table className="doc-tabla">
@@ -161,7 +184,7 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
               )}
             </section>
             <section className="doc-seccion">
-              <h2>4. Acuerdo de servicio</h2>
+              <h2>{nx()}. Acuerdo de servicio</h2>
               <table className="doc-tabla">
                 <tbody>
                   <tr><th style={{ width: '28%' }}>Tarifa</th><td>{proceso.acuerdo_tarifa || '—'}</td></tr>
@@ -172,10 +195,10 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
               </table>
             </section>
           </>
-        ) : (
+        ) : pasos.length > 0 ? (
           <section className="doc-seccion">
-            <h2>3. Desarrollo del procedimiento</h2>
-            {pasos.length > 0 ? (
+            <h2>{nx()}. Desarrollo del procedimiento</h2>
+            {(
               <table className="doc-tabla">
                 <thead>
                   <tr>
@@ -209,16 +232,14 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
                   ))}
                 </tbody>
               </table>
-            ) : (
-              <p>Este documento no tiene actividades registradas.</p>
             )}
           </section>
-        )}
+        ) : null}
 
         {/* Documentos relacionados */}
         {documentos.length > 0 && (
           <section className="doc-seccion">
-            <h2>{esCliente ? '5' : '4'}. Documentos y formatos relacionados</h2>
+            <h2>{nx()}. Documentos y formatos relacionados</h2>
             <table className="doc-tabla">
               <thead>
                 <tr><th className="doc-tabla__num">Nº</th><th>Nombre</th><th style={{ width: '18%' }}>Tipo</th></tr>
@@ -238,7 +259,7 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
 
         {/* Control de cambios — alimentado por historial_versiones */}
         <section className="doc-seccion">
-          <h2>{esCliente ? '6' : '5'}. Control de cambios</h2>
+          <h2>{nx()}. Control de cambios</h2>
           {cambios.length > 0 ? (
             <table className="doc-tabla">
               <thead>
@@ -271,7 +292,7 @@ export default async function PaginaImprimirProceso({ params }: { params: Promis
 
         {/* Firmas */}
         <section className="doc-seccion">
-          <h2>{esCliente ? '7' : '6'}. Control documental</h2>
+          <h2>{nx()}. Control documental</h2>
           <table className="doc-firmas">
             <thead>
               <tr>
