@@ -181,24 +181,38 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 Asignar es temporal: entra gente constantemente y la rotación es alta, así que la acogida tiene que ser repetible y auditable. La idea es una **plantilla de checklist** que se instancia para cada persona que ingresa, con seguimiento y firma de recibido.
 
-**Modelo previsto:**
-- `onboarding_plantillas` — nombre, ámbito (general / por gestión / por cargo), activa
-- `onboarding_items_plantilla` — orden, título, descripción, **responsable** (TH · jefe · colaborador), obligatorio, **plazo_dias** (día 1, semana 1, mes 1), url_recurso
-- `onboarding` — instancia por persona: usuario_id, plantilla_id, fecha_inicio, estado, firma_recibido
-- `onboarding_items` — estado, hecho_por, hecho_at, nota
+**Estructura real de la acogida (definida por Simón, 2026-07-20):** tres etapas.
 
-### Sub-etapa A — Modelo y plantillas ⭐ (siguiente)
-- [ ] Tablas de plantillas + ítems, con RLS (admin edita, todos leen) | Asignado: ``
-- [ ] Panel `/admin/onboarding`: crear plantilla, añadir/reordenar/eliminar ítems | Asignado: ``
-- [ ] Seed de una plantilla general con los pasos típicos de Asignar | Asignado: ``
+| Etapa | Alcance | Marca | Aprueba |
+|---|---|---|---|
+| 1. **Inducción** (a cargo de Paula Caballero) | Igual para todos | El colaborador | TH |
+| 2. **Socialización** | Igual para todos | El colaborador | TH |
+| 3. **Entrenamiento** | **Propio de cada área** | El colaborador | **Jefe inmediato** |
+
+Es el mismo patrón de dos pasos que ya usan Comités (autorreporte + confirmación) y Ausencias: `pendiente → reportado → aprobado`, blindado por RPC.
+
+**Modelo previsto:**
+- `onboarding_items_plantilla` — `etapa` (induccion·socializacion·entrenamiento), `gestion_id` (**null = aplica a todos**; con valor = entrenamiento de esa área), orden, título, descripción, obligatorio, plazo_dias, url_recurso
+- `onboarding` — instancia por persona: usuario_id, fecha_inicio, estado, firma_recibido
+- `onboarding_items` — estado (pendiente·reportado·aprobado), reportado_at, aprobado_por, aprobado_at, nota
+
+El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda por ítem.
+
+> **Contenido pendiente:** Simón enviará la presentación de la acogida (Drive/PowerPoint). Los ítems reales de inducción y socialización se siembran cuando llegue; la Sub-etapa A construye la estructura.
+
+### Sub-etapa A — Modelo y plantilla ⭐ (siguiente)
+- [ ] Tabla `onboarding_items_plantilla` con RLS (admin edita, todos leen) | Asignado: ``
+- [ ] Panel `/admin/onboarding`: ítems de inducción y socialización (comunes) + entrenamiento por gestión; añadir, reordenar, eliminar | Asignado: ``
+- [ ] Sembrar los ítems reales **cuando llegue la presentación de la acogida** | Asignado: ``
 
 ### Sub-etapa B — Instancia y vista del colaborador
 - [ ] Tablas de instancia + RPC `iniciar_onboarding(usuario, plantilla)` que copia los ítems | Asignado: ``
 - [ ] `/onboarding` "Mi acogida": checklist, barra de progreso, marcar los ítems propios | Asignado: ``
 - [ ] Notificación al colaborador y a su jefe al iniciarse (usa el centro de notificaciones) | Asignado: ``
 
-### Sub-etapa C — Seguimiento y firma
-- [ ] `/onboarding/seguimiento`: quién está en acogida, % de avance, ítems vencidos; admin ve todo, líder solo su gestión | Asignado: ``
+### Sub-etapa C — Aprobación, seguimiento y firma
+- [ ] RPC de aprobación: **TH** aprueba inducción y socialización, **el jefe inmediato** aprueba entrenamiento (blindado, que ninguno pueda saltarse el turno del otro) | Asignado: ``
+- [ ] `/onboarding/seguimiento`: quién está en acogida, % de avance, ítems vencidos y **lo que espera mi aprobación**; admin ve todo, líder solo su gente | Asignado: ``
 - [ ] **Firma de recibido** al completar, reutilizando el patrón de PDI (`Nombre — fecha`) | Asignado: ``
 - [ ] Notificar ítems vencidos según `plazo_dias` | Asignado: ``
 
