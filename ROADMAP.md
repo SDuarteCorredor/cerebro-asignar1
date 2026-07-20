@@ -31,7 +31,7 @@
 | 13 | Comités y Compromisos (4DX) | Completada (MVP) |
 | 14 | Mi perfil personalizable | Completada |
 | 15 | Ausencias y permisos laborales | Completada (A–D + migración) |
-| **16** | **Gestión Documental por Calidad** | **En progreso — A, B, D y PDF de C listos** |
+| **16** | **Gestión Documental por Calidad** | **A, B, C y D completadas — falta E (glosario) y F (IA)** |
 | 17 | Autoservicio: activar mi cuenta | Completada |
 
 ---
@@ -328,8 +328,8 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 
 ### Sub-etapa C — Editor web y exportación a PDF | Claude-Simon
 - [x] **Exportar a PDF** con formato oficial: ruta `/procesos/[id]/imprimir` + CSS `@media print` (sin dependencias nuevas; se guarda con "Imprimir → Guardar como PDF"). Encabezado normalizado (marca/gestión · título/tipo · código, versión, emisión, actualización), objetivo, alcance, desarrollo del procedimiento (o ficha de cliente + acuerdo), documentos relacionados, **control de cambios alimentado por `historial_versiones`**, bloque de firmas (elaboró/revisó/aprobó) con la firma electrónica, y pie con próxima revisión + "copia impresa no controlada". Botón "Exportar PDF" en la ficha
-- [ ] Editor estructurado según el tipo de documento (procedimiento, instructivo, programa…)
-- [ ] Logo de Asignar en el encabezado del PDF (falta el asset; hoy va el nombre en texto)
+- [x] **Editor estructurado según el tipo de documento**: columna `procesos.secciones` (jsonb) con secciones libres (título + contenido, reordenables) + **esqueleto sugerido por tipo** (`lib/documentos/plantillas.ts`, los 8 tipos con su estructura y una pista de uso). El botón "Cargar estructura de X" **añade** las secciones que falten, nunca sobreescribe lo escrito. El bloque de "Pasos del procedimiento" solo aparece en Procedimiento e Instructivo (o si el documento ya tiene pasos). Las secciones se muestran en la ficha y en el PDF, con numeración corrida
+- [ ] Logo de Asignar en el encabezado del PDF (falta el asset; debe ir en `public/logo-asignar.png`)
 - [x] Los formatos (Excel, etc.) siguen como adjuntos (se listan en el PDF)
 
 ### Sub-etapa D — Revisión periódica y alertas | Claude-Simon

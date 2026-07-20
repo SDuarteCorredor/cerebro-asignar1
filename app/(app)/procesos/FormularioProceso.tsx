@@ -8,6 +8,7 @@ import IconoArchivo from '@/components/app/IconoArchivo'
 import BadgeEstado from '@/components/app/BadgeEstado'
 import { crearClienteNavegador } from '@/lib/supabase/client'
 import type { Rol, EstadoProceso } from '@/types'
+import { plantillaDeTipo, tipoUsaPasos, pistaPorTipo, type SeccionDoc } from '@/lib/documentos/plantillas'
 
 interface Paso {
   id?: string
@@ -58,6 +59,7 @@ interface Props {
     revisado_por?: string | null
     aprobado_por?: string | null
     fecha_proxima_revision?: string | null
+    secciones?: SeccionDoc[]
   }
 }
 
@@ -106,7 +108,37 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
   const [aprobadoPor, setAprobadoPor] = useState(procesoExistente?.aprobado_por ?? '')
   const [proximaRevision, setProximaRevision] = useState(procesoExistente?.fecha_proxima_revision ?? '')
   const [resumenCambio, setResumenCambio] = useState('')
-  const prefijoSugerido = tiposDocumento.find(t => t.id === tipoDocId)?.prefijo ?? ''
+  const [secciones, setSecciones] = useState<SeccionDoc[]>(procesoExistente?.secciones ?? [])
+  const tipoSeleccionado = tiposDocumento.find(t => t.id === tipoDocId)
+  const prefijoSugerido = tipoSeleccionado?.prefijo ?? ''
+  const nombreTipo = tipoSeleccionado?.nombre ?? null
+  // El bloque de actividades se muestra si el tipo lo usa, o si el documento ya tiene pasos cargados
+  const mostrarPasos = tipoUsaPasos(nombreTipo) || pasos.some(p => p.nombre || p.descripcion)
+  const plantillaSugerida = plantillaDeTipo(nombreTipo)
+
+  function agregarSeccion(titulo = '') {
+    setSecciones([...secciones, { titulo, contenido: '' }])
+  }
+  function actualizarSeccion(i: number, campo: keyof SeccionDoc, valor: string) {
+    setSecciones(secciones.map((s, j) => j === i ? { ...s, [campo]: valor } : s))
+  }
+  function eliminarSeccion(i: number) {
+    setSecciones(secciones.filter((_, j) => j !== i))
+  }
+  function moverSeccion(i: number, delta: number) {
+    const destino = i + delta
+    if (destino < 0 || destino >= secciones.length) return
+    const sig = [...secciones]
+    const [item] = sig.splice(i, 1)
+    sig.splice(destino, 0, item)
+    setSecciones(sig)
+  }
+  /** Añade las secciones sugeridas que aún no existan; nunca borra lo ya escrito. */
+  function cargarPlantilla() {
+    const titulosActuales = new Set(secciones.map(s => s.titulo.trim().toLowerCase()))
+    const nuevas = plantillaSugerida.filter(s => !titulosActuales.has(s.titulo.trim().toLowerCase()))
+    setSecciones([...secciones, ...nuevas])
+  }
 
   const gestionActual = gestiones.find(g => g.id === gestionId)
   const esServicioYProgramacion = gestionActual?.nombre === 'Servicio y Programación'
@@ -192,6 +224,8 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
         revisado_por: revisadoPor.trim() || null,
         aprobado_por_nombre: aprobadoPor.trim() || null,
         fecha_proxima_revision: proximaRevision || null,
+        // Se descartan las secciones que quedaron completamente vacías
+        secciones: secciones.filter(s => s.titulo.trim() || s.contenido.trim()),
         // Un documento que sale de "activo" pierde su firma electrónica previa
         firma_aprobacion: estadoFinal === 'activo' ? undefined : null,
       }
@@ -377,6 +411,65 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
           </div>
         </section>
 
+        {/* Contenido del documento — secciones libres, con esqueleto sugerido por tipo */}
+        {!modoCliente && (
+          <section className="card card--padded">
+            <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 4, flexWrap: 'wrap' }}>
+              <div>
+                <div className="page__eyebrow" style={{ marginBottom: 4 }}>Contenido</div>
+                <h2 className="section-title" style={{ margin: 0 }}>Secciones del documento</h2>
+              </div>
+              {plantillaSugerida.length > 0 && (
+                <button type="button" className="btn btn--secondary btn--sm" onClick={cargarPlantilla}>
+                  <Icono nombre="plus" className="icon icon--sm" /> Cargar estructura de {nombreTipo}
+                </button>
+              )}
+            </div>
+            <p className="text-muted text-sm" style={{ margin: '0 0 14px' }}>
+              {nombreTipo && pistaPorTipo[nombreTipo]
+                ? pistaPorTipo[nombreTipo]
+                : 'Elige el tipo de documento en Control documental para ver la estructura sugerida.'}
+            </p>
+
+            <div className="vstack" style={{ gap: 10 }}>
+              {secciones.map((s, i) => (
+                <div key={i} className="paso-card">
+                  <div className="paso-card__head">
+                    <div className="paso-num">{String(i + 1).padStart(2, '0')}</div>
+                    <input
+                      className="ca-input"
+                      placeholder="Título de la sección…"
+                      value={s.titulo}
+                      onChange={e => actualizarSeccion(i, 'titulo', e.target.value)}
+                    />
+                    <button type="button" className="btn btn--ghost btn--sm" onClick={() => moverSeccion(i, -1)}
+                      disabled={i === 0} title="Subir">
+                      <Icono nombre="chevronRight" className="icon icon--sm" style={{ transform: 'rotate(-90deg)' }} />
+                    </button>
+                    <button type="button" className="btn btn--ghost btn--sm" onClick={() => moverSeccion(i, 1)}
+                      disabled={i === secciones.length - 1} title="Bajar">
+                      <Icono nombre="chevronRight" className="icon icon--sm" style={{ transform: 'rotate(90deg)' }} />
+                    </button>
+                    <button type="button" className="btn btn--ghost btn--sm" onClick={() => eliminarSeccion(i)} title="Eliminar">
+                      <Icono nombre="trash" className="icon icon--sm" style={{ color: 'var(--danger-ink)' }} />
+                    </button>
+                  </div>
+                  <textarea
+                    className="ca-textarea"
+                    style={{ minHeight: 90 }}
+                    placeholder="Contenido de esta sección…"
+                    value={s.contenido}
+                    onChange={e => actualizarSeccion(i, 'contenido', e.target.value)}
+                  />
+                </div>
+              ))}
+              <button type="button" className="btn btn--secondary" onClick={() => agregarSeccion()} style={{ alignSelf: 'flex-start' }}>
+                <Icono nombre="plus" className="icon icon--sm" /> Agregar sección
+              </button>
+            </div>
+          </section>
+        )}
+
         {/* Selector de tipo — solo Servicio y Programación */}
         {esServicioYProgramacion && (
           <section className="card" style={{ padding: 26 }}>
@@ -474,8 +567,8 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
           </>
         )}
 
-        {/* Pasos */}
-        {!modoCliente && (
+        {/* Pasos — solo para los tipos que se documentan paso a paso */}
+        {!modoCliente && mostrarPasos && (
         <section className="card" style={{ padding: 26 }}>
           <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 14 }}>
             <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Pasos del procedimiento</h3>

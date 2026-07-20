@@ -162,6 +162,18 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
               <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55 }}>{proceso.objetivo}</p>
             </section>
 
+            {/* Secciones de contenido del documento */}
+            {((proceso.secciones as { titulo: string; contenido: string }[]) ?? [])
+              .filter(s => s.titulo?.trim() || s.contenido?.trim())
+              .map((s, i) => (
+                <section key={i} className="card card--padded">
+                  <div className="page__eyebrow" style={{ marginBottom: 8 }}>{s.titulo || `Sección ${i + 1}`}</div>
+                  <p style={{ margin: 0, fontSize: 14.5, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
+                    {s.contenido || '—'}
+                  </p>
+                </section>
+              ))}
+
             {/* Cliente (proceso por cliente) */}
             {esCliente && (
               <>
