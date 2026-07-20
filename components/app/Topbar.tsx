@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Icono from './Icono'
+import Campana from './Campana'
 import { useShell } from './AppShell'
 import type { SesionUsuario } from '@/types'
 import { crearClienteNavegador } from '@/lib/supabase/client'
@@ -63,6 +64,8 @@ export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: To
           <kbd style={{ fontFamily: 'var(--font-mono)', fontSize: 11, background: 'var(--surface)', border: '1px solid var(--border)', padding: '1px 6px', borderRadius: 4, color: 'var(--text-3)' }}>⌘K</kbd>
         </form>
       )}
+
+      <Campana />
 
       <Link href={`/perfil/${usuario.id}`} className="topbar__user" style={{ textDecoration: 'none', color: 'inherit' }} title="Ver mi perfil">
         <div>

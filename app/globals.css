@@ -676,6 +676,97 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* ==========================================================================
+   Campana de notificaciones (topbar)
+   ========================================================================== */
+.campana { position: relative; flex-shrink: 0; }
+.campana__btn { position: relative; }
+.campana__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  font-family: var(--font-mono);
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.campana__panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  z-index: 90;
+  overflow: hidden;
+}
+.campana__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--divider);
+}
+.campana__lista { max-height: 60vh; overflow-y: auto; }
+.campana__vacio {
+  padding: 28px 16px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.campana__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--divider);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.campana__item:hover { background: var(--surface-sunken); }
+.campana__item.is-nueva { background: var(--primary-soft); }
+.campana__item.is-nueva:hover { background: var(--primary-soft); filter: brightness(0.98); }
+.campana__item-cuerpo { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.campana__item-titulo { font-size: 13px; font-weight: 600; color: var(--text); }
+.campana__item-msg {
+  font-size: 12.5px;
+  color: var(--text-2);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.campana__item-fecha { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
+.campana__punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--primary);
+  flex-shrink: 0;
+  margin-top: 6px;
+}
+
+@media (max-width: 520px) {
+  .campana__panel { width: calc(100vw - 24px); right: -8px; }
+}
+
+/* ==========================================================================
    Documento oficial (Gestión Documental por Calidad) — vista e impresión
    ========================================================================== */
 .doc-print {

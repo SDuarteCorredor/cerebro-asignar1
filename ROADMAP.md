@@ -373,6 +373,19 @@ Permite que los 138 colaboradores creen su propio acceso sin que TH reparta cont
 
 ---
 
+## Notificaciones internas (completada) | Claude-Simon
+
+Se descartó el correo: **todo se maneja dentro de la plataforma**, sin depender de un proveedor SMTP ni de que la gente revise su bandeja.
+
+- [x] Tabla `notificaciones` (destinatario, tipo, título, mensaje, url, leída) + RLS: cada quien ve solo las suyas y lo único que puede hacer es marcarlas como leídas. **Sin policy de INSERT**: solo las crean los triggers `SECURITY DEFINER`, así nadie puede fabricarle notificaciones a otro
+- [x] **Triggers** en `ausencias` y `procesos`: capturan el evento pase lo que pase, sin importar por qué ruta de la app se cambió el dato
+- [x] Eventos cubiertos: nueva solicitud de ausencia → al jefe · aprobada/denegada → al solicitante · doble validación → a TH · documento enviado a revisión → a los aprobadores · aprobado/devuelto → a quien lo creó
+- [x] Nunca se notifica a quien provocó el cambio (`auth.uid()`)
+- [x] **Campana en la topbar** con contador de no leídas, panel desplegable, enlace directo al elemento, marcar una o todas como leídas, y refresco cada 60 s
+- [ ] Notificar vencimientos de revisión documental (hoy se ven en `/procesos/revision`)
+
+---
+
 ## Mejoras transversales
 
 - [x] Responsive/mobile first (CSS breakpoints) | Claude-MK
