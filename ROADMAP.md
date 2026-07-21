@@ -179,17 +179,35 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 
 ## Etapa 8 — Onboarding / Acogida Laboral
 
-Asignar es temporal: entra gente constantemente y la rotación es alta, así que la acogida tiene que ser repetible y auditable. La idea es una **plantilla de checklist** que se instancia para cada persona que ingresa, con seguimiento y firma de recibido.
+Asignar es temporal: entra gente constantemente y la rotación es alta, así que la acogida tiene que ser repetible y auditable.
 
-**Estructura real de la acogida (definida por Simón, 2026-07-20):** tres etapas.
+**Estructura real, según el procedimiento oficial** (`Procedimiento_Acogida_Laboral_Desarrollo_Estructurado.docx`, 2026-07-21):
 
-| Etapa | Alcance | Marca | Aprueba |
+| Etapa | Qué es | Responsable | Cómo se valida |
 |---|---|---|---|
-| 1. **Inducción** (a cargo de Paula Caballero) | Igual para todos | El colaborador | TH |
-| 2. **Socialización** | Igual para todos | El colaborador | TH |
-| 3. **Entrenamiento** | **Propio de cada área** | El colaborador | **Jefe inmediato** |
+| 1. **Inducción corporativa** | **Sesión en vivo de 4–8 h** (presencial Bogotá / virtual demás sedes) | Psicóloga de Bienestar (Paula Caballero) | **3 quizzes** intermedios + formularios de cierre |
+| 2. **Socializaciones institucionales** | Cumplimiento, Control Interno, Calidad y SST, dentro de 3 días hábiles | Cada área | Asistencia y evidencia por área |
+| 3. **Entrenamiento en el cargo** | 15–20 días, tutor designado, formato **E3-FR36** | Jefe inmediato | Seguimiento a los 30 días + evaluación de período de prueba |
 
-Es el mismo patrón de dos pasos que ya usan Comités (autorreporte + confirmación) y Ausencias: `pendiente → reportado → aprobado`, blindado por RPC.
+> ### ⚠️ CORRECCIÓN DE RUMBO (2026-07-21)
+> El primer diseño asumía que **el colaborador iba marcando** una lista de 24 puntos. **Eso es incorrecto para la Etapa 1.** La inducción es una **charla dirigida por Paula**, y lo que valida el aprendizaje son los **quizzes**, no el autochequeo.
+>
+> - Paula **proyecta la presentación desde Cerebro** y **activa los quizzes en vivo**; al cerrarlos ve resultados.
+> - **La barra de avance se llena por quiz completado.**
+> - Los **3 formularios de cierre** (asistencia, perfil sociodemográfico, evaluación) **sí** siguen siendo ítems individuales.
+> - El modelo de checklist con aprobación **se conserva para las Etapas 2 y 3**, donde sí encaja.
+
+**Ubicación de los quizzes en el recorrido** (del procedimiento):
+
+| Quiz | Va después de | Evalúa |
+|---|---|---|
+| 1 | Sedes y cobertura nacional | Reconocimiento de las 8 sedes |
+| 2 | Procesos | Historia, valores, DOCA y estructura organizacional |
+| 3 | Beneficios y convenios | Beneficios, reglamento, políticas y generales |
+
+Con **retroalimentación inmediata** tras cada uno.
+
+**Decisiones de diseño (Simón, 2026-07-21):** la presentación se sube como **PDF y se proyecta desde la plataforma** (Paula la sigue maquetando en PowerPoint); Paula ve **avance en vivo** mientras responden y **resultados al cerrar** cada quiz; los participantes **entran con su propia cuenta** (se activan en `/activar` antes de la inducción).
 
 **Modelo previsto:**
 - `onboarding_items_plantilla` — `etapa` (induccion·socializacion·entrenamiento), `gestion_id` (**null = aplica a todos**; con valor = entrenamiento de esa área), orden, título, descripción, obligatorio, plazo_dias, url_recurso
@@ -215,16 +233,37 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 - [x] Notificación al colaborador y a su jefe al iniciarse
 - [x] Botón "Iniciar acogida" en la ficha del usuario (`/admin/usuarios/[id]`) y enlace "Mi Acogida" en el sidebar (reemplaza el botón "Pronto")
 
-### Sub-etapa C — Aprobación, seguimiento y firma
-- [ ] RPC de aprobación: **TH** aprueba inducción y socialización, **el jefe inmediato** aprueba entrenamiento (blindado, que ninguno pueda saltarse el turno del otro) | Asignado: ``
-- [ ] `/onboarding/seguimiento`: quién está en acogida, % de avance, ítems vencidos y **lo que espera mi aprobación**; admin ve todo, líder solo su gente | Asignado: ``
-- [ ] **Firma de recibido** al completar, reutilizando el patrón de PDI (`Nombre — fecha`) | Asignado: ``
-- [ ] Notificar ítems vencidos según `plazo_dias` | Asignado: ``
+### Sub-etapa C — Sesiones de inducción y presentación ⭐ (siguiente)
+- [ ] Tablas `induccion_sesiones` (fecha, modalidad, enlace de reunión, facilitador, presentación, estado) e `induccion_participantes` | Asignado: ``
+- [ ] Subida de la **presentación en PDF** a Storage (bucket privado) + **visor dentro de la plataforma** para proyectar | Asignado: ``
+- [ ] Panel de Paula: crear la sesión, inscribir participantes, iniciar y cerrar la jornada | Asignado: ``
+- [ ] Limpiar los 24 ítems de inducción sembrados: **dejar solo los 3 formularios de cierre** | Asignado: ``
 
-### Sub-etapa D — Enganches
-- [ ] Iniciar la acogida desde la ficha del usuario (y opcionalmente al importar un ingreso nuevo) | Asignado: ``
-- [ ] Ítems que enlazan a **políticas** (Etapa 7) y a los **procesos de su gestión** como lectura obligatoria | Asignado: ``
-- [ ] Cadena con Comités fase 4 (puntos desde el período de prueba) — depende de Etapa 10 | Asignado: ``
+### Sub-etapa D — Quizzes en vivo ⭐
+- [ ] Tablas `quizzes`, `quiz_preguntas` (enunciado, opciones, correcta) y `quiz_respuestas` | Asignado: ``
+- [ ] Editor de quizzes para TH; sembrar los **3 quizzes** del procedimiento | Asignado: ``
+- [ ] **Consola del facilitador**: abrir/cerrar cada quiz, ver **avance en vivo** ("7 de 12 respondieron") y **resultados al cerrar** (puntaje por persona y preguntas más falladas) | Asignado: ``
+- [ ] Vista del participante: el quiz aparece cuando Paula lo abre, responde y recibe **retroalimentación inmediata** | Asignado: ``
+- [ ] **La barra de avance de la Etapa 1 se calcula por quizzes completados** | Asignado: ``
+- [ ] Actualización en vivo: sondeo cada pocos segundos (como la campana) o Supabase Realtime | Asignado: ``
+
+### Sub-etapa E — Socializaciones institucionales (Etapa 2 del procedimiento)
+> Aquí **sí** aplica el modelo de checklist + aprobación ya construido en A y B.
+- [ ] Ítems por área (Cumplimiento, Control Interno, Calidad, SST) con plazo de **3 días hábiles** | Asignado: ``
+- [ ] Cada área registra asistencia y **evidencia** (adjunto) | Asignado: ``
+- [ ] Aprobación por el área responsable | Asignado: ``
+
+### Sub-etapa F — Entrenamiento en el cargo (Etapa 3 del procedimiento)
+- [ ] Designación de **tutor** por el jefe inmediato | Asignado: ``
+- [ ] Formato **E3-FR36** asociado al entrenamiento | Asignado: ``
+- [ ] Duración 15–20 días + **seguimiento a los 30 días** | Asignado: ``
+- [ ] Enganche con la **evaluación de período de prueba** (Etapa 10) | Asignado: ``
+
+### Sub-etapa G — Cierre y enganches
+- [ ] `/onboarding/seguimiento`: quién está en acogida, avance y lo que espera mi aprobación | Asignado: ``
+- [ ] **Firma de recibido** al completar, reutilizando el patrón de PDI | Asignado: ``
+- [ ] Internalizar los 3 Google Forms de cierre (asistencia, perfil sociodemográfico, evaluación) | Asignado: ``
+- [ ] Ítems que enlacen a **políticas** (Etapa 7) y a los **procesos de su gestión** | Asignado: ``
 
 ---
 
