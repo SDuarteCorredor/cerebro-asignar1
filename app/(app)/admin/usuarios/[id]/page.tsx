@@ -2,6 +2,7 @@ import { notFound, redirect } from 'next/navigation'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Topbar from '@/components/app/Topbar'
 import ClienteEditorUsuario from './ClienteEditorUsuario'
+import BotonAcogida from './BotonAcogida'
 import { obtenerIniciales } from '@/lib/sesion'
 import type { SesionUsuario, Rol } from '@/types'
 
@@ -34,6 +35,15 @@ export default async function PaginaEditarUsuario({ params }: { params: Promise<
 
   if (!usuario) notFound()
 
+  const { data: acogida } = await supabase
+    .from('onboarding')
+    .select('id, estado, fecha_inicio')
+    .eq('usuario_id', id)
+    .in('estado', ['en_curso', 'completado'])
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
   return (
     <>
       <Topbar
@@ -50,6 +60,7 @@ export default async function PaginaEditarUsuario({ params }: { params: Promise<
           posiblesJefes={posiblesJefes ?? []}
           gestiones={gestiones ?? []}
         />
+        <BotonAcogida usuarioId={id} nombre={usuario.nombre} acogidaAbierta={acogida ?? null} />
       </main>
     </>
   )

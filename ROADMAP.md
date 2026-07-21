@@ -208,10 +208,12 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 
 > Los 3 formularios de cierre siguen siendo **Google Forms** (asistencia, perfil socio-demográfico, evaluación). Candidatos a internalizarse más adelante, igual que se hizo con el Forms de ausencias.
 
-### Sub-etapa B — Instancia y vista del colaborador
-- [ ] Tablas de instancia + RPC `iniciar_onboarding(usuario, plantilla)` que copia los ítems | Asignado: ``
-- [ ] `/onboarding` "Mi acogida": checklist, barra de progreso, marcar los ítems propios | Asignado: ``
-- [ ] Notificación al colaborador y a su jefe al iniciarse (usa el centro de notificaciones) | Asignado: ``
+### Sub-etapa B — Instancia y vista del colaborador (completada) | Claude-Simon
+- [x] Tablas `onboarding` + `onboarding_items` y RPC `iniciar_onboarding(usuario)`. Los ítems se **copian** de la plantilla (snapshot): si TH la edita después, las acogidas ya iniciadas no cambian. Copia inducción y socialización (comunes) + el entrenamiento de **su** gestión, y calcula `fecha_limite` desde `plazo_dias`
+- [x] Índice único: **una sola acogida activa por persona**
+- [x] `/onboarding` "Mi acogida": progreso en %, pasos agrupados por etapa con su aprobador, fecha límite, aviso de vencido y enlace al recurso. Marcar/desmarcar vía RPC `reportar_item_onboarding`
+- [x] Notificación al colaborador y a su jefe al iniciarse
+- [x] Botón "Iniciar acogida" en la ficha del usuario (`/admin/usuarios/[id]`) y enlace "Mi Acogida" en el sidebar (reemplaza el botón "Pronto")
 
 ### Sub-etapa C — Aprobación, seguimiento y firma
 - [ ] RPC de aprobación: **TH** aprueba inducción y socialización, **el jefe inmediato** aprueba entrenamiento (blindado, que ninguno pueda saltarse el turno del otro) | Asignado: ``

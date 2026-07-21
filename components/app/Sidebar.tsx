@@ -92,11 +92,10 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
           <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
         </Link>
 
-        <div className="sidebar__section-label">Próximos módulos</div>
-        <button className="nav-item is-disabled" disabled>
-          <Icono nombre="bookmark" className="nav-item__icon" /> Acogida Laboral
-          <span className="nav-item__pill">Pronto</span>
-        </button>
+        <Link href="/onboarding" className={`nav-item ${activa('/onboarding') ? 'is-active' : ''}`} onClick={navegar}>
+          <Icono nombre="bookmark" className="nav-item__icon" /> Mi Acogida
+          <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
+        </Link>
 
         {(esAdmin || esLider) && (
           <div className="sidebar__section-label">{esAdmin ? 'Administración' : 'Mi Gestión'}</div>
