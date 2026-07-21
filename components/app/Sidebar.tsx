@@ -70,13 +70,13 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         )}
 
         <Link href="/desempeno" className={`nav-item ${activa('/desempeno') ? 'is-active' : ''}`} onClick={navegar}>
-          <Icono nombre="chart" className="nav-item__icon" /> Desempeño
+          <Icono nombre="target" className="nav-item__icon" /> Desempeño
           <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
         </Link>
 
         <Link href="/buscar" className={`nav-item ${activa('/buscar') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="search" className="nav-item__icon" /> Buscar
-          <span className="hide-mobile" style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 11, background: 'var(--surface-sunken)', border: '1px solid var(--border)', padding: '1px 6px', borderRadius: 4, color: 'var(--text-3)' }}>⌘K</span>
+          <span className="hide-mobile" style={{ marginLeft: 'auto', fontFamily: 'var(--font-mono)', fontSize: 10.5, background: 'var(--bg-2)', border: '1px solid var(--border)', padding: '1px 7px', borderRadius: 6, color: 'var(--text-3)' }}>⌘K</span>
         </Link>
 
         <Link href="/politicas" className={`nav-item ${activa('/politicas') ? 'is-active' : ''}`} onClick={navegar}>
@@ -84,7 +84,7 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         </Link>
 
         <Link href="/comites" className={`nav-item ${activa('/comites') ? 'is-active' : ''}`} onClick={navegar}>
-          <Icono nombre="clipboard" className="nav-item__icon" /> Comités
+          <Icono nombre="check" className="nav-item__icon" /> Comités
         </Link>
 
         <Link href="/ausencias" className={`nav-item ${activa('/ausencias') ? 'is-active' : ''}`} onClick={navegar}>
