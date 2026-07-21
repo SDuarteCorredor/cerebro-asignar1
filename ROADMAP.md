@@ -203,7 +203,7 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 ### Sub-etapa A — Modelo y plantilla ⭐ (en curso) | Claude-Simon
 - [x] Tabla `onboarding_items_plantilla` con RLS (admin edita, todos leen) + helper `es_admin()` (no existía). La BD impide que inducción o socialización cuelguen de una gestión: solo el entrenamiento se especializa por área
 - [x] **24 ítems de inducción sembrados** desde `Acogida laboral Final (3).pptx` (mazo "Inducción Fase 1", 54 diapositivas): quiénes somos, valores, DOCA, sedes, mapa de procesos, organigrama, contratos, prestaciones, incapacidades, pagos, caja de compensación, RIT, políticas, SAGRILAFT/PTEE, línea ética, comunicación, vestuario, beneficios, mapa de sueños y los 3 formularios finales. 22 obligatorios, plazos de 1 a 5 días
-- [ ] Panel `/admin/onboarding` para gestionar los ítems (añadir, reordenar, eliminar) | Asignado: ``
+- [x] **Panel `/admin/onboarding`**: las tres etapas con su aprobador visible; añadir, editar en línea, reordenar (subir/bajar), activar/desactivar y eliminar. El entrenamiento se agrupa por gestión y la UI solo pide gestión en esa etapa, igual que la restricción de la BD. Enlace en el sidebar
 - [ ] Contenido de **socialización** y **entrenamiento por área**: no viene en ese mazo, hay que definirlo con TH | Asignado: ``
 
 > Los 3 formularios de cierre siguen siendo **Google Forms** (asistencia, perfil socio-demográfico, evaluación). Candidatos a internalizarse más adelante, igual que se hizo con el Forms de ausencias.
