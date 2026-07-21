@@ -13,7 +13,7 @@ export default function FormNuevoComite({ gestiones }: { gestiones: { id: string
   return (
     <form
       className="card"
-      style={{ padding: 22, maxWidth: 640 }}
+      style={{ padding: 24, maxWidth: 640 }}
       action={(fd) => startTransition(async () => {
         setError(null)
         const res = await crearComite(fd)
@@ -21,39 +21,39 @@ export default function FormNuevoComite({ gestiones }: { gestiones: { id: string
         else if (res.id) router.push(`/comites/${res.id}`)
       })}
     >
-      <div className="form-row-comite" style={{ marginBottom: 14 }}>
-        <label style={{ fontSize: 12 }}>
-          <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Gestión*</div>
-          <select name="gestion_id" required className="input" defaultValue={gestiones.length === 1 ? gestiones[0].id : ''}>
-            {gestiones.length !== 1 && <option value="">Selecciona…</option>}
+      <div className="form-row-comite" style={{ marginBottom: 16 }}>
+        <div className="field">
+          <label className="field__label" htmlFor="gestion_id">Gestion</label>
+          <select name="gestion_id" id="gestion_id" required className="input" defaultValue={gestiones.length === 1 ? gestiones[0].id : ''}>
+            {gestiones.length !== 1 && <option value="">Selecciona...</option>}
             {gestiones.map(g => <option key={g.id} value={g.id}>{g.nombre}</option>)}
           </select>
-        </label>
-        <label style={{ fontSize: 12 }}>
-          <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Fecha*</div>
-          <input name="fecha" type="date" required defaultValue={hoy} className="input" />
-        </label>
+        </div>
+        <div className="field">
+          <label className="field__label" htmlFor="fecha">Fecha</label>
+          <input name="fecha" id="fecha" type="date" required defaultValue={hoy} className="input" />
+        </div>
       </div>
 
-      <label style={{ fontSize: 12, display: 'block', marginBottom: 14 }}>
-        <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Título (opcional)</div>
-        <input name="titulo" className="input" placeholder="Ej. Comité semanal Comercial" />
-      </label>
+      <div className="field" style={{ marginBottom: 16 }}>
+        <label className="field__label" htmlFor="titulo">Titulo (opcional)</label>
+        <input name="titulo" id="titulo" className="input" placeholder="Ej. Comite semanal Comercial" />
+      </div>
 
-      <label style={{ fontSize: 12, display: 'block', marginBottom: 14 }}>
-        <div style={{ marginBottom: 4, color: 'var(--text-3)' }}>Notas de apertura</div>
-        <textarea name="notas" className="input" rows={3} placeholder="Objetivos, contexto…" style={{ resize: 'vertical' }} />
-      </label>
+      <div className="field" style={{ marginBottom: 16 }}>
+        <label className="field__label" htmlFor="notas">Notas de apertura</label>
+        <textarea name="notas" id="notas" className="input" rows={3} placeholder="Objetivos, contexto..." />
+      </div>
 
       {error && (
-        <div style={{ padding: 10, background: 'var(--danger-soft)', color: 'var(--danger-ink)', borderRadius: 6, fontSize: 12.5, marginBottom: 12 }}>
+        <div style={{ padding: 12, background: 'var(--danger-soft)', color: 'var(--danger-ink)', borderRadius: 'var(--radius-sm)', fontSize: 13, marginBottom: 14 }}>
           {error}
         </div>
       )}
 
       <div className="hstack" style={{ gap: 8, justifyContent: 'flex-end' }}>
         <button type="submit" className="btn btn--primary" disabled={isPending}>
-          {isPending ? 'Creando…' : 'Crear comité'}
+          {isPending ? 'Creando...' : 'Crear comite'}
         </button>
       </div>
     </form>

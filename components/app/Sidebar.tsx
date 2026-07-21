@@ -70,7 +70,7 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         )}
 
         <Link href="/desempeno" className={`nav-item ${activa('/desempeno') ? 'is-active' : ''}`} onClick={navegar}>
-          <Icono nombre="target" className="nav-item__icon" /> Desempeño
+          <Icono nombre="chart" className="nav-item__icon" /> Desempeño
           <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
         </Link>
 
@@ -84,11 +84,11 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         </Link>
 
         <Link href="/comites" className={`nav-item ${activa('/comites') ? 'is-active' : ''}`} onClick={navegar}>
-          <Icono nombre="check" className="nav-item__icon" /> Comités
+          <Icono nombre="clipboard" className="nav-item__icon" /> Comités
         </Link>
 
         <Link href="/ausencias" className={`nav-item ${activa('/ausencias') ? 'is-active' : ''}`} onClick={navegar}>
-          <Icono nombre="history" className="nav-item__icon" /> Permisos y Ausencias
+          <Icono nombre="calendar" className="nav-item__icon" /> Permisos y Ausencias
           <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
         </Link>
 
@@ -111,13 +111,13 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
               <Icono nombre="users" className="nav-item__icon" /> Gestionar Usuarios
             </Link>
             <Link href="/admin/politicas" className={`nav-item ${activa('/admin/politicas') ? 'is-active' : ''}`} onClick={navegar}>
-              <Icono nombre="paper" className="nav-item__icon" /> Gestionar Políticas
+              <Icono nombre="fileCheck" className="nav-item__icon" /> Gestionar Políticas
             </Link>
             <Link href="/admin/onboarding" className={`nav-item ${activa('/admin/onboarding') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="clipboard" className="nav-item__icon" /> Acogida laboral
             </Link>
             <Link href="/admin/tipos-ausencia" className={`nav-item ${activa('/admin/tipos-ausencia') ? 'is-active' : ''}`} onClick={navegar}>
-              <Icono nombre="history" className="nav-item__icon" /> Tipos de ausencia
+              <Icono nombre="list" className="nav-item__icon" /> Tipos de ausencia
             </Link>
             <Link href="/admin/aprobaciones" className={`nav-item ${activa('/admin/aprobaciones') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="inbox" className="nav-item__icon" /> Aprobaciones
@@ -138,7 +138,7 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
         <div style={{ padding: '12px 10px', borderTop: '1px solid var(--divider)', marginTop: 10 }}>
           <div className="hstack" style={{ fontSize: 12, color: 'var(--text-3)' }}>
             <Icono nombre="info" className="icon icon--sm" />
-            <span>v0.5 · Etapa 13 · Comités</span>
+            <span>v0.8 · Etapa 16 · Calidad</span>
           </div>
         </div>
       </aside>
