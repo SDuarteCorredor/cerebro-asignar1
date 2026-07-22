@@ -413,6 +413,35 @@ Permite que los 138 colaboradores creen su propio acceso sin que TH reparta cont
 
 ---
 
+## Dashboard personalizado por rol (Fase 1 completada) | Claude-Marketing
+
+El `/dashboard` anterior era el mismo para todos: buscador + grid de las 20 gestiones + tabla de 5 procesos. Se rediseñó para que cada persona vea **lo que le toca hacer hoy**, no un catálogo estático.
+
+### Fase 1 — Vista personalizada (completada)
+- [x] `BandejaAccion` — "Mi día": tarjetas para cuestionarios de desempeño pendientes, compromisos por reportar del comité actual y ausencias esperando decisión. Admin ve además documentos por aprobar y 2ª validación TH. Sin tarjetas = mensaje "tu día está limpio"
+- [x] `BandejaAprobacion` (líder/admin) — ausencias del equipo por firmar, compromisos reportados por confirmar, documentos por publicar
+- [x] `MiPDI` — PDI vigente o en firma del usuario, con % de avance promedio de las acciones y barra de progreso
+- [x] `MiComites` — mis compromisos abiertos (pendiente/reportado) + % ponderado anual
+- [x] `MiGestionProcesos` (líder/admin) — procesos vencidos, por vencer, en revisión y borradores de las gestiones que lidera. Reusa `calcularVigencia`
+- [x] `NovedadesGestion` — 5 procesos activos recientes de la gestión del usuario (no todas)
+- [x] `UltimasNotificaciones` — últimas 5 no leídas, atajo directo al elemento
+- [x] Cada sección tiene su `Suspense` propio → streaming independiente, no bloquea las otras
+- [x] Se **eliminó** la grid de "Todas las Gestiones" del dashboard — vive en `/gestiones` (que existe en el sidebar)
+- [x] StatsAdmin sigue arriba para admin (KPIs globales)
+
+**Reglas:** el rol de líder se detecta por dos vías — `rol='lider'` o **ser lider_id** de al menos una gestión activa. Así los admins que también lideran ven el bloque administrativo, y no se dejan por fuera líderes que no tienen el rol formal.
+
+### Fase 2 — Vistas alternables de equipo (pendiente)
+- [ ] `SaludEquipo`: tabla líder con vistas Comités / Desempeño / PDIs — por persona, con heatmap semanal y delta de la semana | Asignado: ``
+- [ ] Comité de esta semana: aviso si toca crear (líder) o cerrar (todos evaluados) | Asignado: ``
+- [ ] KPI de cobertura del ciclo activo de desempeño en el admin | Asignado: ``
+
+### Fase 3 — Integraciones (pendiente)
+- [ ] Onboarding en la BandejaAccion (ítems atrasados) — depende de Etapa 8 | Asignado: ``
+- [ ] Ranking en vivo en `MiComites` (posición dentro de la gestión) | Asignado: ``
+
+---
+
 ## Notificaciones internas (completada) | Claude-Simon
 
 Se descartó el correo: **todo se maneja dentro de la plataforma**, sin depender de un proveedor SMTP ni de que la gente revise su bandeja.
