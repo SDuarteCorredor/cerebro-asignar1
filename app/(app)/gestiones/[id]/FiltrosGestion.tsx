@@ -98,7 +98,7 @@ export default function FiltrosGestion({ procesos, puedeEditar, gestionId }: Pro
                     </td>
                     <td><BadgeEstado estado={p.estado as EstadoProceso} /></td>
                     <td>
-                      <Link href={`/procesos/${p.id}`}>
+                      <Link href={`/procesos/${p.id}`} aria-label={`Abrir proceso ${p.nombre}`}>
                         <Icono nombre="chevronRight" className="icon icon--sm" style={{ color: 'var(--text-muted)' }} />
                       </Link>
                     </td>

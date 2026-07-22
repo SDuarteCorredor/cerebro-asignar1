@@ -71,7 +71,7 @@ export default async function PaginaGestiones() {
                       </td>
                       <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: 600 }}>{activos}</td>
                       <td>
-                        <Link href={`/gestiones/${g.id}`}>
+                        <Link href={`/gestiones/${g.id}`} aria-label={`Abrir gestión ${g.nombre}`}>
                           <Icono nombre="chevronRight" className="icon icon--sm" style={{ color: 'var(--text-muted)' }} />
                         </Link>
                       </td>

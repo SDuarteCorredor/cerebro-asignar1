@@ -454,6 +454,35 @@ Permite que los 138 colaboradores creen su propio acceso sin que TH reparta cont
 
 ---
 
+## Dashboard personalizado por rol (Fase 1 completada) | Claude-Marketing
+
+El `/dashboard` anterior era el mismo para todos: buscador + grid de las 20 gestiones + tabla de 5 procesos. Se rediseñó para que cada persona vea **lo que le toca hacer hoy**, no un catálogo estático.
+
+### Fase 1 — Vista personalizada (completada)
+- [x] `BandejaAccion` — "Mi día": tarjetas para cuestionarios de desempeño pendientes, compromisos por reportar del comité actual y ausencias esperando decisión. Admin ve además documentos por aprobar y 2ª validación TH. Sin tarjetas = mensaje "tu día está limpio"
+- [x] `BandejaAprobacion` (líder/admin) — ausencias del equipo por firmar, compromisos reportados por confirmar, documentos por publicar
+- [x] `MiPDI` — PDI vigente o en firma del usuario, con % de avance promedio de las acciones y barra de progreso
+- [x] `MiComites` — mis compromisos abiertos (pendiente/reportado) + % ponderado anual
+- [x] `MiGestionProcesos` (líder/admin) — procesos vencidos, por vencer, en revisión y borradores de las gestiones que lidera. Reusa `calcularVigencia`
+- [x] `NovedadesGestion` — 5 procesos activos recientes de la gestión del usuario (no todas)
+- [x] `UltimasNotificaciones` — últimas 5 no leídas, atajo directo al elemento
+- [x] Cada sección tiene su `Suspense` propio → streaming independiente, no bloquea las otras
+- [x] Se **eliminó** la grid de "Todas las Gestiones" del dashboard — vive en `/gestiones` (que existe en el sidebar)
+- [x] StatsAdmin sigue arriba para admin (KPIs globales)
+
+**Reglas:** el rol de líder se detecta por dos vías — `rol='lider'` o **ser lider_id** de al menos una gestión activa. Así los admins que también lideran ven el bloque administrativo, y no se dejan por fuera líderes que no tienen el rol formal.
+
+### Fase 2 — Vistas alternables de equipo (completada) | Claude-Marketing
+- [x] `SaludEquipo`: tabla líder con vistas Comités / Desempeño / PDIs — por persona, con heatmap semanal (12 semanas) y delta de la semana en curso. Server component `SaludEquipo` trae los datos, cliente `ClienteSaludEquipo` alterna vistas
+- [x] `AvisoComiteSemanal`: al líder le avisa si no hay comité de esta semana en alguna de sus gestiones, o si hay uno con todos los compromisos evaluados listo para cerrar
+- [x] `KPICicloActivo`: KPI del ciclo de desempeño en captura con cobertura (respondidos/total) + días restantes para cerrar. Solo aparece si hay un ciclo activo
+
+### Fase 3 — Integraciones (parcialmente completada)
+- [x] Ranking en vivo en `MiComites`: posición dentro de la gestión ("#3 de 12") + delta de puntos ganados en la semana en curso. Cálculo con la misma lógica ponderada del ranking global | Claude-Marketing
+- [ ] Onboarding en la BandejaAccion (ítems atrasados) — **bloqueado** hasta que Sub-etapa 8.B cree las tablas `onboarding` y `onboarding_items` en Supabase | Asignado: ``
+
+---
+
 ## Notificaciones internas (completada) | Claude-Simon
 
 Se descartó el correo: **todo se maneja dentro de la plataforma**, sin depender de un proveedor SMTP ni de que la gente revise su bandeja.
@@ -476,11 +505,12 @@ Se descartó el correo: **todo se maneja dentro de la plataforma**, sin depender
   - [x] Nuevas clases mobile-first: `.layout-aside-main`, `.layout-chart-table`, `.layout-main-aside-wide`, `.grid-stats-3`, `.form-row-*` | Claude-Marketing (PR #3)
 - [x] Loading skeletons por ruta | Claude-MK
 - [x] Error boundary global | Claude-MK
-- [ ] Filtro de búsqueda por gestión y nombre en `/admin/usuarios` (pedido por John William) | Asignado: ``
+- [x] Filtro de búsqueda por gestión y nombre en `/admin/usuarios` (pedido por John William) — la tabla ya tenía buscador por nombre/código/correo, filtro por gestión, rol y estado con contador de resultados
 - [ ] Tests E2E (Playwright) | Asignado: ``
 - [ ] Auditoría de accesibilidad (a11y) | Asignado: ``
   - [x] Primera pasada: `aria-hidden` en emojis decorativos del PDI | Claude-Marketing (PR #4)
-  - [ ] Pendiente: aria-labels en botones-ícono (~40 casos), audit completo
+  - [x] `aria-label` en 9 botones/Links ícono-solo (Topbar logout, modal cerrar ciclo, ver reporte, editar usuario, ver gestión, abrir gestión, abrir proceso, ver ciclo). Se estimaron ~40 pero al buscar todo el codebase eran 9 | Claude-Marketing
+  - [ ] Audit completo pendiente (focus visible, contraste, roles ARIA en modals)
 - [x] Optimización de performance (LCP, CLS) | Claude-MK
 - [x] Limpieza de código (build fix + higiene) | Claude-Marketing
   - [x] Fix build Vercel: mover `dynamic ssr:false` a Client Component (Next.js 16) (PR #1)
