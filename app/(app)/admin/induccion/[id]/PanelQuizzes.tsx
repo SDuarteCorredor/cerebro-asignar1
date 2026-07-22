@@ -67,8 +67,15 @@ export default function PanelQuizzes({ sesionId, quizzes, inscritos, jornadaEnCu
 
   return (
     <section className="card card--padded">
-      <div className="page__eyebrow" style={{ marginBottom: 4 }}>Quizzes</div>
-      <h2 className="section-title" style={{ marginTop: 0, marginBottom: 4 }}>Consola de la jornada</h2>
+      <div className="hstack" style={{ justifyContent: 'space-between', gap: 10, flexWrap: 'wrap' }}>
+        <div>
+          <div className="page__eyebrow" style={{ marginBottom: 4 }}>Quizzes</div>
+          <h2 className="section-title" style={{ marginTop: 0, marginBottom: 4 }}>Consola de la jornada</h2>
+        </div>
+        <a href="/admin/quizzes" className="btn btn--ghost btn--sm">
+          <Icono nombre="edit" className="icon icon--sm" /> Editar preguntas
+        </a>
+      </div>
       <p className="text-muted text-sm" style={{ margin: '0 0 14px' }}>
         {jornadaEnCurso
           ? 'Abre cada quiz cuando llegues a ese punto de la presentación. Al cerrarlo verás los resultados.'
