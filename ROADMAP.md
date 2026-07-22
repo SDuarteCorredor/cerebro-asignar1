@@ -241,13 +241,14 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 - [x] Al iniciar la jornada se **notifica a todos los inscritos**
 - [x] Limpiados los 24 ítems de inducción: quedan solo los 3 formularios de cierre
 
-### Sub-etapa D — Quizzes en vivo ⭐
-- [ ] Tablas `quizzes`, `quiz_preguntas` (enunciado, opciones, correcta) y `quiz_respuestas` | Asignado: ``
-- [ ] Editor de quizzes para TH; sembrar los **3 quizzes** del procedimiento | Asignado: ``
-- [ ] **Consola del facilitador**: abrir/cerrar cada quiz, ver **avance en vivo** ("7 de 12 respondieron") y **resultados al cerrar** (puntaje por persona y preguntas más falladas) | Asignado: ``
-- [ ] Vista del participante: el quiz aparece cuando Paula lo abre, responde y recibe **retroalimentación inmediata** | Asignado: ``
-- [ ] **La barra de avance de la Etapa 1 se calcula por quizzes completados** | Asignado: ``
-- [ ] Actualización en vivo: sondeo cada pocos segundos (como la campana) o Supabase Realtime | Asignado: ``
+### Sub-etapa D — Quizzes en vivo (completada) | Claude-Simon
+- [x] Tablas `quizzes`, `quiz_preguntas` (opciones jsonb + índice correcto + explicación), `sesion_quiz` (estado por jornada) y `quiz_respuestas`
+- [x] **Los 3 quizzes sembrados** con **15 preguntas borrador** redactadas desde el contenido del mazo (sedes · valores/DOCA/Ley 50/estructura · pagos, contratos, línea ética, SAGRILAFT, RIT, prestaciones). **Paula debe revisarlas y ajustarlas**
+- [x] **Consola del facilitador** en `/admin/induccion/[id]`: abrir/cerrar cada quiz, **avance en vivo** ("7 de 12 respondieron", sondeo cada 4 s) y **resultados por persona** al cerrar. Solo un quiz abierto a la vez
+- [x] Vista del participante `/induccion/[id]`: el quiz aparece cuando Paula lo abre, responde y recibe **retroalimentación inmediata** con la respuesta correcta y su explicación
+- [x] **La barra de avance se calcula por quizzes completados**
+- [x] **Seguridad**: las respuestas correctas nunca viajan al navegador — `obtener_preguntas_quiz` las omite y la corrección ocurre en `responder_quiz` (SECURITY DEFINER). No se puede responder dos veces, ni fuera de la jornada, ni sin estar inscrito
+- [ ] Editor de quizzes en la interfaz (hoy las preguntas se editan por SQL) | Asignado: ``
 
 ### Sub-etapa E — Socializaciones institucionales (Etapa 2 del procedimiento)
 > Aquí **sí** aplica el modelo de checklist + aprobación ya construido en A y B.

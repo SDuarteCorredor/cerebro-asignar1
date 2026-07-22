@@ -6,6 +6,7 @@ import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
 import PanelPresentacion from './PanelPresentacion'
 import PanelParticipantes, { type ParticipanteData } from './PanelParticipantes'
+import PanelQuizzes, { type QuizData } from './PanelQuizzes'
 import ControlesJornada from './ControlesJornada'
 
 const badgeEstado: Record<string, string> = {
@@ -30,7 +31,7 @@ export default async function DetalleSesionInduccion({ params }: { params: Promi
 
   if (!jornada) notFound()
 
-  const [{ data: inscritosRaw }, { data: candidatos }] = await Promise.all([
+  const [{ data: inscritosRaw }, { data: candidatos }, { data: quizzesRaw }, { data: estadosQuiz }] = await Promise.all([
     supabase.from('induccion_participantes')
       .select('usuario_id, asistio, usuario:usuarios(nombre, codigo_contrato)')
       .eq('sesion_id', id),
@@ -38,7 +39,23 @@ export default async function DetalleSesionInduccion({ params }: { params: Promi
       .select('id, nombre, codigo_contrato')
       .eq('activo', true)
       .order('nombre'),
+    supabase.from('quizzes')
+      .select('id, numero, titulo, descripcion, va_despues_de, quiz_preguntas(id)')
+      .eq('activo', true)
+      .order('numero'),
+    supabase.from('sesion_quiz').select('quiz_id, estado').eq('sesion_id', id),
   ])
+
+  const mapEstado = new Map((estadosQuiz ?? []).map(e => [e.quiz_id, e.estado]))
+  const quizzes: QuizData[] = (quizzesRaw ?? []).map(q => ({
+    id: q.id,
+    numero: q.numero,
+    titulo: q.titulo,
+    descripcion: q.descripcion,
+    va_despues_de: q.va_despues_de,
+    preguntas: (q.quiz_preguntas as { id: string }[] | null)?.length ?? 0,
+    estado: mapEstado.get(q.id) ?? 'bloqueado',
+  }))
 
   const participantes: ParticipanteData[] = (inscritosRaw ?? []).map(p => {
     const uRaw = p.usuario as unknown as { nombre: string; codigo_contrato: string | null }[] | { nombre: string; codigo_contrato: string | null } | null
@@ -109,6 +126,12 @@ export default async function DetalleSesionInduccion({ params }: { params: Promi
         <div className="layout-main-aside">
           <div className="vstack" style={{ gap: 18 }}>
             <PanelPresentacion sesionId={id} nombreActual={jornada.presentacion_nombre} />
+            <PanelQuizzes
+              sesionId={id}
+              quizzes={quizzes}
+              inscritos={participantes.length}
+              jornadaEnCurso={jornada.estado === 'en_curso'}
+            />
             <PanelParticipantes
               sesionId={id}
               participantes={participantes}
@@ -117,17 +140,6 @@ export default async function DetalleSesionInduccion({ params }: { params: Promi
           </div>
           <aside className="vstack" style={{ gap: 18 }}>
             <ControlesJornada sesionId={id} estado={jornada.estado} participantes={participantes.length} />
-
-            <div className="card callout">
-              <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
-                <Icono nombre="info" className="icon" style={{ color: 'var(--primary)' }} />
-                <strong style={{ color: 'var(--primary-ink)' }}>Quizzes</strong>
-              </div>
-              <p style={{ margin: 0, fontSize: 13, color: 'var(--primary-ink)', opacity: 0.85 }}>
-                Los 3 quizzes de la jornada y la consola para activarlos en vivo llegan en la siguiente
-                entrega. El avance de cada participante se calculará con ellos.
-              </p>
-            </div>
           </aside>
         </div>
       </main>
