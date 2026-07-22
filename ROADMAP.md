@@ -243,7 +243,7 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 
 ### Sub-etapa D — Quizzes en vivo (completada) | Claude-Simon
 - [x] Tablas `quizzes`, `quiz_preguntas` (opciones jsonb + índice correcto + explicación), `sesion_quiz` (estado por jornada) y `quiz_respuestas`
-- [x] **Los 3 quizzes sembrados** con **15 preguntas borrador** redactadas desde el contenido del mazo (sedes · valores/DOCA/Ley 50/estructura · pagos, contratos, línea ética, SAGRILAFT, RIT, prestaciones). **Paula debe revisarlas y ajustarlas**
+- [x] **Los 3 quizzes con las 27 preguntas reales de Paula** (`QUIZES.docx`): 8 de sedes, 10 de historia y compañía, 9 de valores y normativa. Columna `verificada`: **13 preguntas quedan marcadas como NO verificadas** porque su respuesta correcta no está en la presentación (año de fundación, apertura de Bogotá, reconocimiento 2023, eslogan, número de procesos…) — **Paula debe confirmarlas antes de la primera jornada**
 - [x] **Consola del facilitador** en `/admin/induccion/[id]`: abrir/cerrar cada quiz, **avance en vivo** ("7 de 12 respondieron", sondeo cada 4 s) y **resultados por persona** al cerrar. Solo un quiz abierto a la vez
 - [x] Vista del participante `/induccion/[id]`: el quiz aparece cuando Paula lo abre, responde y recibe **retroalimentación inmediata** con la respuesta correcta y su explicación
 - [x] **La barra de avance se calcula por quizzes completados**
