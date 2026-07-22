@@ -287,10 +287,10 @@ Definiciones que **modifican o amplían** lo ya construido. Fuente: `Proyecto_Ce
 4. **Encadenamiento procedimiento ↔ perfil de cargo.** Un cambio en un procedimiento debe actualizar el perfil de cargo asociado. Si un cargo desaparece, el perfil se **inactiva, no se elimina**, y se alerta al líder de la gestión, a Talento Humano y a Control Interno preguntando qué se hace con las cargas asociadas.
 5. **Uso esperado:** el grueso del personal entra **máximo dos veces por semana** para comités, ausencias y consulta de procesos. Solo quienes tengan programa de desarrollo entran con frecuencia. → Criterio de diseño: priorizar que esos tres flujos sean rápidos.
 
-### ⚠️ Dos puntos del acta que no coinciden con el código
+### Aclaraciones sobre el estado (confirmadas por Simón)
 
-- **"Períodos de prueba — Funcionando":** en Cerebro **no existe** (Etapa 10 sin empezar, sin ruta ni tablas). Probablemente se refiere a que el proceso funciona en la empresa, no en la plataforma. Conviene aclararlo para no comprometerlo en una demo.
-- **"Implementar cuanto antes las solicitudes de permisos, reemplazando el Google Form":** **ya está hecho** (Etapa 15, con las 142 respuestas históricas migradas). Lo que falta es adopción, no desarrollo.
+- **"Períodos de prueba — Funcionando"** se refiere a que el proceso **funciona en la empresa, no en Cerebro**. La Etapa 10 sigue sin empezar. No comprometerlo en demos.
+- **Ausencias:** el desarrollo está terminado (Etapa 15, 142 respuestas migradas). Lo que falta es **gestión del cambio y socialización** antes de reemplazar el Google Form en la práctica — no es trabajo de desarrollo.
 
 ### Próximos pasos del comité
 
