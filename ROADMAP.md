@@ -431,10 +431,10 @@ El `/dashboard` anterior era el mismo para todos: buscador + grid de las 20 gest
 
 **Reglas:** el rol de líder se detecta por dos vías — `rol='lider'` o **ser lider_id** de al menos una gestión activa. Así los admins que también lideran ven el bloque administrativo, y no se dejan por fuera líderes que no tienen el rol formal.
 
-### Fase 2 — Vistas alternables de equipo (pendiente)
-- [ ] `SaludEquipo`: tabla líder con vistas Comités / Desempeño / PDIs — por persona, con heatmap semanal y delta de la semana | Asignado: ``
-- [ ] Comité de esta semana: aviso si toca crear (líder) o cerrar (todos evaluados) | Asignado: ``
-- [ ] KPI de cobertura del ciclo activo de desempeño en el admin | Asignado: ``
+### Fase 2 — Vistas alternables de equipo (completada) | Claude-Marketing
+- [x] `SaludEquipo`: tabla líder con vistas Comités / Desempeño / PDIs — por persona, con heatmap semanal (12 semanas) y delta de la semana en curso. Server component `SaludEquipo` trae los datos, cliente `ClienteSaludEquipo` alterna vistas
+- [x] `AvisoComiteSemanal`: al líder le avisa si no hay comité de esta semana en alguna de sus gestiones, o si hay uno con todos los compromisos evaluados listo para cerrar
+- [x] `KPICicloActivo`: KPI del ciclo de desempeño en captura con cobertura (respondidos/total) + días restantes para cerrar. Solo aparece si hay un ciclo activo
 
 ### Fase 3 — Integraciones (pendiente)
 - [ ] Onboarding en la BandejaAccion (ítems atrasados) — depende de Etapa 8 | Asignado: ``

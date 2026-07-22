@@ -5,7 +5,10 @@ import BuscadorHero from './BuscadorHero'
 import StatsAdmin, { StatsAdminSkeleton } from './StatsAdmin'
 import BandejaAccion, { BandejaAccionSkeleton } from '@/components/dashboard/BandejaAccion'
 import BandejaAprobacion from '@/components/dashboard/BandejaAprobacion'
+import AvisoComiteSemanal from '@/components/dashboard/AvisoComiteSemanal'
+import KPICicloActivo from '@/components/dashboard/KPICicloActivo'
 import MiGestionProcesos from '@/components/dashboard/MiGestionProcesos'
+import SaludEquipo from '@/components/dashboard/SaludEquipo'
 import MiPDI from '@/components/dashboard/MiPDI'
 import MiComites from '@/components/dashboard/MiComites'
 import NovedadesGestion from '@/components/dashboard/NovedadesGestion'
@@ -53,6 +56,20 @@ export default async function PaginaDashboard() {
           </Suspense>
         )}
 
+        {/* Admin: ciclo de desempeño activo (cobertura + días restantes) */}
+        {esAdmin && (
+          <Suspense fallback={null}>
+            <KPICicloActivo />
+          </Suspense>
+        )}
+
+        {/* Líder / admin: comité de esta semana (crear o cerrar) */}
+        {muestraBloqueAdmin && (
+          <Suspense fallback={null}>
+            <AvisoComiteSemanal usuarioId={sesion.id} esAdmin={esAdmin} />
+          </Suspense>
+        )}
+
         {/* Líder / admin: bandeja de aprobación (arriba) */}
         {muestraBloqueAdmin && (
           <Suspense fallback={null}>
@@ -69,6 +86,13 @@ export default async function PaginaDashboard() {
             esAdmin={esAdmin}
           />
         </Suspense>
+
+        {/* Líder / admin: salud del equipo (comités / desempeño / PDIs) */}
+        {muestraBloqueAdmin && (
+          <Suspense fallback={null}>
+            <SaludEquipo usuarioId={sesion.id} esAdmin={esAdmin} />
+          </Suspense>
+        )}
 
         {/* Líder / admin: procesos por atender */}
         {muestraBloqueAdmin && (
