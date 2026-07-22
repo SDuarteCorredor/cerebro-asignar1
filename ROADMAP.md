@@ -233,11 +233,13 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 - [x] Notificación al colaborador y a su jefe al iniciarse
 - [x] Botón "Iniciar acogida" en la ficha del usuario (`/admin/usuarios/[id]`) y enlace "Mi Acogida" en el sidebar (reemplaza el botón "Pronto")
 
-### Sub-etapa C — Sesiones de inducción y presentación ⭐ (siguiente)
-- [ ] Tablas `induccion_sesiones` (fecha, modalidad, enlace de reunión, facilitador, presentación, estado) e `induccion_participantes` | Asignado: ``
-- [ ] Subida de la **presentación en PDF** a Storage (bucket privado) + **visor dentro de la plataforma** para proyectar | Asignado: ``
-- [ ] Panel de Paula: crear la sesión, inscribir participantes, iniciar y cerrar la jornada | Asignado: ``
-- [ ] Limpiar los 24 ítems de inducción sembrados: **dejar solo los 3 formularios de cierre** | Asignado: ``
+### Sub-etapa C — Sesiones de inducción y presentación (completada) | Claude-Simon
+- [x] Tablas `induccion_sesiones` (título, fecha, hora, modalidad, ciudad, enlace de reunión, facilitador, presentación, estado) e `induccion_participantes` (con asistencia), con RLS: admin gestiona, el participante ve solo su jornada
+- [x] Bucket privado `presentaciones-induccion` (50 MB, solo PDF) + subida desde el panel y **URL firmada de 8 h** para proyectar durante la jornada
+- [x] `/admin/induccion`: lista de jornadas con estado, modalidad y número de participantes; formulario de nueva jornada
+- [x] `/admin/induccion/[id]`: subir/reemplazar y proyectar la presentación, inscribir y quitar participantes (con buscador), **marcar asistencia**, e iniciar / finalizar / cancelar la jornada
+- [x] Al iniciar la jornada se **notifica a todos los inscritos**
+- [x] Limpiados los 24 ítems de inducción: quedan solo los 3 formularios de cierre
 
 ### Sub-etapa D — Quizzes en vivo ⭐
 - [ ] Tablas `quizzes`, `quiz_preguntas` (enunciado, opciones, correcta) y `quiz_respuestas` | Asignado: ``
