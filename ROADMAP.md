@@ -248,7 +248,7 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 - [x] Vista del participante `/induccion/[id]`: el quiz aparece cuando Paula lo abre, responde y recibe **retroalimentación inmediata** con la respuesta correcta y su explicación
 - [x] **La barra de avance se calcula por quizzes completados**
 - [x] **Seguridad**: las respuestas correctas nunca viajan al navegador — `obtener_preguntas_quiz` las omite y la corrección ocurre en `responder_quiz` (SECURITY DEFINER). No se puede responder dos veces, ni fuera de la jornada, ni sin estar inscrito
-- [ ] Editor de quizzes en la interfaz (hoy las preguntas se editan por SQL) | Asignado: ``
+- [x] **Editor de quizzes** `/admin/quizzes`: editar enunciado, opciones (añadir/quitar, mínimo 2), marcar la correcta, explicación, reordenar, agregar y eliminar preguntas. Aviso destacado de las preguntas **sin confirmar** y botón para confirmarlas de un clic. No deja borrar una pregunta ya respondida en una jornada (dejaría resultados incoherentes)
 
 ### Sub-etapa E — Socializaciones institucionales (Etapa 2 del procedimiento)
 > Aquí **sí** aplica el modelo de checklist + aprobación ya construido en A y B.

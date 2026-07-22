@@ -115,6 +115,9 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
             <Link href="/admin/induccion" className={`nav-item ${activa('/admin/induccion') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="users" className="nav-item__icon" /> Jornadas de inducción
             </Link>
+            <Link href="/admin/quizzes" className={`nav-item ${activa('/admin/quizzes') ? 'is-active' : ''}`} onClick={navegar}>
+              <Icono nombre="check" className="nav-item__icon" /> Quizzes de inducción
+            </Link>
             <Link href="/admin/onboarding" className={`nav-item ${activa('/admin/onboarding') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="clipboard" className="nav-item__icon" /> Acogida laboral
             </Link>
