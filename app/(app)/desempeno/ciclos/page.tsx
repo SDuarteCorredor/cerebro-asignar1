@@ -118,7 +118,7 @@ export default async function PaginaCiclos() {
                         <span className={`badge ${colorEstado[c.estado] ?? 'badge--neutral'}`}>{c.estado}</span>
                       </td>
                       <td>
-                        <Link href={`/desempeno/ciclos/${c.id}`} className="btn btn--ghost btn--sm">
+                        <Link href={`/desempeno/ciclos/${c.id}`} className="btn btn--ghost btn--sm" aria-label={`Ver ciclo ${c.nombre}`}>
                           <Icono nombre="arrowRight" className="icon icon--sm" />
                         </Link>
                       </td>

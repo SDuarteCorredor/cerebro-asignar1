@@ -77,7 +77,7 @@ export default function Topbar({ migas = [], usuario, mostrarBuscar = true }: To
         <div className="avatar">{usuario.iniciales}</div>
       </Link>
 
-      <button className="btn btn--ghost btn--sm" onClick={cerrarSesion} title="Cerrar sesión">
+      <button className="btn btn--ghost btn--sm" onClick={cerrarSesion} title="Cerrar sesión" aria-label="Cerrar sesión">
         <Icono nombre="logout" className="icon" />
       </button>
     </header>

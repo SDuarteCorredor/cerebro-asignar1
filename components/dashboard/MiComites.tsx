@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import Icono from '@/components/app/Icono'
-import { calcularPonderado, badgePct } from '@/lib/comites/puntaje'
+import { calcularPonderado, badgePct, pesoDe, semanaISOde } from '@/lib/comites/puntaje'
 
 interface Props {
   usuarioId: string
@@ -31,21 +31,50 @@ export default async function MiComites({ usuarioId, gestionId }: Props) {
     .order('fecha_limite', { ascending: true, nullsFirst: false })
     .limit(5)
 
-  // Puntaje del año: promedio ponderado de mis compromisos evaluados en el año actual
-  const anioActual = new Date().getFullYear()
+  // Puntaje del año y ranking dentro de la gestión: se trae la data de toda la gestión
+  // (no solo del usuario) para calcular posición y delta semanal en el mismo pass.
+  const hoy = new Date()
+  const anioActual = hoy.getFullYear()
+  const { semana: semanaActual } = semanaISOde(hoy)
   const { data: comitesAnio } = await supabase
-    .from('comites').select('id').eq('gestion_id', gestionId).eq('anio', anioActual)
+    .from('comites').select('id, semana_iso').eq('gestion_id', gestionId).eq('anio', anioActual)
   const comitesAnioIds = (comitesAnio ?? []).map(c => c.id)
+  const semanaPorComite = new Map((comitesAnio ?? []).map(c => [c.id, c.semana_iso]))
+
   let pctAnual: number | null = null
   let evaluados = 0
+  let posicion: number | null = null
+  let totalRanking = 0
+  let deltaSemana = 0
+  let misPuntos = 0
+
   if (comitesAnioIds.length > 0) {
-    const { data: mios } = await supabase
-      .from('compromisos').select('estado, impacto')
-      .eq('responsable_id', usuarioId)
+    const { data: todos } = await supabase
+      .from('compromisos').select('responsable_id, comite_origen_id, estado, impacto')
       .in('comite_origen_id', comitesAnioIds)
-    const stats = calcularPonderado(mios ?? [])
-    pctAnual = stats.pctPonderado
-    evaluados = stats.evaluados
+
+    const porPersona = new Map<string, { estado: string; impacto: string }[]>()
+    for (const c of todos ?? []) {
+      const arr = porPersona.get(c.responsable_id) ?? []
+      arr.push({ estado: c.estado, impacto: c.impacto })
+      porPersona.set(c.responsable_id, arr)
+      if (c.responsable_id === usuarioId && c.estado === 'cumplido'
+          && semanaPorComite.get(c.comite_origen_id) === semanaActual) {
+        deltaSemana += pesoDe(c.impacto)
+      }
+    }
+    const ranking = Array.from(porPersona.entries())
+      .map(([uid, comps]) => ({ uid, r: calcularPonderado(comps) }))
+      .sort((a, b) => b.r.pesoCumplido - a.r.pesoCumplido || (b.r.pctPonderado ?? -1) - (a.r.pctPonderado ?? -1))
+
+    totalRanking = ranking.length
+    const idx = ranking.findIndex(x => x.uid === usuarioId)
+    if (idx >= 0) {
+      posicion = idx + 1
+      pctAnual = ranking[idx].r.pctPonderado
+      evaluados = ranking[idx].r.evaluados
+      misPuntos = ranking[idx].r.pesoCumplido
+    }
   }
 
   const sinContenido = (!misCompromisos || misCompromisos.length === 0) && evaluados === 0
@@ -67,10 +96,22 @@ export default async function MiComites({ usuarioId, gestionId }: Props) {
       <div className="dash-comites">
         {pctAnual !== null && (
           <div className="card dash-comites__ring">
-            <span className={`badge badge--no-dot ${badgePct(pctAnual)}`}>{pctAnual}%</span>
+            <div className="hstack" style={{ justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+              <span className={`badge badge--no-dot ${badgePct(pctAnual)}`}>{pctAnual}%</span>
+              {posicion !== null && totalRanking > 1 && (
+                <Link href="/comites/ranking" className="dash-comites__pos" title="Ver ranking completo">
+                  #{posicion} <span className="text-muted">de {totalRanking}</span>
+                </Link>
+              )}
+            </div>
             <div>
               <div className="dash-comites__pct-label">Cumplimiento anual</div>
-              <div className="text-xs text-muted">{evaluados} compromisos evaluados en {anioActual}</div>
+              <div className="text-xs text-muted">
+                {misPuntos} pts · {evaluados} evaluados en {anioActual}
+                {deltaSemana > 0 && (
+                  <span className="dash-comites__delta"> · +{deltaSemana} esta semana</span>
+                )}
+              </div>
             </div>
           </div>
         )}

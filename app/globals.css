@@ -1031,6 +1031,18 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
   justify-content: center;
 }
 .dash-comites__pct-label { font-weight: 600; font-size: 13px; }
+.dash-comites__pos {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 120ms;
+}
+.dash-comites__pos:hover { background: var(--bg-2); color: var(--primary-ink); }
+.dash-comites__delta { color: var(--success-ink); font-weight: 600; }
 .dash-comites__lista { padding: 4px 0; }
 .dash-comites__lista-cab {
   padding: 12px 16px 8px;
