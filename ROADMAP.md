@@ -270,6 +270,59 @@ El aprobador **se deduce de la etapa** (TH en 1 y 2, jefe en 3), no se guarda po
 
 ---
 
+## Comité de Control Integrado — 2026-07-22
+
+Definiciones que **modifican o amplían** lo ya construido. Fuente: `Proyecto_CerebroAsignar_2026-07-22.md`.
+
+**Qué es Cerebro:** herramienta interna de gestión documental, trazabilidad y desarrollo del personal **administrativo**. No compite con el software de Asignar (operación misional). En **2027** se entrega el código a Tecnología y se migra módulo por módulo.
+
+### Definiciones que cambian lo existente
+
+1. **Vigencia anual fija (afecta Etapa 16.D).** Toda la documentación de procesos **vence cada julio**, no en una fecha libre por documento. El líder recibe notificación, actualiza o aprueba sin cambios, y Control Interno recibe el procedimiento con las modificaciones registradas. → Hoy la vigencia se calcula desde `fecha_proxima_revision` libre; hay que añadir la regla anual.
+2. **Plantilla única para TODO documento descargable (amplía Etapa 16.C).** Hoy solo los procesos salen con formato oficial; debe aplicar a todo lo que se descargue de la plataforma. En auditoría basta descargar la documentación.
+3. **Programa de desarrollo individual como módulo único (reencuadra Etapa 3.E).** Las brechas de período de prueba, procesos disciplinarios, evaluaciones de desempeño y planes de desarrollo **convergen en un solo módulo** que indica el **origen** de cada plan. Incluye **registro de evidencias con imágenes**.
+
+### Alcance nuevo
+
+4. **Encadenamiento procedimiento ↔ perfil de cargo.** Un cambio en un procedimiento debe actualizar el perfil de cargo asociado. Si un cargo desaparece, el perfil se **inactiva, no se elimina**, y se alerta al líder de la gestión, a Talento Humano y a Control Interno preguntando qué se hace con las cargas asociadas.
+5. **Uso esperado:** el grueso del personal entra **máximo dos veces por semana** para comités, ausencias y consulta de procesos. Solo quienes tengan programa de desarrollo entran con frecuencia. → Criterio de diseño: priorizar que esos tres flujos sean rápidos.
+
+### Aclaraciones sobre el estado (confirmadas por Simón)
+
+- **"Períodos de prueba — Funcionando"** se refiere a que el proceso **funciona en la empresa, no en Cerebro**. La Etapa 10 sigue sin empezar. No comprometerlo en demos.
+- **Ausencias:** el desarrollo está terminado (Etapa 15, 142 respuestas migradas). Lo que falta es **gestión del cambio y socialización** antes de reemplazar el Google Form en la práctica — no es trabajo de desarrollo.
+
+### Próximos pasos del comité
+
+- [ ] Reunión Simón–John (22 jul, tarde): visualización y ajustes del módulo de procesos | Asignado: `Simón`
+- [ ] **Dejar la acogida laboral entregable para que Paula inicie y apruebe** ⭐ | Asignado: ``
+- [ ] Citar a Liliana y Diana para el visto bueno de aplicación | Asignado: `Simón`
+- [ ] Montar perfiles y manuales de cargo (ya construidos, requieren revisión) | Asignado: ``
+- [ ] Sesión con el comité para definir la visualización de cargas, tiempos y movimientos | Asignado: `Simón`
+
+---
+
+## Etapa 18 — Perfiles y manuales de cargo
+
+Los perfiles **ya están construidos** fuera de la plataforma; requieren revisión y montaje.
+
+- [ ] Modelo de perfil de cargo enlazado a `cargos` y a los procesos donde participa | Asignado: ``
+- [ ] Importar los perfiles existentes | Asignado: ``
+- [ ] **Inactivación (no borrado)** del perfil cuando el cargo desaparece, con alerta al líder, TH y Control Interno | Asignado: ``
+- [ ] Encadenamiento: al cambiar un procedimiento, marcar los perfiles de cargo afectados | Asignado: ``
+
+---
+
+## Etapa 19 — Cargas, tiempos y movimientos
+
+Levantado por Control Interno. **Requiere sesión con el comité** para definir visualización y funcionalidades antes de construir.
+
+- [ ] Sesión de definición con el comité | Asignado: `Simón`
+- [ ] Modelo de cargas por cargo/persona | Asignado: ``
+- [ ] Visualización (por definir) | Asignado: ``
+
+---
+
 ## Etapa 9 — Entrenamientos y Capacitaciones
 
 - [ ] Registro de capacitaciones por colaborador | Asignado: ``
