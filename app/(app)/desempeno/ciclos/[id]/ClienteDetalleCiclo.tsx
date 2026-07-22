@@ -300,7 +300,7 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
                             <Icono nombre="plus" className="icon icon--sm" /> Reporte
                           </button>
                         )}
-                        <Link href={`/desempeno/evaluaciones/${ev.id}/reporte`} className="btn btn--ghost btn--sm" title="Ver reporte">
+                        <Link href={`/desempeno/evaluaciones/${ev.id}/reporte`} className="btn btn--ghost btn--sm" title="Ver reporte" aria-label="Ver reporte">
                           <Icono nombre="chart" className="icon icon--sm" />
                         </Link>
                       </div>
@@ -328,7 +328,7 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
               <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>
                 Asignar {tipoAAgregar.toLowerCase()}
               </h3>
-              <button onClick={cerrarModal} className="btn btn--ghost btn--sm">
+              <button onClick={cerrarModal} className="btn btn--ghost btn--sm" aria-label="Cerrar" title="Cerrar">
                 <Icono nombre="x" className="icon icon--sm" />
               </button>
             </div>

@@ -99,7 +99,7 @@ export default async function AdminGestiones() {
                       </td>
                       <td>
                         <div className="hstack" style={{ gap: 4 }}>
-                          <Link href={`/gestiones/${g.id}`} className="btn btn--ghost btn--sm">
+                          <Link href={`/gestiones/${g.id}`} className="btn btn--ghost btn--sm" title="Ver gestión" aria-label={`Ver gestión ${g.nombre}`}>
                             <Icono nombre="eye" className="icon icon--sm" />
                           </Link>
                           <SelectorLider

@@ -858,6 +858,332 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
   gap: 12px;
 }
 
+/* ==========================================================================
+   Dashboard personalizado
+   ========================================================================== */
+
+.dash-hero { margin-bottom: 32px; }
+
+.dash-section { margin-bottom: 32px; }
+
+.dash-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-bottom: 32px;
+}
+@media (min-width: 900px) {
+  .dash-cols { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
+
+/* Empty state cuando no hay nada pendiente */
+.dash-empty {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+}
+.dash-empty__title { font-weight: 600; font-size: 14.5px; color: var(--text); }
+.dash-empty__msg { font-size: 13px; color: var(--text-3); margin-top: 2px; }
+
+/* Bandeja de acción — tarjetas horizontales tipo lista */
+.dash-bandeja { display: grid; gap: 10px; }
+
+.dash-tarjeta {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+  color: var(--text);
+}
+.dash-tarjeta:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -8px rgba(0, 0, 0, 0.12);
+}
+.dash-tarjeta__icono {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+  flex-shrink: 0;
+}
+.dash-tarjeta__icono--primary { background: var(--primary-soft); color: var(--primary-ink); }
+.dash-tarjeta__icono--warning { background: var(--warning-soft); color: var(--warning-ink); }
+.dash-tarjeta__icono--danger { background: var(--danger-soft); color: var(--danger-ink); }
+.dash-tarjeta__icono--success { background: var(--success-soft); color: var(--success-ink); }
+.dash-tarjeta__icono--neutral { background: var(--bg-2); color: var(--text-2); }
+
+.dash-tarjeta__cuerpo { min-width: 0; }
+.dash-tarjeta__titulo { font-weight: 600; font-size: 14px; color: var(--text); }
+.dash-tarjeta__detalle { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+.dash-tarjeta__cta {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 13px; font-weight: 500; color: var(--primary);
+  white-space: nowrap;
+}
+
+/* Bandeja de aprobación — cards con contador grande */
+.dash-aprob {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.dash-aprob__tarjeta {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+.dash-aprob__tarjeta:hover { transform: translateY(-1px); }
+.dash-aprob__tarjeta--primary { border-color: var(--primary); }
+.dash-aprob__tarjeta--warning { border-color: var(--warning); }
+.dash-aprob__tarjeta--danger { border-color: var(--danger); }
+.dash-aprob__icono {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: grid; place-items: center;
+  background: var(--bg-2);
+  color: var(--text-2);
+}
+.dash-aprob__tarjeta--primary .dash-aprob__icono { background: var(--primary-soft); color: var(--primary-ink); }
+.dash-aprob__tarjeta--warning .dash-aprob__icono { background: var(--warning-soft); color: var(--warning-ink); }
+.dash-aprob__tarjeta--danger .dash-aprob__icono { background: var(--danger-soft); color: var(--danger-ink); }
+.dash-aprob__cuenta {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+}
+.dash-aprob__meta { min-width: 0; }
+.dash-aprob__titulo { font-weight: 600; font-size: 13.5px; }
+.dash-aprob__detalle { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.dash-aprob__flecha { color: var(--text-3); flex-shrink: 0; }
+
+/* Mi PDI */
+.dash-pdi {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+.dash-pdi__cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.dash-pdi__ring {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+.dash-pdi__pct {
+  font-family: var(--font-sans);
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.dash-pdi__label { font-size: 12.5px; color: var(--text-3); }
+.dash-pdi__barra {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-2);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+.dash-pdi__barra-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 300ms ease;
+}
+.dash-pdi__acciones-count {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--text-3);
+}
+
+/* Mis comités */
+.dash-comites {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+}
+@media (min-width: 700px) {
+  .dash-comites { grid-template-columns: 220px 1fr; }
+}
+.dash-comites__ring {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+}
+.dash-comites__pct-label { font-weight: 600; font-size: 13px; }
+.dash-comites__pos {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  text-decoration: none;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 120ms;
+}
+.dash-comites__pos:hover { background: var(--bg-2); color: var(--primary-ink); }
+.dash-comites__delta { color: var(--success-ink); font-weight: 600; }
+.dash-comites__lista { padding: 4px 0; }
+.dash-comites__lista-cab {
+  padding: 12px 16px 8px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--divider);
+}
+.dash-comites__fila {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 16px;
+  color: var(--text);
+  font-size: 13px;
+  border-bottom: 1px solid var(--divider);
+  transition: background 120ms;
+}
+.dash-comites__fila:last-child { border-bottom: none; }
+.dash-comites__fila:hover { background: var(--bg-2); }
+.dash-comites__desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+/* Notificaciones sin leer */
+.dash-notis {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 0;
+}
+.dash-notis__item {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider);
+  transition: background 120ms;
+  color: var(--text);
+}
+.dash-notis__item:last-child { border-bottom: none; }
+.dash-notis__item:hover { background: var(--bg-2); }
+.dash-notis__cuerpo { flex: 1; min-width: 0; }
+.dash-notis__titulo { font-weight: 600; font-size: 13.5px; }
+.dash-notis__msg { font-size: 12.5px; color: var(--text-2); margin-top: 2px; }
+.dash-notis__fecha { font-size: 11.5px; color: var(--text-3); margin-top: 4px; }
+
+/* Aviso: comité de esta semana (crear/cerrar) */
+.dash-aviso-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+.dash-aviso {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+.dash-aviso:hover { transform: translateY(-1px); }
+.dash-aviso--info { border-color: var(--primary); }
+.dash-aviso--success { border-color: var(--success); }
+.dash-aviso__icono {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: grid; place-items: center;
+}
+.dash-aviso--info .dash-aviso__icono { background: var(--primary-soft); color: var(--primary-ink); }
+.dash-aviso--success .dash-aviso__icono { background: var(--success-soft); color: var(--success-ink); }
+.dash-aviso__cuerpo { min-width: 0; }
+.dash-aviso__titulo { font-weight: 600; font-size: 14px; color: var(--text); }
+.dash-aviso__detalle { font-size: 12.5px; color: var(--text-3); margin-top: 2px; }
+.dash-aviso__cta {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap;
+}
+.dash-aviso--info .dash-aviso__cta { color: var(--primary); }
+.dash-aviso--success .dash-aviso__cta { color: var(--success-ink); }
+
+/* Ciclo activo — hero KPI */
+.dash-ciclo {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.dash-ciclo__cabecera {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+}
+.dash-ciclo__cobertura {
+  display: flex; align-items: center; gap: 16px;
+}
+.dash-ciclo__pct {
+  font-family: var(--font-sans);
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.dash-ciclo__label { display: flex; flex-direction: column; gap: 4px; }
+.dash-ciclo__barra {
+  width: 100%;
+  height: 8px;
+  background: var(--bg-2);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.dash-ciclo__barra-fill { height: 100%; border-radius: 999px; transition: width 300ms ease; }
+
+/* Salud del equipo — heatmap por fila */
+.dash-heatmap-fila {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.dash-heatmap-cell {
+  width: 14px; height: 14px;
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: inline-block;
+}
+.dash-tabla-pie {
+  padding: 8px 16px 12px;
+  font-size: 11.5px;
+  color: var(--text-3);
+  border-top: 1px solid var(--divider);
+}
+.dash-tabla-cab {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--divider);
+  display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
+  flex-wrap: wrap;
+}
+
 @page { size: A4; margin: 14mm; }
 
 @media print {

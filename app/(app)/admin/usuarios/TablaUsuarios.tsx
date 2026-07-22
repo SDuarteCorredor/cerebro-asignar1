@@ -130,7 +130,7 @@ export default function TablaUsuarios({ usuarios, gestiones }: {
                   <td><span className={`badge ${badgeRol[u.rol] ?? 'badge--neutral'}`}>{etiquetaRol[u.rol] ?? u.rol}</span></td>
                   <td><span className={`badge badge--${u.activo ? 'success' : 'neutral'}`}>{u.activo ? 'Activo' : 'Inactivo'}</span></td>
                   <td style={{ textAlign: 'right' }}>
-                    <Link href={`/admin/usuarios/${u.id}`} className="btn btn--ghost btn--sm" title="Editar">
+                    <Link href={`/admin/usuarios/${u.id}`} className="btn btn--ghost btn--sm" title="Editar" aria-label={`Editar ${u.nombre}`}>
                       <Icono nombre="edit" className="icon icon--sm" />
                     </Link>
                   </td>
