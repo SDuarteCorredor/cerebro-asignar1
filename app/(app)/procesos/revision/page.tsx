@@ -5,6 +5,7 @@ import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
 import BadgeEstado from '@/components/app/BadgeEstado'
+import BotonRevisionAnual from './BotonRevisionAnual'
 import {
   calcularVigencia, etiquetaVigencia, badgeVigencia, ordenVigencia, textoVigencia,
   hoyISO, DIAS_AVISO, type Vigencia,
@@ -61,17 +62,19 @@ export default async function PaginaRevisionDocumental() {
         { etiqueta: 'Revisión documental' },
       ]} />
       <main className="page fade-up">
-        <div className="page__header">
+        <div className="page__header" style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <div>
             <div className="page__eyebrow">Gestión documental</div>
             <h1 className="page__title">Revisión documental</h1>
             <p className="page__subtitle">
+              La documentación vence <strong>cada julio</strong> (Comité de Control Integrado).{' '}
               {sesion.rol === 'admin'
-                ? 'Documentos de toda la organización según su fecha de próxima revisión.'
-                : 'Documentos de tu gestión según su fecha de próxima revisión.'}
+                ? 'Aquí todos los documentos de la organización.'
+                : 'Aquí los documentos de tu gestión.'}
               {' '}Se avisa con {DIAS_AVISO} días de antelación.
             </p>
           </div>
+          {sesion.rol === 'admin' && <BotonRevisionAnual />}
         </div>
 
         <div className="grid-stats" style={{ marginBottom: 24 }}>

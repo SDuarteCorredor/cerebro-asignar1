@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Icono from '@/components/app/Icono'
 import { crearClienteNavegador } from '@/lib/supabase/client'
+import { proximaRevisionAnual } from '@/lib/documentos/vigencia'
 
 interface Aprobacion {
   id: string
@@ -28,6 +29,7 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId, ad
   async function aprobar(a: Aprobacion) {
     setProcesando(a.id)
     const marca = `${adminNombre} — ${new Date().toISOString()}`
+    const hoy = new Date().toISOString().split('T')[0]
     const { error } = await supabase
       .from('procesos')
       .update({
@@ -35,7 +37,9 @@ export default function ClienteAprobaciones({ aprobaciones: inicial, adminId, ad
         aprobado_por: adminId,
         firma_aprobacion: marca,
         comentario_rechazo: null,
-        fecha_actualizacion: new Date().toISOString().split('T')[0],
+        fecha_actualizacion: hoy,
+        // Vigencia anual (comité): la próxima revisión cae en julio del ciclo siguiente
+        fecha_proxima_revision: proximaRevisionAnual(hoy),
       })
       .eq('id', a.id)
 

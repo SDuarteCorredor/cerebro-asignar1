@@ -278,7 +278,7 @@ Definiciones que **modifican o amplían** lo ya construido. Fuente: `Proyecto_Ce
 
 ### Definiciones que cambian lo existente
 
-1. **Vigencia anual fija (afecta Etapa 16.D).** Toda la documentación de procesos **vence cada julio**, no en una fecha libre por documento. El líder recibe notificación, actualiza o aprueba sin cambios, y Control Interno recibe el procedimiento con las modificaciones registradas. → Hoy la vigencia se calcula desde `fecha_proxima_revision` libre; hay que añadir la regla anual.
+1. **[IMPLEMENTADO 2026-07-23] Vigencia anual fija (afecta Etapa 16.D).** Toda la documentación de procesos **vence cada julio**, no en una fecha libre por documento. El líder recibe notificación, actualiza o aprueba sin cambios, y Control Interno recibe el procedimiento con las modificaciones registradas. → Hoy la vigencia se calcula desde `fecha_proxima_revision` libre; hay que añadir la regla anual.
 2. **Plantilla única para TODO documento descargable (amplía Etapa 16.C).** Hoy solo los procesos salen con formato oficial; debe aplicar a todo lo que se descargue de la plataforma. En auditoría basta descargar la documentación.
 3. **Programa de desarrollo individual como módulo único (reencuadra Etapa 3.E).** Las brechas de período de prueba, procesos disciplinarios, evaluaciones de desempeño y planes de desarrollo **convergen en un solo módulo** que indica el **origen** de cada plan. Incluye **registro de evidencias con imágenes**.
 
@@ -515,7 +515,7 @@ Nace de la reunión del 2026-07-10 con **John William Guzmán Forero** (coord. S
 - [x] **Vigencia documental calculada** desde `fecha_proxima_revision` (`lib/documentos/vigencia.ts`): vigente / por vencer (≤30 días) / vencido / sin fecha. Lógica pura con tests de borde; usa la fecha de Bogotá, no la del servidor
 - [x] **Tablero `/procesos/revision`**: KPIs (vencidos, por vencer, sin fecha, vigentes) + tabla ordenada por urgencia. El admin ve toda la organización; el líder solo su gestión. Enlace en el sidebar
 - [x] Alerta en la ficha del proceso cuando está vencido o por vencer (mensaje distinto para quien puede editar y para quien solo consulta)
-- [x] **Decisión: NO se cambia `estado` automáticamente.** Un proceso en `desactualizado` deja de ser visible para los colaboradores, así que un job que lo marcara al vencer escondería los procedimientos vencidos de toda la empresa. La vigencia es un eje aparte del ciclo de aprobación
+- [x] **Decisión: NO se cambia `estado` automáticamente.** Un proceso en `desactualizado` deja de ser visible para los colaboradores, así que un job que lo marcara al vencer escondería los procedimientos vencidos de toda la empresa. La vigencia es un eje aparte del ciclo de aprobación. **Hecho:** `proxima_revision_anual()` fija `fecha_proxima_revision` al 31 de julio del ciclo siguiente al aprobar (en aprobaciones y en el editor). Backfill de los 8 publicados. Botón «Lanzar revisión anual» en `/procesos/revision` que notifica a los líderes (RPC `notificar_revision_anual`, solo TH). Push automático en julio quedaría con un scheduler
 - [ ] Notificación push/correo al líder al vencer (pendiente: mismo bloqueo de SMTP)
 - [ ] **Alertas transversales**: si cambia un cargo en el organigrama, notificar los procedimientos afectados
 

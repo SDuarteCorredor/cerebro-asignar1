@@ -10,6 +10,7 @@ import { crearClienteNavegador } from '@/lib/supabase/client'
 import type { Rol, EstadoProceso } from '@/types'
 import { plantillaDeTipo, tipoUsaPasos, pistaPorTipo, type SeccionDoc } from '@/lib/documentos/plantillas'
 import SelectorCargos, { type CargoCatalogo, type PasoCargo } from './SelectorCargos'
+import { proximaRevisionAnual } from '@/lib/documentos/vigencia'
 
 interface Paso {
   id?: string
@@ -228,7 +229,9 @@ export default function FormularioProceso({ gestiones, gestionIdInicial, rol, ti
         elaborado_por: elaboradoPor.trim() || null,
         revisado_por: revisadoPor.trim() || null,
         aprobado_por_nombre: aprobadoPor.trim() || null,
-        fecha_proxima_revision: proximaRevision || null,
+        // Vigencia anual: si se publica sin fecha, cae en julio del ciclo siguiente
+        fecha_proxima_revision: proximaRevision
+          || (estadoFinal === 'activo' ? proximaRevisionAnual(new Date().toISOString().split('T')[0]) : null),
         // Se descartan las secciones que quedaron completamente vacías
         secciones: secciones.filter(s => s.titulo.trim() || s.contenido.trim()),
         // Un documento que sale de "activo" pierde su firma electrónica previa

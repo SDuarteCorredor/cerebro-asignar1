@@ -67,6 +67,23 @@ export const ordenVigencia: Record<Vigencia, number> = {
   vigente: 3,
 }
 
+/**
+ * Vigencia anual (Comité de Control Integrado, 2026-07-22): toda la documentación
+ * de procesos vence cada julio. Al aprobar un documento, su próxima revisión se fija
+ * automáticamente al 31 de julio del ciclo siguiente.
+ */
+export const MES_REVISION_ANUAL = 7 // julio
+
+/**
+ * Fecha de próxima revisión anual a partir de una fecha de aprobación (ISO 'YYYY-MM-DD').
+ * Aprobado antes de julio → 31 de julio del mismo año. En julio o después → julio del año siguiente.
+ */
+export function proximaRevisionAnual(fechaAprobacion: string): string {
+  const [a, m] = fechaAprobacion.split('-').map(Number)
+  const anio = (m ?? 1) < MES_REVISION_ANUAL ? a : a + 1
+  return `${anio}-07-31`
+}
+
 /** Texto corto para mostrar junto a la fecha. */
 export function textoVigencia(e: EstadoVigencia): string {
   if (e.vigencia === 'sin_fecha' || e.dias === null) return 'Sin fecha de revisión definida'
