@@ -1023,19 +1023,25 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 
 /* Mis comités */
 .dash-comites {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 14px;
-}
-@media (min-width: 700px) {
-  .dash-comites { grid-template-columns: 220px 1fr; }
-}
-.dash-comites__ring {
-  padding: 20px;
   display: flex;
   flex-direction: column;
+  gap: 14px;
+}
+.dash-comites__ring {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.dash-comites__ring-pct {
+  display: flex;
+  align-items: baseline;
   gap: 10px;
-  justify-content: center;
+}
+.dash-comites__ring-meta {
+  flex: 1;
+  min-width: 140px;
 }
 .dash-comites__pct-label { font-weight: 600; font-size: 13px; }
 .dash-comites__pos {
