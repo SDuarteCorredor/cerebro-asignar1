@@ -30,6 +30,7 @@ const etiquetaEstado: Record<string, string> = {
   no_cumplido: 'No cumplido',
   arrastrado: 'Arrastrado',
 }
+const iniciales = (n: string) => n.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
 
 export default function PanelCompromisos({
   comiteId, compromisos, asistentes, editable, sesionId,
@@ -76,10 +77,13 @@ export default function PanelCompromisos({
           }}>
             <div className="hstack" style={{ gap: 12, alignItems: 'flex-start' }}>
               <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="hstack" style={{ gap: 7, marginBottom: 5 }}>
+                  <div className="avatar avatar--sm" style={{ width: 22, height: 22, fontSize: 10 }}>{iniciales(c.responsable_nombre)}</div>
+                  <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text)' }}>{c.responsable_nombre}</span>
+                </div>
                 <div style={{ fontSize: 13.5, fontWeight: 500 }}>{c.descripcion}</div>
                 <div className="hstack" style={{ gap: 8, marginTop: 4, fontSize: 11.5, color: 'var(--text-3)', flexWrap: 'wrap' }}>
-                  <span>{c.responsable_nombre}</span>
-                  {c.fecha_limite && <span>· límite {c.fecha_limite}</span>}
+                  {c.fecha_limite && <span>límite {c.fecha_limite}</span>}
                   <span className={`badge ${BADGE_IMPACTO[imp]}`} style={{ fontSize: 10.5 }}>Impacto {ETIQUETA_IMPACTO[imp]}</span>
                   <span className={`badge ${badge[c.estado]}`} style={{ fontSize: 10.5 }}>{etiquetaEstado[c.estado] ?? c.estado}</span>
                 </div>
