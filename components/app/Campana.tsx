@@ -24,6 +24,7 @@ const estiloPorTipo: Record<string, { icono: string; color: string }> = {
   documento_por_aprobar: { icono: 'inbox', color: 'var(--primary)' },
   documento_aprobado: { icono: 'check', color: 'var(--success-ink)' },
   documento_rechazado: { icono: 'x', color: 'var(--danger-ink)' },
+  cargo_sin_responsable: { icono: 'info', color: 'var(--danger-ink)' },
 }
 
 /** "hace 5 min", "hace 2 h", "hace 3 d" */
