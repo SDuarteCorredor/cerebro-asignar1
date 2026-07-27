@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import Icono from '@/components/app/Icono'
 import { badgePct, colorHeatmap } from '@/lib/comites/puntaje'
 
@@ -41,8 +42,11 @@ interface Props {
   anio: number
 }
 
+const RESUMEN = 3
+
 export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, anio }: Props) {
   const [vista, setVista] = useState<Vista>('comites')
+  const [expandido, setExpandido] = useState(false)
 
   // Orden por urgencia según la vista actual
   const filasOrden = [...filas].sort((a, b) => {
@@ -62,10 +66,21 @@ export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, a
     return va - vb
   })
 
+  // Resumen: los que requieren atención (primeros) + los mejores (últimos)
+  const colapsable = filasOrden.length > RESUMEN * 2
+  const filasVis = !colapsable || expandido
+    ? filasOrden
+    : [...filasOrden.slice(0, RESUMEN), ...filasOrden.slice(-RESUMEN)]
+
   return (
     <section className="dash-section">
       <div className="section-header">
-        <h2 className="section-title">Salud del equipo</h2>
+        <div>
+          <h2 className="section-title">Salud del equipo</h2>
+          {colapsable && !expandido && (
+            <span className="text-xs text-muted">Los {RESUMEN} que requieren atención y los {RESUMEN} mejores · {filasOrden.length} en total</span>
+          )}
+        </div>
         <div className="hstack" style={{ gap: 6 }}>
           {[
             { clave: 'comites' as const, label: 'Comités', icono: 'check' },
@@ -81,6 +96,11 @@ export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, a
               <Icono nombre={t.icono} className="icon icon--sm" /> {t.label}
             </button>
           ))}
+          {colapsable && (
+            <button type="button" className="btn btn--ghost btn--sm" onClick={() => setExpandido(v => !v)}>
+              {expandido ? 'Ver resumen' : `Ver todos (${filasOrden.length})`}
+            </button>
+          )}
         </div>
       </div>
 
@@ -97,13 +117,13 @@ export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, a
               </tr>
             </thead>
             <tbody>
-              {filasOrden.map(f => (
+              {filasVis.map(f => (
                 <tr key={f.id}>
                   <td>
                     <div className="hstack" style={{ gap: 8 }}>
                       <div className="avatar avatar--sm">{iniciales(f.nombre)}</div>
                       <div>
-                        <div className="row-title" style={{ fontSize: 13.5 }}>{f.nombre}</div>
+                        <Link href={`/perfil/${f.id}`} className="row-title" style={{ fontSize: 13.5, textDecoration: 'none', color: 'inherit' }}>{f.nombre}</Link>
                         {f.codigo && <div className="text-xs text-muted text-mono">{f.codigo}</div>}
                       </div>
                     </div>
@@ -167,12 +187,12 @@ export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, a
                   </tr>
                 </thead>
                 <tbody>
-                  {filasOrden.map(f => (
+                  {filasVis.map(f => (
                     <tr key={f.id}>
                       <td>
                         <div className="hstack" style={{ gap: 8 }}>
                           <div className="avatar avatar--sm">{iniciales(f.nombre)}</div>
-                          <span className="row-title" style={{ fontSize: 13.5 }}>{f.nombre}</span>
+                          <Link href={`/perfil/${f.id}`} className="row-title" style={{ fontSize: 13.5, textDecoration: 'none', color: 'inherit' }}>{f.nombre}</Link>
                         </div>
                       </td>
                       <td style={{ textAlign: 'center' }}>
@@ -213,12 +233,12 @@ export default function ClienteSaludEquipo({ filas, cicloNombre, semanaActual, a
               </tr>
             </thead>
             <tbody>
-              {filasOrden.map(f => (
+              {filasVis.map(f => (
                 <tr key={f.id}>
                   <td>
                     <div className="hstack" style={{ gap: 8 }}>
                       <div className="avatar avatar--sm">{iniciales(f.nombre)}</div>
-                      <span className="row-title" style={{ fontSize: 13.5 }}>{f.nombre}</span>
+                      <Link href={`/perfil/${f.id}`} className="row-title" style={{ fontSize: 13.5, textDecoration: 'none', color: 'inherit' }}>{f.nombre}</Link>
                     </div>
                   </td>
                   <td>

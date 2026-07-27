@@ -31,6 +31,7 @@ const etiquetaEstado: Record<string, string> = {
   no_cumplido: 'No cumplido',
   arrastrado: 'Arrastrado',
 }
+const iniciales = (n: string) => n.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
 
 export default function PanelRevision({
   comiteActualId, compromisos, editable,
@@ -58,7 +59,6 @@ export default function PanelRevision({
   return (
     <div className="vstack" style={{ gap: 8 }}>
       {compromisos.map(c => {
-        const sinConfirmar = c.estado === 'pendiente' || c.estado === 'reportado'
         const imp = (c.impacto ?? 'medio') as Impacto
         return (
           <div key={c.id} className="hstack" style={{
@@ -69,10 +69,13 @@ export default function PanelRevision({
               : c.estado === 'pendiente' ? '1px solid var(--warning)' : '1px solid var(--border)',
           }}>
             <div style={{ flex: 1, minWidth: 0 }}>
+              <div className="hstack" style={{ gap: 7, marginBottom: 5 }}>
+                <div className="avatar avatar--sm" style={{ width: 22, height: 22, fontSize: 10 }}>{iniciales(c.responsable_nombre)}</div>
+                <span style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--text)' }}>{c.responsable_nombre}</span>
+              </div>
               <div style={{ fontSize: 13.5, fontWeight: 500 }}>{c.descripcion}</div>
               <div className="hstack" style={{ gap: 8, marginTop: 4, fontSize: 11.5, color: 'var(--text-3)', flexWrap: 'wrap' }}>
-                <span>{c.responsable_nombre}</span>
-                {c.fecha_limite && <span>· límite {c.fecha_limite}</span>}
+                {c.fecha_limite && <span>límite {c.fecha_limite}</span>}
                 <span className={`badge ${BADGE_IMPACTO[imp]}`} style={{ fontSize: 10.5 }}>Impacto {ETIQUETA_IMPACTO[imp]}</span>
                 <span className={`badge ${badge[c.estado]}`} style={{ fontSize: 10.5 }}>{etiquetaEstado[c.estado] ?? c.estado}</span>
               </div>

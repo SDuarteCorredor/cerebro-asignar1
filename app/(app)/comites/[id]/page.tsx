@@ -64,6 +64,7 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
   const noCumplidos = stats.noCumplidos
   const evaluados = stats.evaluados
   const pct = stats.pctPonderado
+  const hayRevision = !!comiteAnterior && (compromisosARevisar ?? []).length > 0
 
   return (
     <>
@@ -123,8 +124,9 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
           </div>
         </section>
 
+        <div className={hayRevision ? 'comite-cols' : ''}>
         {/* Revisión del comité anterior */}
-        {comiteAnterior && (compromisosARevisar ?? []).length > 0 && (
+        {hayRevision && (
           <section className="card" style={{ padding: 22, marginBottom: 18 }}>
             <div className="hstack" style={{ justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
               <div>
@@ -168,6 +170,7 @@ export default async function PaginaComite({ params }: { params: Promise<{ id: s
             sesionId={sesion.id}
           />
         </section>
+        </div>
 
         {comite.notas && (
           <section className="card" style={{ padding: 18 }}>

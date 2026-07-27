@@ -87,29 +87,29 @@ export default async function PaginaDashboard() {
           />
         </Suspense>
 
-        {/* Líder / admin: salud del equipo (comités / desempeño / PDIs) */}
-        {muestraBloqueAdmin && (
+        {/* Arriba y siempre a la mano: mis compromisos de comité + mi PDI */}
+        <div className="dash-cols">
           <Suspense fallback={null}>
-            <SaludEquipo usuarioId={sesion.id} esAdmin={esAdmin} />
+            <MiComites usuarioId={sesion.id} gestionId={sesion.gestion_id} />
           </Suspense>
-        )}
+          <Suspense fallback={null}>
+            <MiPDI usuarioId={sesion.id} />
+          </Suspense>
+        </div>
 
-        {/* Líder / admin: procesos por atender */}
+        {/* Líder / admin: procesos por atender (subido para tenerlo cerca) */}
         {muestraBloqueAdmin && (
           <Suspense fallback={null}>
             <MiGestionProcesos usuarioId={sesion.id} esAdmin={esAdmin} />
           </Suspense>
         )}
 
-        {/* Todos: dos columnas — PDI + Comités */}
-        <div className="dash-cols">
+        {/* Líder / admin: salud del equipo (resumen de mejores y peores) */}
+        {muestraBloqueAdmin && (
           <Suspense fallback={null}>
-            <MiPDI usuarioId={sesion.id} />
+            <SaludEquipo usuarioId={sesion.id} esAdmin={esAdmin} />
           </Suspense>
-          <Suspense fallback={null}>
-            <MiComites usuarioId={sesion.id} gestionId={sesion.gestion_id} />
-          </Suspense>
-        </div>
+        )}
 
         {/* Novedades de mi gestión */}
         <Suspense fallback={null}>

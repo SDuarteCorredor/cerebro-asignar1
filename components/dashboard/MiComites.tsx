@@ -29,7 +29,7 @@ export default async function MiComites({ usuarioId, gestionId }: Props) {
     .eq('responsable_id', usuarioId)
     .in('estado', ['pendiente', 'reportado'])
     .order('fecha_limite', { ascending: true, nullsFirst: false })
-    .limit(5)
+    .limit(20)
 
   // Puntaje del año y ranking dentro de la gestión: se trae la data de toda la gestión
   // (no solo del usuario) para calcular posición y delta semanal en el mismo pass.
