@@ -308,7 +308,7 @@ Los perfiles **ya están construidos** fuera de la plataforma; requieren revisi�
 
 - [x] **Manual de cargo automático** (Claude-Simon): `/cargos` lista + `/cargos/[id]` arma solo las funciones desde `paso_cargos`. Cada actividad donde el cargo es responsable o de apoyo se recoge agrupada por gestión→proceso, con periodicidad, entradas/salidas, tiempo y enlace al procedimiento. Solo cuenta procesos **publicados**. Sidebar «Manuales de cargo» + enlace desde el cargo en cada perfil. **Se actualiza solo cuando cambia un procedimiento** (lo que pidió John)
 - [ ] Importar los perfiles existentes | Asignado: ``
-- [ ] **Inactivación (no borrado)** del perfil cuando el cargo desaparece, con alerta al líder, TH y Control Interno | Asignado: ``
+- [x] **Alertas de cargas sin responsable** (Claude-Simon): triggers en `usuarios` (al inactivar la última persona de un cargo) y en `cargos` (al inactivar el cargo) que avisan a TH, Control Interno y a los líderes de las gestiones afectadas, con el número de actividades en riesgo. Vista `/cargos/sin-responsable` para monitorearlas + aviso en la lista de cargos. El cargo se inactiva, nunca se borra
 - [ ] Encadenamiento: al cambiar un procedimiento, marcar los perfiles de cargo afectados | Asignado: ``
 
 ---

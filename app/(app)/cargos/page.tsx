@@ -9,13 +9,16 @@ export default async function PaginaCargos() {
   const sesion = await obtenerSesion()
   const supabase = await crearClienteServidor()
 
-  const [{ data: cargos }, { data: enlaces }, { data: personas }] = await Promise.all([
+  const [{ data: cargos }, { data: enlaces }, { data: personas }, { data: huerfanos }] = await Promise.all([
     supabase.from('cargos').select('id, nombre, banda').order('nombre'),
     // Actividades donde cada cargo participa, con la gestión del proceso
     supabase.from('paso_cargos')
       .select('cargo_id, tipo, paso:pasos(proceso:procesos(gestion_id))'),
     supabase.from('usuarios').select('cargo_id').eq('activo', true),
+    supabase.rpc('cargos_sin_responsable'),
   ])
+  const sinResponsable = (huerfanos ?? []).length
+  const puedeVerCargas = sesion.rol !== 'colaborador'
 
   // Un cargo puede repetirse en varias actividades del mismo proceso: se cuenta por paso
   const porCargo = new Map<string, { actividades: number; apoyos: number; gestiones: Set<string> }>()
@@ -72,6 +75,22 @@ export default async function PaginaCargos() {
           <Kpi num={conActividades} label="Con funciones documentadas" color="var(--success-ink)" />
           <Kpi num={filas.length - conActividades} label="Sin actividades aún" color="var(--text-3)" />
         </div>
+
+        {puedeVerCargas && sinResponsable > 0 && (
+          <Link href="/cargos/sin-responsable" className="card" style={{ display: 'block', padding: 14, marginBottom: 18, background: 'var(--danger-soft)', border: '1px solid var(--danger)' }}>
+            <div className="hstack" style={{ gap: 8, color: 'var(--danger-ink)', justifyContent: 'space-between' }}>
+              <span className="hstack" style={{ gap: 8 }}>
+                <Icono nombre="info" className="icon icon--sm" />
+                <span style={{ fontSize: 13.5 }}>
+                  <strong>{sinResponsable}</strong> cargo{sinResponsable === 1 ? '' : 's'} con funciones pero sin nadie que las ejecute.
+                </span>
+              </span>
+              <span className="hstack" style={{ gap: 4, fontSize: 13, fontWeight: 600 }}>
+                Ver cargas en riesgo <Icono nombre="chevronRight" className="icon icon--sm" />
+              </span>
+            </div>
+          </Link>
+        )}
 
         {conActividades === 0 && (
           <div className="card" style={{ padding: 14, marginBottom: 18, background: 'var(--warning-soft)', border: '1px solid var(--warning)' }}>
