@@ -64,6 +64,16 @@ const trazos: Record<string, React.ReactNode> = {
   arrowUp: <><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></>,
   arrowDown: <><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></>,
   trendingUp: <><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></>,
+  book: <><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H19v14H6.5A1.5 1.5 0 0 0 5 18.5Z"/><path d="M5 18.5A1.5 1.5 0 0 0 6.5 20H19v-3"/></>,
+  box: <><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9Z"/><path d="m4 7.5 8 4.5 8-4.5"/><path d="M12 12v9"/></>,
+  briefcase: <><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7"/><path d="M3 12h18"/></>,
+  truck: <><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5H14v11H3Z"/><path d="M14 9h4l3 3.5V16h-7Z"/><circle cx="7" cy="18" r="2"/><circle cx="17.5" cy="18" r="2"/></>,
+  building: <><path d="M4 21V5.5A1.5 1.5 0 0 1 5.5 4h7A1.5 1.5 0 0 1 14 5.5V21"/><path d="M14 10h4.5A1.5 1.5 0 0 1 20 11.5V21"/><path d="M7.5 8h3"/><path d="M7.5 12h3"/><path d="M7.5 16h3"/><path d="M3 21h18"/></>,
+  receipt: <><path d="M5 3h14v18l-2.3-1.5L14.4 21l-2.4-1.5L9.6 21l-2.3-1.5L5 21Z"/><path d="M9 8h6"/><path d="M9 12h6"/></>,
+  pieChart: <><path d="M12 3a9 9 0 1 0 9 9h-9Z"/><path d="M15 3.6A9 9 0 0 1 20.4 9H15Z"/></>,
+  wrench: <><path d="M15.5 3.5a5 5 0 0 0-5.9 6.4L3.6 15.9a2 2 0 0 0 2.8 2.8l6-6a5 5 0 0 0 6.4-5.9L16 9.5l-2.5-.5L13 6.5Z"/></>,
+  heart: <><path d="M12 20s-7-4.4-7-9.3A4 4 0 0 1 12 8a4 4 0 0 1 7 2.7c0 4.9-7 9.3-7 9.3Z"/></>,
+  award: <><circle cx="12" cy="9" r="5.5"/><path d="m8.5 13.8-1 6.7L12 18l4.5 2.5-1-6.7"/></>,
 }
 
 interface IconoProps {
@@ -73,9 +83,19 @@ interface IconoProps {
 }
 
 export default function Icono({ nombre, className = 'icon', style }: IconoProps) {
+  const trazo = trazos[nombre]
+
+  // Varios nombres vienen de la base de datos (`gestiones.icono`) o de mapas por
+  // categoría, así que un nombre desconocido es cuestión de tiempo. Antes se
+  // devolvía un SVG vacío y quedaba un hueco invisible imposible de diagnosticar;
+  // ahora cae en un documento genérico y avisa en desarrollo.
+  if (!trazo && process.env.NODE_ENV !== 'production') {
+    console.warn(`[Icono] No existe el trazo "${nombre}". Se usa "file" como respaldo.`)
+  }
+
   return (
     <svg viewBox="0 0 24 24" className={className} style={style} aria-hidden="true">
-      {trazos[nombre] ?? null}
+      {trazo ?? trazos.file}
     </svg>
   )
 }
