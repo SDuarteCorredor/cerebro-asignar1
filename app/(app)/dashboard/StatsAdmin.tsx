@@ -28,36 +28,38 @@ export default async function StatsAdmin() {
   ]
 
   return (
-    <div className="grid-stats" style={{ marginBottom: 36 }}>
-      {items.map(a => (
-        <Link key={a.titulo} href={a.href} className="card" style={{
-          textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 14, padding: 18,
-        }}>
-          <div className={`badge badge--${a.tono} badge--no-dot`} style={{ alignSelf: 'flex-start', padding: '5px 8px' }}>
-            <Icono nombre={a.icono} className="icon icon--sm" />
-          </div>
-          <div>
-            <div className="stat-number">{a.cuenta}</div>
-            <div className="stat-label">{a.titulo}</div>
-          </div>
-        </Link>
-      ))}
-    </div>
+    <section className="dash-section">
+      <div className="grid-stats">
+        {items.map(a => (
+          <Link key={a.titulo} href={a.href} className="card dash-stat">
+            <div className={`badge badge--${a.tono} badge--no-dot dash-stat__icono`}>
+              <Icono nombre={a.icono} className="icon icon--sm" />
+            </div>
+            <div>
+              <div className="stat-number">{a.cuenta}</div>
+              <div className="stat-label">{a.titulo}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   )
 }
 
 export function StatsAdminSkeleton() {
   return (
-    <div className="grid-stats" style={{ marginBottom: 36 }}>
-      {[0, 1, 2, 3].map(i => (
-        <div key={i} className="card" style={{ padding: 18, display: 'flex', flexDirection: 'column', gap: 14 }}>
-          <div className="skeleton" style={{ width: 28, height: 24, borderRadius: 6 }} />
-          <div>
-            <div className="skeleton skeleton--title" style={{ width: 60, height: 28, marginBottom: 6 }} />
-            <div className="skeleton skeleton--text" style={{ width: '80%' }} />
+    <section className="dash-section">
+      <div className="grid-stats">
+        {[0, 1, 2, 3].map(i => (
+          <div key={i} className="card dash-stat">
+            <div className="skeleton" style={{ width: 28, height: 24, borderRadius: 6 }} />
+            <div>
+              <div className="skeleton skeleton--title" style={{ width: 60, height: 28, marginBottom: 6 }} />
+              <div className="skeleton skeleton--text" style={{ width: '80%' }} />
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </section>
   )
 }
