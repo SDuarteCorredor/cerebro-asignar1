@@ -635,6 +635,16 @@ Revisando el deploy contra las pantallas del Figma («todo se ve opaco y muerto�
 
 > **Pendiente:** el Figma no se pudo sincronizar (conector sin autorizar). Los botones siguen con radio 8 px mientras `DESIGN.md` los define como pill — no se tocó porque ninguna pantalla revisada del Figma de Cerebro muestra un botón, y cambiarlo afecta toda la app.
 
+### Fase 2 — Íconos rotos y vista tarjetas/lista (completada) | Claude-Marketing
+
+- [x] **`Icono` ya no devuelve un SVG vacío.** `{trazos[nombre] ?? null}` dejaba un hueco invisible cuando el nombre no existía — imposible de diagnosticar mirando la pantalla. Ahora cae en `file` y avisa por consola en desarrollo. Varios nombres vienen de la BD (`gestiones.icono`) o de mapas por categoría, así que un nombre desconocido era cuestión de tiempo
+- [x] **`/politicas`: el ícono de «Reglamento» no existía.** `ICONO_CATEGORIA` apuntaba a `book` y ese trazo nunca se dibujó. Se añade `book` + 10 glifos más para conceptos de gestión que faltaban (`box`, `briefcase`, `truck`, `building`, `receipt`, `pieChart`, `wrench`, `heart`, `award`)
+- [x] **Selector de vista tarjetas/lista** (`components/app/SelectorVista.tsx`), al estilo de Notion/Monday, en `/gestiones` y `/politicas`. Persiste por usuario con `usePreferenciaLocal` y cada pantalla tiene su llave, así que la preferencia de una no arrastra la de la otra. Reusa las `filter-pills` del tablero de comités; en móvil se queda solo el ícono
+- [x] **Tarjeta de gestión** (`.gestion-tarjeta`): ícono de 44 px, descripción a dos líneas con elipsis y pie con líder y conteo de procesos. El recorte a dos líneas es lo que mantiene la misma altura en toda la fila
+- [x] **Recuadros de gestión con más peso**: anillo interior del propio `color_primary` al 16 % y trazo 1.5 → 1.75. Los tintes siguen viniendo de la BD
+
+> **Pendiente:** los colores pálidos de las gestiones están en `gestiones.color_soft` / `color_primary`. Subirles la saturación es un `UPDATE` en Supabase, no un cambio de código.
+
 ---
 
 ## Mejoras transversales

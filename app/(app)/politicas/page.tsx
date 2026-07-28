@@ -2,15 +2,7 @@ import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
-import Icono from '@/components/app/Icono'
-
-const ICONO_CATEGORIA: Record<string, string> = {
-  'Reglamento': 'book',
-  'Política': 'paper',
-  'Manual': 'clipboard',
-  'Circular': 'bell',
-  'Código': 'target',
-}
+import ClientePoliticas, { type FilaPolitica } from './ClientePoliticas'
 
 export default async function PaginaPoliticas({ searchParams }: {
   searchParams: Promise<{ q?: string; cat?: string }>
@@ -29,13 +21,6 @@ export default async function PaginaPoliticas({ searchParams }: {
   if (q) query = query.ilike('nombre', `%${q}%`)
 
   const { data: politicas } = await query
-
-  const porCategoria = new Map<string, typeof politicas>()
-  for (const p of politicas ?? []) {
-    const arr = porCategoria.get(p.categoria) ?? []
-    arr.push(p)
-    porCategoria.set(p.categoria, arr)
-  }
 
   const categorias = ['Reglamento', 'Política', 'Manual', 'Circular', 'Código'] as const
   const esAdmin = sesion.rol === 'admin'
@@ -84,36 +69,7 @@ export default async function PaginaPoliticas({ searchParams }: {
             </p>
           </section>
         ) : (
-          categorias.filter(c => porCategoria.has(c)).map(c => (
-            <section key={c} style={{ marginBottom: 28 }}>
-              <div className="section-header" style={{ marginBottom: 12 }}>
-                <div className="hstack" style={{ gap: 8 }}>
-                  <Icono nombre={ICONO_CATEGORIA[c]} className="icon" />
-                  <div className="page__eyebrow" style={{ margin: 0 }}>{c}</div>
-                </div>
-                <span className="section-count">{porCategoria.get(c)?.length ?? 0}</span>
-              </div>
-              <div className="grid-cards">
-                {(porCategoria.get(c) ?? []).map(p => (
-                  <Link key={p.id} href={`/politicas/${p.id}`} className="card" style={{ padding: 18, display: 'block' }}>
-                    <div className="hstack" style={{ gap: 10, marginBottom: 10 }}>
-                      <div className="icon-circle"><Icono nombre={ICONO_CATEGORIA[c]} className="icon" /></div>
-                      <span className="badge badge--neutral badge--no-dot" style={{ marginLeft: 'auto', fontSize: 11 }}>
-                        v{p.version_actual}
-                      </span>
-                    </div>
-                    <h3 style={{ margin: '0 0 6px', fontSize: 15, fontWeight: 700 }}>{p.nombre}</h3>
-                    {p.descripcion && (
-                      <p className="text-muted text-sm" style={{ margin: 0, lineHeight: 1.4 }}>{p.descripcion}</p>
-                    )}
-                    <div className="hstack font-semibold text-sm" style={{ marginTop: 12, color: 'var(--primary)' }}>
-                      Ver detalle <Icono nombre="arrowRight" className="icon icon--sm" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          ))
+          <ClientePoliticas politicas={(politicas ?? []) as FilaPolitica[]} categorias={categorias} />
         )}
       </main>
     </>
