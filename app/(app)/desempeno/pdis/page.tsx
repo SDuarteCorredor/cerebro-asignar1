@@ -123,7 +123,7 @@ export default async function PaginaPdis() {
           <KpiCard num={filasVisibles.length} label="PDIs totales" />
           <KpiCard num={vigentes.length} label="Vigentes" color="var(--success-ink)" />
           <KpiCard num={enFirma.length} label="En firma" color="var(--warning-ink)" />
-          <KpiCard num={`${avanceGlobal}%`} label="Avance promedio global" color="var(--primary-ink)" />
+          <KpiCard num={`${avanceGlobal}%`} label="Avance promedio global" color="var(--on-primary-soft)" />
         </div>
 
         {filasVisibles.length === 0 ? (

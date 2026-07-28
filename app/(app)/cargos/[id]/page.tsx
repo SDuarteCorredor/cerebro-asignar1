@@ -204,9 +204,9 @@ export default async function PaginaManualCargo({ params }: { params: Promise<{ 
             <div className="card callout">
               <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
                 <Icono nombre="info" className="icon" style={{ color: 'var(--primary)' }} />
-                <strong style={{ color: 'var(--primary-ink)' }}>Se arma solo</strong>
+                <strong style={{ color: 'var(--on-primary-soft)' }}>Se arma solo</strong>
               </div>
-              <p style={{ margin: 0, fontSize: 13, color: 'var(--primary-ink)', opacity: 0.85 }}>
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--on-primary-soft)', opacity: 0.85 }}>
                 Estas funciones vienen de los procedimientos publicados. Si un procedimiento cambia,
                 el manual cambia con él.
               </p>

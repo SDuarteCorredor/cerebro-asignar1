@@ -22,7 +22,7 @@ const colorPrioridad: Record<Prioridad, string> = {
 const categoriaPorPromedio = (n: number | null): { etiqueta: string; color: string } => {
   if (n === null) return { etiqueta: 'Sin datos', color: 'var(--text-3)' }
   if (n >= 4.6) return { etiqueta: 'Excelente / Excepcional', color: 'var(--success-ink)' }
-  if (n >= 4.0) return { etiqueta: 'Competente / Sobresaliente', color: 'var(--primary-ink)' }
+  if (n >= 4.0) return { etiqueta: 'Competente / Sobresaliente', color: 'var(--on-primary-soft)' }
   if (n >= 3.0) return { etiqueta: 'Satisfactorio mínimo', color: 'var(--warning-ink)' }
   return { etiqueta: 'Insatisfactorio', color: 'var(--danger-ink)' }
 }

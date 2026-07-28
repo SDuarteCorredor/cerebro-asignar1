@@ -218,30 +218,30 @@ export default function FormularioCiclo({ conteoPorBanda, totalConJefe, totalAct
 
         {/* Resumen */}
         <section className="card" style={{ padding: 22, background: 'var(--primary-soft)', borderColor: 'var(--primary-soft-2)' }}>
-          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: 'var(--primary-ink)' }}>
+          <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700, color: 'var(--on-primary-soft)' }}>
             Resumen — Qué pasará al guardar
           </h3>
           <div className="grid-stats-3">
             <div>
-              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--on-primary-soft)' }}>
                 {colaboradoresCubiertos}
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--primary-ink)' }}>Evaluaciones creadas</div>
+              <div style={{ fontSize: 12.5, color: 'var(--on-primary-soft)' }}>Evaluaciones creadas</div>
             </div>
             <div>
-              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--on-primary-soft)' }}>
                 {colaboradoresCubiertos}
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--primary-ink)' }}>Autoevaluaciones asignadas</div>
+              <div style={{ fontSize: 12.5, color: 'var(--on-primary-soft)' }}>Autoevaluaciones asignadas</div>
             </div>
             <div>
-              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>
+              <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--on-primary-soft)' }}>
                 {Math.round(colaboradoresCubiertos * (totalConJefe / Math.max(totalActivosConCargo, 1)))}
               </div>
-              <div style={{ fontSize: 12.5, color: 'var(--primary-ink)' }}>Jefes auto-asignados</div>
+              <div style={{ fontSize: 12.5, color: 'var(--on-primary-soft)' }}>Jefes auto-asignados</div>
             </div>
           </div>
-          <p style={{ margin: '14px 0 0', fontSize: 12.5, color: 'var(--primary-ink)' }}>
+          <p style={{ margin: '14px 0 0', fontSize: 12.5, color: 'var(--on-primary-soft)' }}>
             Los pares y reportes directos se asignan después en el detalle del ciclo.
             Bandas <strong>{BANDAS_INFO.filter(b => rangoActual.bandas.includes(b.codigo) && b.modalidad === '360°').map(b => b.codigo).join(', ') || '(ninguna)'}</strong> requieren modalidad 360°.
           </p>
