@@ -430,6 +430,21 @@ Sistema de ejecución semanal inspirado en las 4 Disciplinas de la Ejecución. A
 - [x] Ventanas de tiempo en el ranking (semana / mes / año)
 - [x] Delta de puntos ganados en la semana en curso (+X)
 
+### Fase 5 — Tablero tipo Monday (completada) | Claude-Marketing
+
+Rediseño de la vista pedido tras revisar la sección en vivo: lo cumplido tapaba lo pendiente y había que apuntarle al botón «Ver».
+
+- [x] **Sin glifos como íconos.** `✓ ✗ ↷ × ⏳ 🗓️` salían del sistema de iconografía. Se añaden a `components/app/Icono.tsx` 12 trazos nuevos con el mismo estilo lineal 24×24 (`checkCircle`, `xCircle`, `circleDot`, `clock`, `rotateCcw`, `alertTriangle`, `message`, `flag`, `chevronUp`, `arrowUp`, `arrowDown`, `trendingUp`) y se reemplaza cada glifo. La biblioteca es la misma que consume la página web
+- [x] **`GrupoPlegable`** (`components/app/GrupoPlegable.tsx`): grupo con franja de color, contador, plegado propio y flechas para reordenar. Reutilizable fuera de comités
+- [x] **`/comites` por grupos**: «Actas abiertas» / «Actas cerradas» en tablas separadas y reordenables. Antes venían mezcladas en una sola tabla ordenada por fecha
+- [x] **Barra de filtros** en la lista (texto, gestión, año) y en cada panel del detalle (texto + impacto alto/medio/bajo con `filter-pills`). Los títulos largos se recortan con elipsis en vez de romper la fila
+- [x] **Fila entera clicable** (`role="link"` + Enter/Espacio), ya no solo el botón «Ver»
+- [x] **Detalle agrupado por estado**: «Por hacer» · «Reportados — por confirmar» · «Cumplidos» · «No cumplidos» · «Arrastrados». Lo resuelto arranca plegado, así que al entrar se ve lo que falta. Igual en el panel de revisión, con los reportados de primeros
+- [x] **Autorreporte rediseñado**: panel con cabecera propia y `textarea` de la DS en vez del input sobre fondo gris. La nota funciona como bitácora — «Añadir entrada» antepone una línea fechada y conserva lo anterior, en vez de reemplazarlo
+- [x] **`usePreferenciaLocal`** (`lib/usePreferenciaLocal.ts`): orden y plegado de grupos persistidos por usuario vía `useSyncExternalStore` (sin efectos que disparen renders en cascada, sin desajuste de hidratación)
+
+> **Pendiente de decisión:** una bitácora real (varias entradas con autor y fecha, cada una su fila) necesita tabla nueva; hoy se guarda todo en `compromisos.autorreporte_nota`. No se tocó el esquema.
+
 ### Fase 4 (pendiente, depende de Etapa 8)
 - [ ] Cadena con onboarding (arrancar puntos desde período de prueba)
 
