@@ -167,9 +167,9 @@ export default function ClienteCuestionario({
       <section className="card" style={{ padding: 18, marginBottom: 20, background: 'var(--primary-soft)', borderColor: 'var(--primary-soft-2)' }}>
         <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
           <Icono nombre="info" className="icon" style={{ color: 'var(--primary)' }} />
-          <strong style={{ color: 'var(--primary-ink)' }}>Instrucciones</strong>
+          <strong style={{ color: 'var(--on-primary-soft)' }}>Instrucciones</strong>
         </div>
-        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--primary-ink)', lineHeight: 1.55 }}>
+        <p style={{ margin: 0, fontSize: 13.5, color: 'var(--on-primary-soft)', lineHeight: 1.55 }}>
           {esAutoeval
             ? 'Califícate de la manera más honesta posible. Piensa en tu conducta en los últimos 6 meses. Si una conducta no aplica a tu cargo, déjala en blanco.'
             : `Califica la conducta de ${colaborador.nombre} en los últimos 6 meses. Si no has podido observar una conducta, déjala en blanco — equivale a "No he observado".`
@@ -218,7 +218,7 @@ export default function ClienteCuestionario({
                   <div style={{
                     width: 36, height: 36, borderRadius: 8,
                     background: c.tipo === 'Gerencial' ? '#DDD3F3' : 'var(--primary-soft-2)',
-                    color: c.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--primary-ink)',
+                    color: c.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--on-primary-soft)',
                     display: 'grid', placeItems: 'center',
                     fontWeight: 700, fontFamily: 'var(--font-mono)',
                   }}>{c.codigo}</div>
@@ -245,7 +245,7 @@ export default function ClienteCuestionario({
                         border: '1px solid var(--border)',
                         display: 'grid', placeItems: 'center',
                         fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700,
-                        color: seleccionado != null ? 'var(--primary-ink)' : 'var(--text-3)',
+                        color: seleccionado != null ? 'var(--on-primary-soft)' : 'var(--text-3)',
                         marginTop: 4,
                       }}>{it.numero}</div>
                       <div>

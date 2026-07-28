@@ -76,7 +76,7 @@ export default async function MiGestionProcesos({ usuarioId, esAdmin }: Props) {
       <div className="grid-stats" style={{ marginBottom: 14 }}>
         <KPI num={vencidos} label="Vencidos" color="var(--danger-ink)" />
         <KPI num={porVencer} label="Por vencer" color="var(--warning-ink)" />
-        <KPI num={enRevision} label="En revisión" color="var(--primary-ink)" />
+        <KPI num={enRevision} label="En revisión" color="var(--on-primary-soft)" />
         <KPI num={borradores} label="Borradores" color="var(--text-2)" />
       </div>
 

@@ -68,7 +68,7 @@ export default function PasoExpandible({ paso, index, total }: { paso: PasoDetal
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <div style={{
             width: 32, height: 32, borderRadius: 999,
-            background: 'var(--primary-soft)', color: 'var(--primary-ink)',
+            background: 'var(--primary-soft)', color: 'var(--on-primary-soft)',
             display: 'grid', placeItems: 'center',
             fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-mono)',
             flexShrink: 0,
@@ -103,8 +103,8 @@ export default function PasoExpandible({ paso, index, total }: { paso: PasoDetal
                   <span key={i} className="badge badge--no-dot badge--wrap"
                     style={{
                       fontSize: 12,
-                      background: esApoyo ? 'var(--surface-2)' : 'var(--primary-soft)',
-                      color: esApoyo ? 'var(--text-2)' : 'var(--primary-ink)',
+                      background: esApoyo ? 'var(--surface-sunken)' : 'var(--primary-soft)',
+                      color: esApoyo ? 'var(--text-2)' : 'var(--on-primary-soft)',
                     }}>
                     <Icono nombre={esApoyo ? 'handshake' : 'users'} className="icon icon--sm"
                       style={{ flexShrink: 0, marginTop: 1 }} />
@@ -117,7 +117,7 @@ export default function PasoExpandible({ paso, index, total }: { paso: PasoDetal
               })
             })()}
             {paso.periodicidad && (
-              <span className="badge badge--neutral badge--no-dot" style={{ fontSize: 12, background: 'var(--surface-2)' }}>
+              <span className="badge badge--neutral badge--no-dot" style={{ fontSize: 12, background: 'var(--surface-sunken)' }}>
                 <Icono nombre="history" className="icon icon--sm" /> {paso.periodicidad}
               </span>
             )}
@@ -128,7 +128,7 @@ export default function PasoExpandible({ paso, index, total }: { paso: PasoDetal
         {tieneDetalle && (
           <div style={{
             width: 28, height: 28, borderRadius: 8,
-            background: abierto ? 'var(--primary-soft)' : 'var(--surface-2)',
+            background: abierto ? 'var(--primary-soft)' : 'var(--surface-sunken)',
             display: 'grid', placeItems: 'center',
             transition: 'background 150ms, transform 150ms',
             transform: abierto ? 'rotate(180deg)' : 'none',

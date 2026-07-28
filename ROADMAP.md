@@ -621,6 +621,22 @@ Se descartó el correo: **todo se maneja dentro de la plataforma**, sin depender
 
 ---
 
+## Alineación con el design system (completada) | Claude-Marketing
+
+Revisando el deploy contra las pantallas del Figma («todo se ve opaco y muerto»): los tokens de color estaban bien, pero se aplicaban mal. Verificado con capturas antes/después del sidebar, topbar, KPIs y tabla.
+
+- [x] **Nuevo token `--on-primary-soft` (#0056B3)** para texto e íconos sobre `--primary-soft`. Antes se usaba `--primary-ink` (#001233, el navy de titulares): sobre azul pálido se lee casi negro y apagaba el acento en **29 sitios** — ítem activo del sidebar, pills «Nuevo», `badge--primary`, números de KPI, callouts, íconos de las tarjetas del dashboard. En el Figma ese texto es azul
+- [x] **Cards con elevación.** `.card` era borde de 1px sin sombra: los tokens `--shadow-*` existían y nadie los usaba. Nuevos `--shadow-card` / `--shadow-card-hover` (multicapa con tinte navy, como manda `DESIGN.md`), clase `.card--interactiva` para las clicables y regla para que una card dentro de otra no se eleve dos veces. Radio 14 → `--radius-lg` (16) y padding 22 → `--sp-6` (24), que es lo que dice el DS
+- [x] **Avatar sólido** (azul de marca + blanco) en vez de azul pálido con texto navy. Queda `.avatar--soft` por si una lista muy densa de personas se ve ruidosa
+- [x] **Topbar sin la píldora con borde** alrededor del usuario — en el Figma no existe; ahora el borde solo aparece en hover
+- [x] **Punto del badge saturado** (`--success`, `--warning`, `--danger`, `--primary`) en vez de heredar el color del texto: es lo que da la señal de estado a distancia
+- [x] **Sidebar 252 → 276 px** y nav de 13.5 → 14 px, para que «Procesos y Procedimientos» quepa en una línea como en el Figma
+- [x] **Dos variables inexistentes** que se renderizaban transparentes: `--surface-2` (3 usos en `PasoExpandible`) → `--surface-sunken` y `--surface-elevated` (1 uso en `/desempeno`) → `--surface`
+
+> **Pendiente:** el Figma no se pudo sincronizar (conector sin autorizar). Los botones siguen con radio 8 px mientras `DESIGN.md` los define como pill — no se tocó porque ninguna pantalla revisada del Figma de Cerebro muestra un botón, y cambiarlo afecta toda la app.
+
+---
+
 ## Mejoras transversales
 
 - [x] Responsive/mobile first (CSS breakpoints) | Claude-MK

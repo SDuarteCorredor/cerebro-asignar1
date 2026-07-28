@@ -114,7 +114,7 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
                 {gestion?.nombre && (
                   <>
                     <span>·</span>
-                    <Link href={`/gestiones/${gestion.id}`} style={{ color: 'var(--primary-ink)' }}>{gestion.nombre}</Link>
+                    <Link href={`/gestiones/${gestion.id}`} style={{ color: 'var(--on-primary-soft)' }}>{gestion.nombre}</Link>
                   </>
                 )}
               </div>
@@ -145,7 +145,7 @@ export default async function PerfilUsuario({ params }: { params: Promise<{ id: 
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, marginBottom: 14 }}>
               <div className="card" style={{ padding: 16 }}>
-                <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--primary-ink)' }}>{miDesempeno.puntos}</div>
+                <div style={{ fontSize: 28, fontWeight: 700, fontFamily: 'var(--font-mono)', color: 'var(--on-primary-soft)' }}>{miDesempeno.puntos}</div>
                 <div style={{ fontSize: 12.5, color: 'var(--text-3)' }}>Puntos del año</div>
               </div>
               <div className="card" style={{ padding: 16 }}>
