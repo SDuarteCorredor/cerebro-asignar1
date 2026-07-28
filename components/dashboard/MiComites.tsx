@@ -96,7 +96,7 @@ export default async function MiComites({ usuarioId, gestionId }: Props) {
       <div className="dash-comites">
         {pctAnual !== null && (
           <div className="card dash-comites__ring">
-            <div className="hstack" style={{ justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
+            <div className="dash-comites__ring-pct">
               <span className={`badge badge--no-dot ${badgePct(pctAnual)}`}>{pctAnual}%</span>
               {posicion !== null && totalRanking > 1 && (
                 <Link href="/comites/ranking" className="dash-comites__pos" title="Ver ranking completo">
@@ -104,7 +104,7 @@ export default async function MiComites({ usuarioId, gestionId }: Props) {
                 </Link>
               )}
             </div>
-            <div>
+            <div className="dash-comites__ring-meta">
               <div className="dash-comites__pct-label">Cumplimiento anual</div>
               <div className="text-xs text-muted">
                 {misPuntos} pts · {evaluados} evaluados en {anioActual}

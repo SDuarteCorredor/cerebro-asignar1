@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion, obtenerIniciales } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
-import Icono from '@/components/app/Icono'
 import { calcularPonderado, colorPct, badgePct, pesoDe, semanaISOde, numSemanasISO } from '@/lib/comites/puntaje'
 import HeatmapSemanal, { type CeldaSemana } from '../HeatmapSemanal'
 

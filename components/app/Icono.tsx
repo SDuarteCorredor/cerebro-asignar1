@@ -51,6 +51,19 @@ const trazos: Record<string, React.ReactNode> = {
   mapPin: <><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></>,
   list: <><path d="M8 6h13"/><path d="M8 12h13"/><path d="M8 18h13"/><circle cx="3" cy="6" r="1" fill="currentColor"/><circle cx="3" cy="12" r="1" fill="currentColor"/><circle cx="3" cy="18" r="1" fill="currentColor"/></>,
   fileCheck: <><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 3v5h5"/><path d="m9 15 2 2 4-4"/></>,
+  // — Comités / seguimiento —
+  checkCircle: <><circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/></>,
+  xCircle: <><circle cx="12" cy="12" r="9"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/></>,
+  circleDot: <><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="currentColor"/></>,
+  clock: <><circle cx="12" cy="12" r="9"/><path d="M12 7v5.2l3.2 1.9"/></>,
+  rotateCcw: <><path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 4.5V10h5.5"/></>,
+  alertTriangle: <><path d="M10.3 4.1 2.6 17.4A2 2 0 0 0 4.3 20.4h15.4a2 2 0 0 0 1.7-3L13.7 4.1a2 2 0 0 0-3.4 0Z"/><path d="M12 9.5v4"/><circle cx="12" cy="17" r="1" fill="currentColor"/></>,
+  message: <><path d="M20 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2Z"/></>,
+  flag: <><path d="M5 21V4"/><path d="M5 4.5h11l-2 4 2 4H5"/></>,
+  chevronUp: <><path d="m6 15 6-6 6 6"/></>,
+  arrowUp: <><path d="M12 19V5"/><path d="m6 11 6-6 6 6"/></>,
+  arrowDown: <><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></>,
+  trendingUp: <><path d="m3 17 6-6 4 4 8-8"/><path d="M15 7h6v6"/></>,
 }
 
 interface IconoProps {
