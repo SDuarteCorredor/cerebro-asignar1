@@ -124,8 +124,8 @@ export default async function MiGestionProcesos({ usuarioId, esAdmin }: Props) {
 
 function KPI({ num, label, color }: { num: number; label: string; color: string }) {
   return (
-    <div className="card" style={{ padding: 14 }}>
-      <div className="stat-number" style={{ color, fontSize: 26 }}>{num}</div>
+    <div className="card dash-kpi">
+      <div className="stat-number dash-kpi__num" style={{ color }}>{num}</div>
       <div className="stat-label">{label}</div>
     </div>
   )

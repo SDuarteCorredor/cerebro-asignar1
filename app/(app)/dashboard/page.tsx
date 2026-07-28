@@ -42,84 +42,85 @@ export default async function PaginaDashboard() {
         {/* Hero */}
         <div className="dash-hero">
           <div className="page__eyebrow">{fechaHoy}</div>
-          <h1 className="page__title" style={{ fontSize: 34 }}>Hola, {saludo}.</h1>
-          <p className="page__subtitle" style={{ fontSize: 16 }}>
+          <h1 className="page__title dash-hero__saludo">Hola, {saludo}.</h1>
+          <p className="page__subtitle dash-hero__sub">
             {muestraBloqueAdmin ? 'Este es el pulso de tu equipo hoy.' : 'Esto es lo que tienes hoy.'}
           </p>
           <BuscadorHero />
         </div>
 
-        {/* Admin: KPIs organizacionales */}
-        {esAdmin && (
-          <Suspense fallback={<StatsAdminSkeleton />}>
-            <StatsAdmin />
+        {/* ── Lo que me toca hacer ───────────────────────────────────────── */}
+        <div className="dash-banda">
+          <Suspense fallback={<BandejaAccionSkeleton />}>
+            <BandejaAccion
+              usuarioId={sesion.id}
+              gestionId={sesion.gestion_id}
+              esLider={esLider}
+              esAdmin={esAdmin}
+            />
           </Suspense>
-        )}
 
-        {/* Admin: ciclo de desempeño activo (cobertura + días restantes) */}
-        {esAdmin && (
-          <Suspense fallback={null}>
-            <KPICicloActivo />
-          </Suspense>
-        )}
-
-        {/* Líder / admin: comité de esta semana (crear o cerrar) */}
-        {muestraBloqueAdmin && (
-          <Suspense fallback={null}>
-            <AvisoComiteSemanal usuarioId={sesion.id} esAdmin={esAdmin} />
-          </Suspense>
-        )}
-
-        {/* Líder / admin: bandeja de aprobación (arriba) */}
-        {muestraBloqueAdmin && (
-          <Suspense fallback={null}>
-            <BandejaAprobacion usuarioId={sesion.id} esAdmin={esAdmin} />
-          </Suspense>
-        )}
-
-        {/* Todos: bandeja de acción (mi día) */}
-        <Suspense fallback={<BandejaAccionSkeleton />}>
-          <BandejaAccion
-            usuarioId={sesion.id}
-            gestionId={sesion.gestion_id}
-            esLider={esLider}
-            esAdmin={esAdmin}
-          />
-        </Suspense>
-
-        {/* Arriba y siempre a la mano: mis compromisos de comité + mi PDI */}
-        <div className="dash-cols">
-          <Suspense fallback={null}>
-            <MiComites usuarioId={sesion.id} gestionId={sesion.gestion_id} />
-          </Suspense>
-          <Suspense fallback={null}>
-            <MiPDI usuarioId={sesion.id} />
-          </Suspense>
+          <div className="dash-cols">
+            <Suspense fallback={null}>
+              <MiComites usuarioId={sesion.id} gestionId={sesion.gestion_id} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <MiPDI usuarioId={sesion.id} />
+            </Suspense>
+          </div>
         </div>
 
-        {/* Líder / admin: procesos por atender (subido para tenerlo cerca) */}
+        {/* ── Lo que superviso (líder / admin) ────────────────────────────── */}
         {muestraBloqueAdmin && (
-          <Suspense fallback={null}>
-            <MiGestionProcesos usuarioId={sesion.id} esAdmin={esAdmin} />
-          </Suspense>
+          <div className="dash-banda">
+            <div className="dash-banda__rotulo">
+              <span className="dash-banda__texto">Mi equipo</span>
+            </div>
+
+            <Suspense fallback={null}>
+              <AvisoComiteSemanal usuarioId={sesion.id} esAdmin={esAdmin} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <BandejaAprobacion usuarioId={sesion.id} esAdmin={esAdmin} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <MiGestionProcesos usuarioId={sesion.id} esAdmin={esAdmin} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <SaludEquipo usuarioId={sesion.id} esAdmin={esAdmin} />
+            </Suspense>
+          </div>
         )}
 
-        {/* Líder / admin: salud del equipo (resumen de mejores y peores) */}
-        {muestraBloqueAdmin && (
-          <Suspense fallback={null}>
-            <SaludEquipo usuarioId={sesion.id} esAdmin={esAdmin} />
-          </Suspense>
+        {/* ── Pulso de la organización (admin) ────────────────────────────── */}
+        {esAdmin && (
+          <div className="dash-banda">
+            <div className="dash-banda__rotulo">
+              <span className="dash-banda__texto">La organización</span>
+            </div>
+
+            <Suspense fallback={<StatsAdminSkeleton />}>
+              <StatsAdmin />
+            </Suspense>
+            <Suspense fallback={null}>
+              <KPICicloActivo />
+            </Suspense>
+          </div>
         )}
 
-        {/* Novedades de mi gestión */}
-        <Suspense fallback={null}>
-          <NovedadesGestion gestionId={sesion.gestion_id} />
-        </Suspense>
+        {/* ── Al día ──────────────────────────────────────────────────────── */}
+        <div className="dash-banda">
+          <div className="dash-banda__rotulo">
+            <span className="dash-banda__texto">Al día</span>
+          </div>
 
-        {/* Notificaciones sin leer */}
-        <Suspense fallback={null}>
-          <UltimasNotificaciones usuarioId={sesion.id} />
-        </Suspense>
+          <Suspense fallback={null}>
+            <NovedadesGestion gestionId={sesion.gestion_id} />
+          </Suspense>
+          <Suspense fallback={null}>
+            <UltimasNotificaciones usuarioId={sesion.id} />
+          </Suspense>
+        </div>
       </main>
     </>
   )

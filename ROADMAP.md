@@ -590,6 +590,18 @@ El `/dashboard` anterior era el mismo para todos: buscador + grid de las 20 gest
 - [x] `AvisoComiteSemanal`: al líder le avisa si no hay comité de esta semana en alguna de sus gestiones, o si hay uno con todos los compromisos evaluados listo para cerrar
 - [x] `KPICicloActivo`: KPI del ciclo de desempeño en captura con cobertura (respondidos/total) + días restantes para cerrar. Solo aparece si hay un ciclo activo
 
+### Fase 4 — Espaciado, ritmo y jerarquía (completada) | Claude-Marketing
+
+El dashboard se veía comprimido: 8–10 secciones apiladas con el mismo margen, sin nada que las agrupara.
+
+- [x] **Escala de espaciado** en `:root` (`--sp-1`…`--sp-9`, base 4). Se reemplazan los números sueltos (10/12/14/16/18/20/22/26/36) de todo el dashboard por tokens
+- [x] **Aire lateral responsive**: `--page-x` pasa de 16px fijo a 16 → 24 → 40 px según viewport. En un monitor ancho el contenido ya no se pega al borde
+- [x] **Ritmo vertical con proporción**: el salto entre secciones (`--dash-gap`, 32→40 px) es ~3× el salto entre un título y su contenido (`--dash-gap-titulo`, 16 px). Antes era 32 vs 18, demasiado parecido para leerse como agrupación
+- [x] **Bandas rotuladas** (`.dash-banda`): el dashboard se agrupa en «lo que me toca» (sin rótulo, va primero) · **Mi equipo** · **La organización** · **Al día**. Rótulo en versalitas con filete al costado
+- [x] Las bandas **se ocultan solas** si todos sus bloques devuelven `null` (`:not(:has(.dash-section))`), para que no quede un rótulo flotando sin contenido
+- [x] **Hero con más presencia**: saludo fluido 28→34 px, buscador con `focus-within`, chips de sugerencia con hover, y todo el estilo movido de inline a `.dash-buscador*`
+- [x] `StatsAdmin` pasa a `.dash-section` (antes traía `marginBottom: 36` inline y quedaba fuera del ritmo); KPIs con hover consistente
+
 ### Fase 3 — Integraciones (parcialmente completada)
 - [x] Ranking en vivo en `MiComites`: posición dentro de la gestión ("#3 de 12") + delta de puntos ganados en la semana en curso. Cálculo con la misma lógica ponderada del ranking global | Claude-Marketing
 - [ ] Onboarding en la BandejaAccion (ítems atrasados) — **bloqueado** hasta que Sub-etapa 8.B cree las tablas `onboarding` y `onboarding_items` en Supabase | Asignado: ``

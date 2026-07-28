@@ -42,6 +42,25 @@
   --radius-xl: 32px;
   --radius: 12px;
 
+  /* Escala de espaciado (base 4). Usar estos y no números sueltos:
+     el ritmo vertical solo se lee como jerarquía si los saltos son los mismos. */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-7: 32px;
+  --sp-8: 40px;
+  --sp-9: 56px;
+
+  /* Aire lateral de la página: crece con el viewport en vez de quedarse en 16px */
+  --page-x: var(--sp-4);
+  /* Separación entre secciones del dashboard y entre el título y su contenido.
+     La proporción entre ambas (≈3:1) es lo que agrupa visualmente. */
+  --dash-gap: var(--sp-7);
+  --dash-gap-titulo: var(--sp-4);
+
   --font-sans: var(--font-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
   --font-body: var(--font-dm), var(--font-sans);
   --font-ui: var(--font-inter), var(--font-sans);
@@ -405,7 +424,10 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Page */
-.page { padding: 20px 16px 60px; max-width: 1280px; margin: 0 auto; width: 100%; min-width: 0; }
+.page { padding: var(--sp-5) var(--page-x) 60px; max-width: 1280px; margin: 0 auto; width: 100%; min-width: 0; }
+/* En pantallas anchas el contenido no debe pegarse al borde */
+@media (min-width: 768px)  { :root { --page-x: var(--sp-6); } }
+@media (min-width: 1100px) { :root { --page-x: var(--sp-8); } }
 .page--narrow { max-width: 920px; }
 .page__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
 .page__title { font-family: var(--font-sans); font-size: 24px; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 6px; line-height: 1.15; }
@@ -600,8 +622,8 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 @media (min-width: 480px) { .grid-cards { grid-template-columns: repeat(2, 1fr); } }
 @media (min-width: 1024px) { .grid-cards { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; } }
 
-.grid-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-@media (min-width: 769px) { .grid-stats { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+.grid-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-3); }
+@media (min-width: 769px) { .grid-stats { grid-template-columns: repeat(4, 1fr); gap: var(--sp-4); } }
 
 .grid-2col { display: grid; grid-template-columns: 1fr; gap: 12px; }
 @media (min-width: 769px) { .grid-2col { grid-template-columns: repeat(2, 1fr); } }
@@ -622,8 +644,8 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 .layout-chart-table { display: grid; grid-template-columns: 1fr; gap: 18px; }
 @media (min-width: 1024px) { .layout-chart-table { grid-template-columns: 420px 1fr; align-items: flex-start; } }
 
-.grid-stats-3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-@media (min-width: 769px) { .grid-stats-3 { grid-template-columns: repeat(3, 1fr); gap: 14px; } }
+.grid-stats-3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--sp-3); }
+@media (min-width: 769px) { .grid-stats-3 { grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); } }
 
 .form-row-compromiso { display: grid; grid-template-columns: 1fr; gap: 8px; }
 @media (min-width: 769px) { .form-row-compromiso { grid-template-columns: 1fr 180px 140px auto; align-items: end; } }
@@ -966,39 +988,133 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
    Dashboard personalizado
    ========================================================================== */
 
-.dash-hero { margin-bottom: 32px; }
+/* Ritmo vertical: el salto entre secciones (--dash-gap) es ~3x el salto entre
+   un título y su contenido (--dash-gap-titulo). Esa proporción es la que hace
+   que cada bloque se lea como una unidad y no como una lista apretada. */
+@media (min-width: 900px) {
+  :root { --dash-gap: var(--sp-8); }
+}
 
-.dash-section { margin-bottom: 32px; }
+.dash-hero { margin-bottom: var(--sp-8); }
+@media (min-width: 900px) { .dash-hero { margin-bottom: var(--sp-9); } }
+.dash-hero__saludo { font-size: 28px; margin-bottom: var(--sp-2); }
+@media (min-width: 768px) { .dash-hero__saludo { font-size: 34px; } }
+.dash-hero__sub { font-size: 15px; }
+@media (min-width: 768px) { .dash-hero__sub { font-size: 16px; } }
+
+/* Buscador del hero */
+.dash-buscador {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-top: var(--sp-6);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-5);
+  max-width: 720px;
+  box-shadow: var(--shadow-md);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+.dash-buscador:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft), var(--shadow-md);
+}
+.dash-buscador__input {
+  flex: 1; min-width: 0;
+  border: 0; outline: 0; background: transparent;
+  font-size: 15px; padding: var(--sp-3) 0;
+}
+@media (min-width: 768px) { .dash-buscador__input { font-size: 16px; } }
+.dash-buscador__sugerencias {
+  display: flex; gap: var(--sp-2); margin-top: var(--sp-4);
+  flex-wrap: wrap; align-items: center;
+  max-width: 720px;
+}
+.dash-buscador__sugerencias-label { font-size: 12.5px; color: var(--text-3); }
+.dash-buscador__chip { cursor: pointer; font-weight: 500; transition: background 120ms ease, color 120ms ease; }
+.dash-buscador__chip:hover { background: var(--primary-soft); color: var(--primary-ink); }
+@media (max-width: 560px) {
+  .dash-buscador { padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-4); gap: var(--sp-2); }
+  .dash-buscador__input { font-size: 15px; }
+}
+
+.dash-section { margin-bottom: var(--dash-gap); }
+.dash-section > .section-header { margin-bottom: var(--dash-gap-titulo); }
+
+/* Banda: agrupa varias secciones bajo un rótulo ("Mi día", "Mi equipo"…).
+   Sin esto el dashboard es una pila de 8 bloques sin jerarquía. */
+.dash-banda { margin-bottom: var(--dash-gap); }
+.dash-banda:last-child { margin-bottom: 0; }
+.dash-banda__rotulo {
+  display: flex; align-items: center; gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.dash-banda__rotulo::after {
+  content: ""; flex: 1; height: 1px; background: var(--divider);
+}
+.dash-banda__texto {
+  font-family: var(--font-ui);
+  font-size: 11.5px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+/* Dentro de una banda las secciones respiran menos entre sí que entre bandas */
+.dash-banda .dash-section:last-child,
+.dash-banda .dash-cols:last-child { margin-bottom: 0; }
+.dash-banda .dash-section,
+.dash-banda .dash-cols { margin-bottom: var(--sp-6); }
+/* Los bloques se ocultan solos cuando no hay datos; sin esto quedaría el
+   rótulo de la banda flotando sin nada debajo. */
+.dash-banda:not(:has(.dash-section)):not(:has(.dash-cols > *)) { display: none; }
+
+/* KPI de admin */
+.dash-stat {
+  text-align: left;
+  display: flex; flex-direction: column; gap: var(--sp-4);
+  padding: var(--sp-5);
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+.dash-stat:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -8px rgba(0, 18, 51, 0.12);
+}
+.dash-stat__icono { align-self: flex-start; padding: 5px 8px; }
+
+/* KPI compacto (procesos por atender) */
+.dash-kpi { padding: var(--sp-4); }
+.dash-kpi__num { font-size: 26px; }
 
 .dash-cols {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 20px;
-  margin-bottom: 32px;
+  gap: var(--sp-5);
+  margin-bottom: var(--dash-gap);
+  align-items: start;
 }
 @media (min-width: 900px) {
-  .dash-cols { grid-template-columns: 1fr 1fr; gap: 24px; }
+  .dash-cols { grid-template-columns: 1fr 1fr; gap: var(--sp-6); }
 }
 
 /* Empty state cuando no hay nada pendiente */
 .dash-empty {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 20px;
+  gap: var(--sp-4);
+  padding: var(--sp-6);
 }
 .dash-empty__title { font-weight: 600; font-size: 14.5px; color: var(--text); }
 .dash-empty__msg { font-size: 13px; color: var(--text-3); margin-top: 2px; }
 
 /* Bandeja de acción — tarjetas horizontales tipo lista */
-.dash-bandeja { display: grid; gap: 10px; }
+.dash-bandeja { display: grid; gap: var(--sp-3); }
 
 .dash-tarjeta {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -1034,15 +1150,15 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 /* Bandeja de aprobación — cards con contador grande */
 .dash-aprob {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--sp-3);
 }
 .dash-aprob__tarjeta {
   display: grid;
   grid-template-columns: auto auto 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
   border-radius: 12px;
   transition: border-color 120ms ease, transform 120ms ease;
 }
@@ -1076,8 +1192,8 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 .dash-pdi {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 20px;
+  gap: var(--sp-4);
+  padding: var(--sp-5);
 }
 .dash-pdi__cabecera {
   display: flex;
@@ -1155,7 +1271,7 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 .dash-comites__delta { color: var(--success-ink); font-weight: 600; }
 .dash-comites__lista { padding: 4px 0; }
 .dash-comites__lista-cab {
-  padding: 12px 16px 8px;
+  padding: var(--sp-3) var(--sp-5) var(--sp-2);
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -1164,9 +1280,9 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 .dash-comites__fila {
   display: grid;
   grid-template-columns: auto 1fr auto auto;
-  gap: 10px;
+  gap: var(--sp-3);
   align-items: center;
-  padding: 10px 16px;
+  padding: var(--sp-3) var(--sp-5);
   color: var(--text);
   font-size: 13px;
   border-bottom: 1px solid var(--divider);
@@ -1189,8 +1305,8 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 }
 .dash-notis__item {
   display: flex;
-  gap: 10px;
-  padding: 12px 16px;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
   border-bottom: 1px solid var(--divider);
   transition: background 120ms;
   color: var(--text);
@@ -1206,14 +1322,14 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 .dash-aviso-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 12px;
+  gap: var(--sp-3);
 }
 .dash-aviso {
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: 14px;
-  padding: 14px 16px;
+  gap: var(--sp-4);
+  padding: var(--sp-4) var(--sp-5);
   border-radius: 12px;
   transition: border-color 120ms ease, transform 120ms ease;
 }
@@ -1240,10 +1356,10 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 
 /* Ciclo activo — hero KPI */
 .dash-ciclo {
-  padding: 20px;
+  padding: var(--sp-5);
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: var(--sp-4);
 }
 .dash-ciclo__cabecera {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
@@ -1282,13 +1398,13 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
   display: inline-block;
 }
 .dash-tabla-pie {
-  padding: 8px 16px 12px;
+  padding: var(--sp-2) var(--sp-5) var(--sp-3);
   font-size: 11.5px;
   color: var(--text-3);
   border-top: 1px solid var(--divider);
 }
 .dash-tabla-cab {
-  padding: 12px 16px;
+  padding: var(--sp-3) var(--sp-5);
   border-bottom: 1px solid var(--divider);
   display: flex; align-items: baseline; justify-content: space-between; gap: 8px;
   flex-wrap: wrap;
