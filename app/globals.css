@@ -715,6 +715,50 @@ select.ca-select, select.input { appearance: none; background-image: url("data:i
 
 /* Reusable component classes */
 
+/* ── Selector de vista: tarjetas o lista, al estilo de Notion/Monday ────── */
+.selector-vista .filter-pill { display: inline-flex; align-items: center; gap: 6px; }
+@media (max-width: 480px) {
+  /* En móvil manda el ícono; el rótulo se cae para que quepan las dos pastillas */
+  .selector-vista__texto { display: none; }
+}
+
+/* Tarjeta de gestión: el ícono manda arriba y el pie agrupa líder y conteo */
+.gestion-tarjeta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-5);
+}
+.gestion-tarjeta__nombre { font-family: var(--font-sans); font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.gestion-tarjeta__desc {
+  margin: -6px 0 0;
+  font-size: 12.5px;
+  color: var(--text-3);
+  line-height: 1.45;
+  /* Dos líneas y elipsis: los nombres de gestión varían mucho de largo y
+     sin esto las tarjetas de una misma fila quedan de alturas distintas */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.gestion-tarjeta__pie {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-top: auto;
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--divider);
+}
+.gestion-tarjeta__lider {
+  font-size: 12.5px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
 .section-title { margin: 0; font-family: var(--font-sans); font-size: 18px; font-weight: 700; letter-spacing: -0.01em; }
 .section-title--lg { font-size: 20px; }
