@@ -39,7 +39,7 @@ export default async function PaginaCuestionario() {
                   <div style={{
                     width: 36, height: 36, borderRadius: 8,
                     background: comp.tipo === 'Gerencial' ? '#DDD3F3' : 'var(--primary-soft-2)',
-                    color: comp.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--primary-ink)',
+                    color: comp.tipo === 'Gerencial' ? '#2D1B6B' : 'var(--on-primary-soft)',
                     display: 'grid', placeItems: 'center', fontWeight: 700, fontFamily: 'var(--font-mono)',
                   }}>{comp.codigo}</div>
                   <div>

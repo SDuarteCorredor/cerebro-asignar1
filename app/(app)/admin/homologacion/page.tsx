@@ -61,7 +61,7 @@ export default async function AdminHomologacion() {
         ) : (
           <>
             <div className="card" style={{ padding: 12, marginBottom: 16, background: 'var(--primary-soft)', border: '1px solid var(--primary)' }}>
-              <div className="hstack" style={{ gap: 8, color: 'var(--primary-ink)', alignItems: 'flex-start' }}>
+              <div className="hstack" style={{ gap: 8, color: 'var(--on-primary-soft)', alignItems: 'flex-start' }}>
                 <Icono nombre="info" className="icon icon--sm" style={{ flexShrink: 0, marginTop: 2 }} />
                 <span style={{ fontSize: 13 }}>
                   Ordenados por frecuencia. Los <strong>cargos reales</strong> (Analista, Coordinador…) se

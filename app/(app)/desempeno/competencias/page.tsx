@@ -27,7 +27,7 @@ export default async function PaginaCompetencias() {
   const colorNivel = (n: number | null) => {
     if (n === null) return { bg: 'var(--surface-sunken)', fg: 'var(--text-muted)' }
     if (n >= 5) return { bg: '#C0EBCC', fg: '#0A6B2A' }
-    if (n >= 4) return { bg: 'var(--primary-soft)', fg: 'var(--primary-ink)' }
+    if (n >= 4) return { bg: 'var(--primary-soft)', fg: 'var(--on-primary-soft)' }
     if (n >= 3) return { bg: 'var(--warning-soft)', fg: 'var(--warning-ink)' }
     return { bg: 'var(--danger-soft)', fg: 'var(--danger-ink)' }
   }

@@ -253,13 +253,13 @@ export default async function RankingComites({ searchParams }: {
                     const esYo = f.usuario_id === sesion.id
                     return (
                       <tr key={f.usuario_id} style={esYo ? { background: 'var(--primary-soft)' } : undefined}>
-                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: i < 3 ? 'var(--primary-ink)' : 'var(--text-3)' }}>
+                        <td style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, color: i < 3 ? 'var(--on-primary-soft)' : 'var(--text-3)' }}>
                           {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                         </td>
                         <td>
                           <div className="hstack" style={{ gap: 8 }}>
                             <div className="avatar avatar--sm">{obtenerIniciales(f.nombre)}</div>
-                            <span className="row-title">{f.nombre}{esYo && <span style={{ color: 'var(--primary-ink)', fontSize: 11 }}> · tú</span>}</span>
+                            <span className="row-title">{f.nombre}{esYo && <span style={{ color: 'var(--on-primary-soft)', fontSize: 11 }}> · tú</span>}</span>
                           </div>
                         </td>
                         <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: 15 }}>{f.puntos}</td>

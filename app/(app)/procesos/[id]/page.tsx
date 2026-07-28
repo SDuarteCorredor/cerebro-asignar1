@@ -325,9 +325,9 @@ export default async function PaginaProceso({ params }: { params: Promise<{ id: 
               <div className="card callout">
                 <div className="hstack" style={{ gap: 10, marginBottom: 8 }}>
                   <Icono nombre="info" className="icon" style={{ color: 'var(--primary)' }} />
-                  <strong style={{ color: 'var(--primary-ink)' }}>¿Encontraste algo desactualizado?</strong>
+                  <strong style={{ color: 'var(--on-primary-soft)' }}>¿Encontraste algo desactualizado?</strong>
                 </div>
-                <p style={{ margin: 0, fontSize: 13, color: 'var(--primary-ink)', opacity: 0.85 }}>
+                <p style={{ margin: 0, fontSize: 13, color: 'var(--on-primary-soft)', opacity: 0.85 }}>
                   Avísale al líder de Gestión escribiendo a{' '}
                   <a href={`mailto:${lider.correo}`} style={{ textDecoration: 'underline', fontWeight: 600 }}>
                     {lider.correo}

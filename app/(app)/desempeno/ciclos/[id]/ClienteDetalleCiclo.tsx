@@ -369,7 +369,7 @@ export default function ClienteDetalleCiclo({ ciclo, evaluaciones, posiblesEvalu
                       display: 'block', width: '100%', padding: '10px 12px', textAlign: 'left',
                       borderBottom: '1px solid var(--divider)',
                       background: evaluadorSeleccionado === ev.id ? 'var(--primary-soft)' : 'transparent',
-                      color: evaluadorSeleccionado === ev.id ? 'var(--primary-ink)' : 'var(--text)',
+                      color: evaluadorSeleccionado === ev.id ? 'var(--on-primary-soft)' : 'var(--text)',
                       fontSize: 13,
                     }}
                   >
