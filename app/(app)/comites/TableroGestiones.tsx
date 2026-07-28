@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { crearClienteServidor } from '@/lib/supabase/server'
+import Icono from '@/components/app/Icono'
 import { calcularPonderado, colorPct, badgePct } from '@/lib/comites/puntaje'
 import type { SesionUsuario } from '@/types'
 
@@ -100,9 +100,20 @@ export default async function TableroGestiones({ sesion }: { sesion: SesionUsuar
                     <div style={{ width: `${pct}%`, height: '100%', background: colorPct(pct) }} />
                   </div>
                   <div className="hstack" style={{ gap: 10, fontSize: 11.5, color: 'var(--text-3)', flexWrap: 'wrap' }}>
-                    <span>✓ {f.acum.cumplidos}</span>
-                    <span>✗ {f.acum.noCumplidos}</span>
-                    {f.acum.reportados > 0 && <span>⏳ {f.acum.reportados}</span>}
+                    <span className="hstack" style={{ gap: 4 }} title="Cumplidos">
+                      <Icono nombre="checkCircle" className="icon icon--sm" style={{ color: 'var(--success)' }} />
+                      {f.acum.cumplidos}
+                    </span>
+                    <span className="hstack" style={{ gap: 4 }} title="No cumplidos">
+                      <Icono nombre="xCircle" className="icon icon--sm" style={{ color: 'var(--danger)' }} />
+                      {f.acum.noCumplidos}
+                    </span>
+                    {f.acum.reportados > 0 && (
+                      <span className="hstack" style={{ gap: 4 }} title="Reportados, por confirmar">
+                        <Icono nombre="clock" className="icon icon--sm" style={{ color: 'var(--primary)' }} />
+                        {f.acum.reportados}
+                      </span>
+                    )}
                   </div>
                   {f.semana.pctPonderado !== null && (
                     <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid var(--divider)', fontSize: 11.5, color: 'var(--text-3)' }}>

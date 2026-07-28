@@ -3,8 +3,9 @@ import { crearClienteServidor } from '@/lib/supabase/server'
 import { obtenerSesion } from '@/lib/sesion'
 import Topbar from '@/components/app/Topbar'
 import Icono from '@/components/app/Icono'
-import { calcularPonderado, badgePct } from '@/lib/comites/puntaje'
+import { calcularPonderado } from '@/lib/comites/puntaje'
 import TableroGestiones from './TableroGestiones'
+import ClienteActas, { type ActaFila } from './ClienteActas'
 
 export default async function PaginaComites({ searchParams }: {
   searchParams: Promise<{ gestion?: string }>
@@ -49,6 +50,23 @@ export default async function PaginaComites({ searchParams }: {
     Array.from(compsPorComite.entries()).map(([id, comps]) => [id, calcularPonderado(comps)])
   )
 
+  // Serializado plano para el cliente: agrupa, filtra y ordena en el navegador
+  const actas: ActaFila[] = (comites ?? []).map(c => {
+    const s = statsPorComite.get(c.id)
+    return {
+      id: c.id,
+      gestion: mapGestion.get(c.gestion_id) ?? '—',
+      fecha: c.fecha,
+      semana_iso: c.semana_iso,
+      anio: c.anio,
+      titulo: c.titulo,
+      cerrado: c.cerrado,
+      total: s?.total ?? 0,
+      pct: s?.pctPonderado ?? null,
+    }
+  })
+  const nombresGestion = Array.from(new Set(actas.map(a => a.gestion))).sort()
+
   // Mis gestiones para crear
   const misGestiones = esAdmin
     ? (await supabase.from('gestiones').select('id, nombre').eq('activa', true).order('nombre')).data ?? []
@@ -89,7 +107,9 @@ export default async function PaginaComites({ searchParams }: {
 
         {(!comites || comites.length === 0) ? (
           <section className="card" style={{ padding: 26, textAlign: 'center' }}>
-            <div style={{ fontSize: 40, marginBottom: 8 }}>🗓️</div>
+            <div className="icon-circle" style={{ margin: '0 auto 10px' }}>
+              <Icono nombre="calendar" className="icon" />
+            </div>
             <p style={{ margin: 0, fontSize: 13, color: 'var(--text-3)' }}>
               Aún no hay comités registrados{esAdmin ? '' : ' en tu gestión'}.
             </p>
@@ -100,59 +120,7 @@ export default async function PaginaComites({ searchParams }: {
             )}
           </section>
         ) : (
-          <section className="card card--table">
-            <table className="table table--in-card">
-              <thead>
-                <tr>
-                  <th>Semana</th>
-                  <th>Gestión</th>
-                  <th>Título</th>
-                  <th style={{ width: 90, textAlign: 'center' }}>Compromisos</th>
-                  <th style={{ width: 130 }}>Cumplimiento</th>
-                  <th style={{ width: 90 }}>Estado</th>
-                  <th style={{ width: 60 }}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {comites.map(c => {
-                  const s = statsPorComite.get(c.id)
-                  const total = s?.total ?? 0
-                  const pct = s?.pctPonderado ?? null
-                  return (
-                    <tr key={c.id}>
-                      <td>
-                        <div className="row-title" style={{ fontFamily: 'var(--font-mono)' }}>W{c.semana_iso}/{c.anio}</div>
-                        <div className="row-sub">{c.fecha}</div>
-                      </td>
-                      <td>{mapGestion.get(c.gestion_id) ?? '—'}</td>
-                      <td>{c.titulo ?? <span className="text-muted">Comité semanal</span>}</td>
-                      <td style={{ textAlign: 'center', fontFamily: 'var(--font-mono)' }}>{total}</td>
-                      <td>
-                        {pct === null ? (
-                          <span className="text-muted text-sm">Sin evaluar</span>
-                        ) : (
-                          <div className="hstack" style={{ gap: 8, alignItems: 'center' }}>
-                            <div style={{ flex: 1, background: 'var(--border)', height: 6, borderRadius: 999, overflow: 'hidden' }}>
-                              <div style={{ width: `${pct}%`, height: '100%', background: pct >= 80 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)' }} />
-                            </div>
-                            <span className={`badge ${badgePct(pct)}`}>{pct}%</span>
-                          </div>
-                        )}
-                      </td>
-                      <td>
-                        {c.cerrado
-                          ? <span className="badge badge--neutral">Cerrado</span>
-                          : <span className="badge badge--success">Abierto</span>}
-                      </td>
-                      <td>
-                        <Link href={`/comites/${c.id}`} className="btn btn--ghost btn--sm">Ver</Link>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </section>
+          <ClienteActas actas={actas} gestiones={nombresGestion} />
         )}
       </main>
     </>
