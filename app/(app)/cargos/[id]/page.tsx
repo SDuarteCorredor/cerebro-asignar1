@@ -87,7 +87,7 @@ export default async function PaginaManualCargo({ params }: { params: Promise<{ 
           </Link>
         </div>
 
-        <div className="page__header">
+        <div className="page__header" style={{ display: 'flex', justifyContent: 'space-between', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
           <div>
             <div className="page__eyebrow">Manual de cargo</div>
             <h1 className="page__title">{cargo.nombre}</h1>
@@ -103,6 +103,11 @@ export default async function PaginaManualCargo({ params }: { params: Promise<{ 
               )}
             </div>
           </div>
+          {filas.length > 0 && (
+            <Link href={`/cargos/${id}/imprimir`} className="btn btn--secondary btn--sm">
+              <Icono nombre="download" className="icon icon--sm" /> Exportar PDF
+            </Link>
+          )}
         </div>
 
         <div className="layout-main-aside">
