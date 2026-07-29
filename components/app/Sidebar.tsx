@@ -88,6 +88,11 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
           <Icono nombre="paper" className="nav-item__icon" /> Políticas y Reglamentos
         </Link>
 
+        <Link href="/glosario" className={`nav-item ${activa('/glosario') ? 'is-active' : ''}`} onClick={navegar}>
+          <Icono nombre="bookmark" className="nav-item__icon" /> Glosario
+          <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
+        </Link>
+
         <Link href="/comites" className={`nav-item ${activa('/comites') ? 'is-active' : ''}`} onClick={navegar}>
           <Icono nombre="check" className="nav-item__icon" /> Comités
         </Link>
