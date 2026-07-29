@@ -107,6 +107,11 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
           <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
         </Link>
 
+        <Link href="/capacitaciones" className={`nav-item ${activa('/capacitaciones') ? 'is-active' : ''}`} onClick={navegar}>
+          <Icono nombre="star" className="nav-item__icon" /> Capacitaciones
+          <span className="nav-item__pill nav-item__pill--brand">Nuevo</span>
+        </Link>
+
         {(esAdmin || esLider) && (
           <div className="sidebar__section-label">{esAdmin ? 'Administración' : 'Mi Gestión'}</div>
         )}
@@ -133,6 +138,9 @@ export default function Sidebar({ rol, aprobacionesPendientes = 0, gestionId }: 
             </Link>
             <Link href="/admin/onboarding" className={`nav-item ${activa('/admin/onboarding') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="clipboard" className="nav-item__icon" /> Acogida laboral
+            </Link>
+            <Link href="/admin/capacitaciones" className={`nav-item ${activa('/admin/capacitaciones') ? 'is-active' : ''}`} onClick={navegar}>
+              <Icono nombre="star" className="nav-item__icon" /> Catálogo capacitaciones
             </Link>
             <Link href="/admin/tipos-ausencia" className={`nav-item ${activa('/admin/tipos-ausencia') ? 'is-active' : ''}`} onClick={navegar}>
               <Icono nombre="list" className="nav-item__icon" /> Tipos de ausencia

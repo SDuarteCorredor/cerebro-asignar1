@@ -24,7 +24,7 @@
 | 6 | Documentos adjuntos en procesos | Completada |
 | 7 | Políticas y Reglamentos | Completada |
 | 8 | Onboarding / Acogida Laboral | Pendiente |
-| 9 | Entrenamientos y Capacitaciones | Pendiente |
+| 9 | Entrenamientos y Capacitaciones | MVP completado |
 | 10 | Periodos de Prueba | Pendiente |
 | 11 | Encuestas | Pendiente |
 | 12 | Expediente Digital del Colaborador | Pendiente |
@@ -365,12 +365,14 @@ El editor marca cada paso sin homologar mostrando el texto anterior, para resolv
 
 ---
 
-## Etapa 9 — Entrenamientos y Capacitaciones
+## Etapa 9 — Entrenamientos y Capacitaciones (MVP completado) | Claude-Simon
 
-- [ ] Registro de capacitaciones por colaborador | Asignado: ``
-- [ ] Certificaciones con fecha de vencimiento | Asignado: ``
-- [ ] Alertas de renovación | Asignado: ``
-- [ ] Reporte por gestión | Asignado: ``
+- [x] **Catálogo** `capacitaciones` (nombre, tipo interna/externa, certifica, vigencia en meses, activa). Panel `/admin/capacitaciones` para TH. Semilla de 5 (SST, alturas, alimentos, primeros auxilios, brigada)
+- [x] **Registro por colaborador**: `capacitacion_registros` con fecha realizada, **certificado** (bucket privado `certificados-capacitacion`), horas y nota. `/capacitaciones` con formulario (busca persona, sube certificado). Admin registra a cualquiera; líder solo a su gestión
+- [x] **Certificaciones con vencimiento**: `fecha_vence` = fecha realizada + vigencia_meses (snapshot). Estados vigente/por vencer/vencido reusando `calcularVigencia`
+- [x] **Vista y alertas**: tabla con filtros (persona, capacitación, vigencia) + KPIs de vencidas y por vencer. RLS: cada quien ve las suyas, líder las de su gente, admin todo. Descarga de certificado por URL firmada
+- [ ] Notificación automática al vencer (necesita scheduler, igual que la revisión anual) | Asignado: ``
+- [ ] Reporte descargable por gestión | Asignado: ``
 
 ---
 
