@@ -4,7 +4,12 @@ import Link from 'next/link'
 import IconoGestion from '@/components/app/IconoGestion'
 import Icono from '@/components/app/Icono'
 import SelectorVista, { useVista } from '@/components/app/SelectorVista'
-import { obtenerIniciales } from '@/lib/sesion'
+
+/** Iniciales locales — importar lib/sesion en un componente cliente arrastra
+ *  next/headers al bundle y rompe el build. */
+function obtenerIniciales(nombre: string): string {
+  return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase()
+}
 
 export interface FilaGestion {
   id: string
