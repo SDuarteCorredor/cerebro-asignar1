@@ -63,10 +63,15 @@ export default async function PaginaPdi({ params }: { params: Promise<{ id: stri
         { etiqueta: 'PDI' },
       ]} />
       <main className="page fade-up">
-        <div style={{ marginBottom: 20 }}>
+        <div className="hstack" style={{ marginBottom: 20, justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
           <Link href={`/desempeno/evaluaciones/${evaluacionId}/reporte`} className="btn btn--ghost btn--sm">
             <Icono nombre="chevronRight" className="icon icon--sm" style={{ transform: 'rotate(180deg)' }} /> Volver al reporte
           </Link>
+          {pdi && (
+            <Link href={`/desempeno/evaluaciones/${evaluacionId}/pdi/imprimir`} className="btn btn--primary btn--sm">
+              <Icono nombre="download" className="icon icon--sm" /> Descargar acta
+            </Link>
+          )}
         </div>
 
         <div style={{ marginBottom: 24 }}>
