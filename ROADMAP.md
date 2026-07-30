@@ -199,6 +199,8 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
   - **4. Seguimiento del Plan** (párrafo): reuniones quincenales colaborador/líder; evaluación final al cierre (ej. 90 días).
   - **5. Aprobación y Firmas**: tres bloques — **Colaborador**, **Líder inmediato**, **Gestión Humana** (Nombre / Cargo / Fecha) para firma física, más la firma digital en plataforma.
 - [ ] Poder **incluir acciones de desarrollo manuales**, además de las sugeridas por el software. En competencias vienen las sugerencias automáticas, pero las otras fuentes (disciplinario, período de prueba, otros) pueden usar otros compromisos o actividades de desarrollo propios.
+- [ ] Agregar **Objetivos SMART** como **campo editable** del PDI (bloque propio, hoy no existe).
+- [ ] En la tabla del plan, el **Responsable** de cada acción se **asigna manualmente** (Colaborador / Líder / etc.), no automático.
 
 ---
 
