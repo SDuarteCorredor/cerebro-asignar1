@@ -190,7 +190,14 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [ ] **4. Otros llamados de atención / otro motivo.** Cualquier otra llamada de atención u origen que amerite crear un PDI (fuente genérica).
 
 **Mejoras a la interfaz del PDI:**
-- [ ] **Botón de descargar** el PDI con la **plantilla específica** (Simón la va a entregar).
+- [ ] **Botón de descargar** el PDI con la **plantilla específica** (entregada por Simón — `Plan_Desarrollo_Completo_Psicologo_Seleccion.docx`). Estructura del acta a reproducir (reutilizar el patrón `doc-print` → PDF):
+  - **Título:** "PLAN DE DESARROLLO INDIVIDUAL (PDI) — [CARGO]".
+  - **Objetivo General** (párrafo).
+  - **1. Brechas Identificadas** (lista). Vienen del origen del PDI (brechas de competencias, hallazgos del disciplinario, del período de prueba, etc.).
+  - **2. Objetivos SMART** (lista).
+  - **3. Plan de Desarrollo** (tabla): `Competencia | Acciones de Desarrollo | Indicador | Responsable | Fecha`.
+  - **4. Seguimiento del Plan** (párrafo): reuniones quincenales colaborador/líder; evaluación final al cierre (ej. 90 días).
+  - **5. Aprobación y Firmas**: tres bloques — **Colaborador**, **Líder inmediato**, **Gestión Humana** (Nombre / Cargo / Fecha) para firma física, más la firma digital en plataforma.
 - [ ] Poder **incluir acciones de desarrollo manuales**, además de las sugeridas por el software. En competencias vienen las sugerencias automáticas, pero las otras fuentes (disciplinario, período de prueba, otros) pueden usar otros compromisos o actividades de desarrollo propios.
 
 ---
