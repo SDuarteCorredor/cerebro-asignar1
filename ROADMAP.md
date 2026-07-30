@@ -179,6 +179,20 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 5. Implementación a toda la empresa con campaña de expectativa.
 - [ ] Tareas de Simón: enviar a Liliana (a) el cuestionario de descriptores y (b) las bandas para definir mínimos por banda y expandir definiciones.
 
+### Sub-etapa G — PDI unificado multi-fuente ⭐ pendiente
+
+> El Plan de Desarrollo Individual deja de ser exclusivo de la evaluación de competencias y se vuelve el **embudo único** al que llegan varias fuentes. Cada PDI registra su **origen**. Reencuadra la Sub-etapa 3.E y absorbe el punto de comité "PDI unificado".
+
+**Fuentes que pueden originar un PDI:**
+- [ ] **1. Evaluación por competencias** (ya existe). Genera sugerencias automáticas de acciones desde las brechas (ver Sub-etapa 3.F para las mejoras pendientes).
+- [ ] **2. Proceso disciplinario.** Desde un proceso disciplinario se puede **iniciar un PDI anclado** a ese proceso. Debe permitir **montar/subir el acta del proceso disciplinario** como parte del origen/evidencia.
+- [ ] **3. Período de prueba / desempeño.** Los períodos de prueba ya están contemplados en el plan de Cerebro Asignar; **al llegar a esa etapa revisarla bien.** La idea: cuando se haga la **evaluación de período de prueba al 2.º mes** del ingreso, que tenga la opción de **"crear PDI"** que lleve directo a la plataforma del plan.
+- [ ] **4. Otros llamados de atención / otro motivo.** Cualquier otra llamada de atención u origen que amerite crear un PDI (fuente genérica).
+
+**Mejoras a la interfaz del PDI:**
+- [ ] **Botón de descargar** el PDI con la **plantilla específica** (Simón la va a entregar).
+- [ ] Poder **incluir acciones de desarrollo manuales**, además de las sugeridas por el software. En competencias vienen las sugerencias automáticas, pero las otras fuentes (disciplinario, período de prueba, otros) pueden usar otros compromisos o actividades de desarrollo propios.
+
 ---
 
 ## Etapa 4 — Deploy en Vercel (parcialmente completada)
