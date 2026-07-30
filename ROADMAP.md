@@ -139,6 +139,46 @@ Mide las competencias organizacionales de cada colaborador, compara contra el ni
 - [x] Seguimiento mensual del avance de cada acción
 - [x] Dashboard de cumplimiento de PDIs vigentes
 
+### Sub-etapa F — Mejoras de la revisión con consultora (2026-07-30) ⭐ pendiente
+
+> Reunión de validación del modelo de competencias con **Liliana Gaviria** (consultora externa), Diana Cano y Paula Caballero. La consultora validó el modelo y confirmó que va "espectacular"; estas son las mejoras y aclaraciones acordadas antes de la sensibilización a líderes. **Todo esto es del alcance corporativo actual, salvo lo marcado como "etapa 2 / técnicas".**
+
+**Aclaración de terminología (bloqueante conceptual):**
+- [ ] Separar el término "nivel". Hoy se mezclan dos cosas: (a) la **modalidad de evaluación** (270° / 180° / 360°) y (b) el **nivel de competencia** (dominio 1-5 por cargo). En la UI y en los documentos, la modalidad NO debe llamarse "nivel". Renombrar/clarificar copy en modelo, bandas y ciclos.
+- [ ] Dejar explícito que estas son **competencias corporativas** (el perfil humano que toda persona debe tener), no técnicas. Los "niveles por banda" son el enfoque de desarrollo, no dominio técnico — para evitar imprecisión si auditan.
+
+**Definiciones y calificación por banda:**
+- [ ] **Expandir las definiciones de cada competencia por banda** (B1-B5). Hoy la definición está unificada; falta el descriptor diferenciado: "Comunicación efectiva en B1 = X … en B5 = Y". Liliana apoyará esta redacción.
+- [ ] **Definir el puntaje mínimo real por banda y competencia.** Los mínimos actuales se pusieron por una división rápida (ej. B5=5 es el ideal, inalcanzable en la práctica). Revisar con Liliana el mínimo exigible por banda.
+
+**Cuestionario / descriptores comportamentales:**
+- [ ] **Corregir descriptores dicotómicos** (los que juntan dos condiciones en un solo ítem). Ej.: "recibe **y** brinda retroalimentación" → separar en ítems de una sola condición, porque no se puede calificar bien si la persona cumple una condición pero no la otra. Simón identificó **varios** por corregir.
+- [ ] Enviar a Liliana el documento completo de descriptores para su revisión ítem por ítem (tarea de Simón). Confirmado que los nuevos descriptores siguen la misma lógica que el trabajo previo de Diana → coherencia cultural (no son de un directorio genérico comprado).
+
+**Acciones / planes de desarrollo:**
+- [ ] **Estructurar cada acción de desarrollo por SER / SABER / HACER.** Análisis de causa raíz de la brecha (no conoce el procedimiento / no domina la herramienta / no tiene método) para que el plan mezcle acciones del ser (valores, disciplina, pensamiento), del saber (conocimiento) y del hacer (herramientas/estrategias) y realmente cierre la brecha.
+- [ ] **Formación "a la medida" con sello propio de Asignar**, no menú genérico de mercado. Unidad de criterio para evitar disonancia ("aquí no lo hacemos así"). Curar el catálogo hasta ~100 planes con metodologías que sí impacten y con seguimiento real.
+- [ ] Revisar las 39 acciones actuales una a una; incluir la propuesta de **biblioteca (lecturas) digital/física** (requiere presupuesto a gerencia en la planeación de fin de año).
+- [ ] **Salvedad trabajo en equipo vs. colaboración:** las acciones de "apoyar en otra gestión" tienen riesgo laboral (persona sin el conocimiento técnico estorba; cargo de salario alto en tareas operativas). Requieren primero un **indicador de equipo / contribuciones del equipo** y claridad de roles antes de proponerse.
+
+**Compromisos individuales (falta construir):**
+- [ ] Agregar **compromisos individuales** al PDI, además de las acciones de desarrollo. Son acuerdos conductuales/normativos (ej. llegadas tarde, trato inadecuado que puede escalar a acoso laboral) que quedan por escrito con el jefe. Misma visual del PDI: "agregar compromiso" + seguimiento + descarga de acta + firma física y en plataforma. Liliana lo recomendó explícitamente para que la responsabilidad de mejorar quede en el colaborador, no en la empresa.
+
+**Integración (refuerza el PDI unificado del comité):**
+- [ ] Confirmado el **embudo único de PDI**: procesos disciplinarios, período de prueba, retroalimentación técnica, evaluaciones de competencias y llamados de atención leves convergen en el mismo módulo, indicando el **origen** y con evidencias. (Ver punto de comité "PDI unificado".)
+- [ ] Alimentar la retroalimentación con **KPIs/indicadores y novedades disciplinarias** (llegadas tarde, felicitaciones, iniciativas). Ya existe en el sistema pero nunca se alimentaba; ahora es viable con la madurez de los líderes.
+
+**Etapa 2 (diferida, proyecto mayor — NO ahora):**
+- [ ] **Niveles de dominio de competencia por cargo** y **competencias técnicas específicas**. Requiere descripciones de cargo muy actualizadas y participación de casi todos los actores de la empresa. Para las evaluaciones técnicas el cuestionario será **por cargo** (no único). El de competencias corporativas se mantiene como **cuestionario único** que solo cambia la calificación por banda.
+
+**Plan de despliegue acordado (meta: aplicar la evaluación este semestre, ~1 mes):**
+1. Liliana revisa cuestionario + bandas y entrega observaciones.
+2. TH unifica criterios y queda cómodo con el modelo.
+3. Sensibilización corporativa mostrando la mejora y cómo se evalúa (270°/360°).
+4. Sensibilizar líderes + pilotajes con ellos.
+5. Implementación a toda la empresa con campaña de expectativa.
+- [ ] Tareas de Simón: enviar a Liliana (a) el cuestionario de descriptores y (b) las bandas para definir mínimos por banda y expandir definiciones.
+
 ---
 
 ## Etapa 4 — Deploy en Vercel (parcialmente completada)
