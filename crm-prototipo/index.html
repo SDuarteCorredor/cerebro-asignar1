@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM Asignar — Prototipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand"><i>A</i> CRM Asignar</div>
+    <nav class="nav">
+      <a href="#/pipeline" data-nav="pipeline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/></svg> Pipeline</a>
+      <a href="#/clientes" data-nav="clientes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.5-3.5 3-5.5 6.5-5.5s6 2 6.5 5.5"/></svg> Clientes</a>
+      <a href="#/pendientes" data-nav="pendientes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2"/></svg> Checklist de ingreso <span class="count" id="nalert" title="Actividades con alerta"></span></a>
+      <a href="#/nuevo" data-nav="nuevo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Nuevo cliente</a>
+    </nav>
+    <div class="demo">
+      <b>Simulador (solo demo)</b>
+      <label class="f">Ver como<select id="rol"></select></label>
+      <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="strict" style="width:auto"> Cada área solo ve lo suyo</label>
+      <label class="f">Alertar a los<select id="adias"><option value="2">2 días hábiles</option><option value="3">3 días hábiles</option></select></label>
+      <label class="f">SLA cuenta desde<select id="sdesde"><option value="codigo">Creación del código</option><option value="firma">Firma del contrato</option><option value="operativa">Reunión operativa</option></select></label>
+      <button class="btn sm" id="reset">Restablecer datos</button>
+    </div>
+  </aside>
+  <main class="main" id="main"></main>
+</div>
+<script src="js/data.js"></script>
+<script>
+  // Llena el selector de rol antes de arrancar la app
+  var r = document.getElementById('rol');
+  Object.keys(window.ROLES).forEach(function (k) { var o = document.createElement('option'); o.value = k; o.textContent = window.ROLES[k]; r.appendChild(o); });
+</script>
+<script src="js/app.js"></script>
+</body>
+</html>
